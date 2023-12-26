@@ -1,27 +1,39 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-import axios from 'axios'
-import { ref } from 'vue'
+import { RouterLink, RouterView } from "vue-router";
+import HelloWorld from "./components/HelloWorld.vue";
+import axios from "axios";
+import { ref } from "vue";
 
 const count = ref(0);
 
 const add = () => {
   count.value = ++count.value;
-  axios.get('api/v1/opendata/t187ap05_P')
+  axios
+    .get("api/v1/opendata/t187ap05_P")
     .then((response) => {
       if (response.status == 200) {
-        console.log(response)
+        console.log(response);
       }
     })
-    .catch((error) =>
-      console.log(error));
-}
+    .catch((error) => console.log(error));
+};
+const formRef = ref(null);
+const test = (value) => {
+  console.log("value", value);
+  // alert(value);
+  formRef.value.resetForm();
+};
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <img
+      alt="Vue logo"
+      class="logo"
+      src="@/assets/logo.svg"
+      width="125"
+      height="125"
+    />
 
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
@@ -34,14 +46,15 @@ const add = () => {
         <button @click="add">Count is: {{ count }}</button>
       </nav>
 
-      <VForm>
-    <VField
-      name="email"
-      type="email"
-      rules="required|email"
-    />
-    <ErrorMessage name="email"/>
-  </VForm>
+      <VForm  ref="formRef"  v-slot="{ errors, meta ,resetForm}" @submit="test">
+        <VField name="email" type="email" rules="required|email" />
+        <ErrorMessage name="email" />
+        <VField name="password" type="password" rules="required|min:6" />
+        <ErrorMessage name="password" />
+        <button type="submit" :disabled="!meta.valid">送出</button>
+        <button type="button" @click="resetForm">重設</button>
+
+      </VForm>
     </div>
   </header>
 
