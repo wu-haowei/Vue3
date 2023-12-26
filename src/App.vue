@@ -33,6 +33,15 @@ const add = () => {
 
         <button @click="add">Count is: {{ count }}</button>
       </nav>
+
+      <VForm>
+    <VField
+      name="email"
+      type="email"
+      rules="required|email"
+    />
+    <ErrorMessage name="email"/>
+  </VForm>
     </div>
   </header>
 
