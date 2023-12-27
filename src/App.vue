@@ -17,12 +17,6 @@ const add = () => {
     })
     .catch((error) => console.log(error));
 };
-const formRef = ref(null);
-const test = (value) => {
-  console.log("value", value);
-  // alert(value);
-  formRef.value.resetForm();
-};
 </script>
 
 <template>
@@ -42,19 +36,12 @@ const test = (value) => {
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
         <RouterLink to="/twse">twse</RouterLink>
+        <RouterLink to="/inputbar">驗證碼</RouterLink>
+        <RouterLink to="/validate">表單驗證</RouterLink>
 
         <button @click="add">Count is: {{ count }}</button>
       </nav>
 
-      <VForm  ref="formRef"  v-slot="{ errors, meta ,resetForm}" @submit="test">
-        <VField name="email" type="email" rules="required|email" />
-        <ErrorMessage name="email" />
-        <VField name="password" type="password" rules="required|min:6" />
-        <ErrorMessage name="password" />
-        <button type="submit" :disabled="!meta.valid">送出</button>
-        <button type="button" @click="resetForm">重設</button>
-
-      </VForm>
     </div>
   </header>
 
