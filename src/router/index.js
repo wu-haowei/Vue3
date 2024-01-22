@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),//形式
   routes: [
     {
       path: '/',
@@ -39,9 +39,28 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/Validate.vue')
+      component: () => import('../views/Validate.vue'),
+    },
+    {
+      path: '/Router',
+      name: 'Router',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Router.vue'),
+      // beforeEnter: (to, from, next) => {
+      //   next();
+      // }
     }
   ]
 })
+
+//to:進入
+//from:來源
+//next:是否允許
+router.beforeEach((to, from, next) => {
+  next(true);
+})
+
 
 export default router
