@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import store from "@/stores/stores";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),//形式
@@ -52,6 +54,18 @@ const router = createRouter({
       //   next();
       // }
     }
+    ,
+    {
+      path: '/Vuex',
+      name: 'Vuex',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Vuex.vue'),
+      // beforeEnter: (to, from, next) => {
+      //   next();
+      // }
+    }
   ]
 })
 
@@ -59,8 +73,20 @@ const router = createRouter({
 //from:來源
 //next:是否允許
 router.beforeEach((to, from, next) => {
-  next(true);
+  console.log(store.getters["isLogin"]);
+  // console.log(from);
+  console.log(to.path);
+  if (to.path != '/Vuex' && to.path != '/') {
+
+    if (!store.getters["isLogin"]) {
+      next(false);
+      router.push("/Vuex");
+    } else {
+      next(true);
+    }
+  }else{
+  console.log(2);
+    next(true);
+  }
 })
-
-
 export default router

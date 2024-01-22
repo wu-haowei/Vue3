@@ -39,6 +39,8 @@ const add = () => {
         <RouterLink to="/inputbar">驗證碼</RouterLink>
         <RouterLink to="/validate">表單驗證</RouterLink>
         <RouterLink to="/Router">路由守衛</RouterLink>
+        <RouterLink to="/Vuex">Vuex</RouterLink>
+
 
         <button @click="add">Count is: {{ count }}</button>
       </nav>
