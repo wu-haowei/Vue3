@@ -2,7 +2,7 @@
   <div>
     <canvas ref="canvas" width="600" height="300"></canvas>
     <button @click="clear">清除</button>
-    <button id="convertToImage">轉圖</button>
+    <button @click="convertToImage">轉圖</button>
     <div id="image">
       <img :src="img">
     </div>
@@ -16,12 +16,10 @@ const canvas = ref(null);
 const ctx = ref(null);
 
 onMounted(() => {
-// console.log(this.$refs.canvas);
-// console.log(divRef.value)
   ctx.value = canvas.value.getContext('2d');
-
   let width = canvas.value.width,
     height = canvas.value.height;
+
   if (window.devicePixelRatio) {
     canvas.value.style.width = width + "px";
     canvas.value.style.height = height + "px";
@@ -29,7 +27,6 @@ onMounted(() => {
     canvas.value.width = width * window.devicePixelRatio;
     ctx.value.scale(window.devicePixelRatio, window.devicePixelRatio);
   }
-
 
   canvas.value.addEventListener('mousedown', function (evt) {
     var mousePos = getMousePos(canvas.value, evt);
@@ -43,11 +40,7 @@ onMounted(() => {
     canvas.value.removeEventListener('mousemove', mouseMove, false);
   }, false);
 
-
-
   canvas.value.addEventListener('touchstart', function (evt) {
-    // console.log('touchstart')
-    // console.log(evt)
     var touchPos = getTouchPos(canvas, evt);
     ctx.value.beginPath(touchPos.x, touchPos.y);
     ctx.value.moveTo(touchPos.x, touchPos.y);
@@ -56,23 +49,19 @@ onMounted(() => {
   });
 
   canvas.value.addEventListener('touchend', function () {
-    // console.log("touchend")
     canvas.value.removeEventListener('touchmove', touchMove, false);
   }, false);
-
-  // convertToImage
-  document.getElementById('convertToImage').addEventListener('click', function () {
-    console.log("convertToImage")
-    var image = canvas.value.toDataURL("image/png");
-    // $('#image').html("<img src='" + image + "' alt='from canvas'/>");
-    img.value = image;
-  }, false);
 })
-const clear = ()=>{
-
+//清除
+const clear = () => {
   ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
-  img.value='';
-  }
+  img.value = '';
+}
+//轉圖
+const convertToImage = () => {
+  var image = canvas.value.toDataURL("image/png");
+  img.value = image;
+}
 
 const getMousePos = (canvas, evt) => {
   var rect = canvas.getBoundingClientRect();
@@ -92,9 +81,7 @@ const getTouchPos = (canvas, evt) => {
 }
 
 const touchMove = (evt) => {
-  // console.log("touchmove")
   var touchPos = getTouchPos(canvas.value, evt);
-  // console.log(touchPos.x, touchPos.y)
 
   ctx.value.lineWidth = 2;
   ctx.value.lineCap = "round"; // 繪制圓形的結束線帽
@@ -110,16 +97,11 @@ const mouseMove = (evt) => {
   ctx.value.lineCap = "round";
   ctx.value.lineWidth = 2;
   ctx.value.lineJoin = "round";
-  ctx.value.shadowBlur = 1; // 邊緣模糊，防止直線邊緣出現鋸齒 
-  ctx.value.shadowColor = 'black';// 邊緣顏色
+  ctx.value.shadowBlur = 1;
+  ctx.value.shadowColor = 'black';
   ctx.value.lineTo(mousePos.x, mousePos.y);
   ctx.value.stroke();
 }
-
-
-
-
-
 
 </script>
 
