@@ -17,7 +17,10 @@
     "pinia": "^2.1.7",
     "vee-validate": "^4.12.3",
     "vue": "^3.3.11",
+    "vue-carousel-3d": "^1.0.1",
+    "vue-draggable-next": "^2.2.1",
     "vue-router": "^4.2.5",
+    "vuedraggable": "^2.24.3",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
@@ -26,6 +29,7 @@
     "eslint": "^8.49.0",
     "eslint-plugin-vue": "^9.17.0",
     "jsdom": "^23.0.1",
+    "sass": "^1.70.0",
     "vite": "^5.0.10",
     "vitest": "^1.0.4"
   }

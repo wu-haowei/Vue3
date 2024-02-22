@@ -78,6 +78,30 @@ const router = createRouter({
       //   next();
       // }
     }
+    ,
+    {
+      path: '/draggable',
+      name: 'draggable',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/draggable.vue'),
+      // beforeEnter: (to, from, next) => {
+      //   next();
+      // }
+    }
+    ,
+    {
+      path: '/Canvas',
+      name: 'Canvas',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Canvas.vue'),
+      // beforeEnter: (to, from, next) => {
+      //   next();
+      // }
+    }
   ]
 })
 
@@ -101,4 +125,5 @@ router.beforeEach((to, from, next) => {
     next(true);
   }
 })
+
 export default router

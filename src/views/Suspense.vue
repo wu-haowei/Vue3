@@ -1,6 +1,7 @@
 <script setup>
 import axios from "axios";
 import Dashboard from "../components/Dashboard.vue";
+import Loading from "../components/Loading.vue";
 
 
 
@@ -10,12 +11,11 @@ import Dashboard from "../components/Dashboard.vue";
 <template>
   <Suspense>
     <template #fallback>
-      Loading...
+      <Loading />
     </template>
     <template #default>
       <Dashboard :time="2000" />
     </template>
-  
   </Suspense>
 </template>
   

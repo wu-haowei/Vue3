@@ -17,17 +17,13 @@ const add = () => {
     })
     .catch((error) => console.log(error));
 };
+
+
 </script>
 
 <template>
   <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="@/assets/logo.svg"
-      width="125"
-      height="125"
-    />
+    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
@@ -41,7 +37,8 @@ const add = () => {
         <RouterLink to="/Router">路由守衛</RouterLink>
         <RouterLink to="/Vuex">Vuex</RouterLink>
         <RouterLink to="/Suspense">Suspense</RouterLink>
-
+        <RouterLink to="/draggable">draggable</RouterLink>
+        <RouterLink to="/Canvas">簽名檔</RouterLink>
 
         <button @click="add">Count is: {{ count }}</button>
       </nav>
