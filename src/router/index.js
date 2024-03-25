@@ -101,6 +101,17 @@ const router = createRouter({
       // beforeEnter: (to, from, next) => {
       //   next();
       // }
+    },
+    {
+      path: '/Notion',
+      name: 'Notion',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/Notion.vue'),
+      // beforeEnter: (to, from, next) => {
+      //   next();
+      // }
     }
   ]
 })
@@ -108,22 +119,22 @@ const router = createRouter({
 //to:進入
 //from:來源
 //next:是否允許
-router.beforeEach((to, from, next) => {
-  console.log(store.getters["isLogin"]);
-  // console.log(from);
-  console.log(to.path);
-  if (to.path != '/Vuex' && to.path != '/') {
+// router.beforeEach((to, from, next) => {
+//   console.log(store.getters["isLogin"]);
+//   // console.log(from);
+//   console.log(to.path);
+//   if (to.path != '/Vuex' && to.path != '/') {
 
-    if (!store.getters["isLogin"]) {
-      next(false);
-      router.push("/Vuex");
-    } else {
-      next(true);
-    }
-  }else{
-  console.log(2);
-    next(true);
-  }
-})
+//     if (!store.getters["isLogin"]) {
+//       next(false);
+//       router.push("/Vuex");
+//     } else {
+//       next(true);
+//     }
+//   }else{
+//   console.log(2);
+//     next(true);
+//   }
+// })
 
 export default router

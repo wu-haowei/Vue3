@@ -4,7 +4,26 @@ import HelloWorld from "./components/HelloWorld.vue";
 import axios from "axios";
 import { ref } from "vue";
 
+
+
+
+
+
 const count = ref(0);
+
+
+// const add = () => {
+//   count.value = ++count.value;
+//   axios
+//     .get("api/v1/opendata/t187ap05_P")
+//     .then((response) => {
+//       if (response.status == 200) {
+//         console.log(response);
+//       }
+//     })
+//     .catch((error) => console.log(error));
+// };
+
 
 const add = () => {
   count.value = ++count.value;
@@ -17,7 +36,6 @@ const add = () => {
     })
     .catch((error) => console.log(error));
 };
-
 
 </script>
 
@@ -39,6 +57,8 @@ const add = () => {
         <RouterLink to="/Suspense">Suspense</RouterLink>
         <RouterLink to="/draggable">draggable</RouterLink>
         <RouterLink to="/Canvas">簽名檔</RouterLink>
+        <RouterLink to="/Notion">Notion</RouterLink>
+
 
         <button @click="add">Count is: {{ count }}</button>
       </nav>
