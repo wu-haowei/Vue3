@@ -8,7 +8,8 @@ import App from './App.vue'
 import router from './router'
 
 import VeeValidatePlugin from '@/plugins/VeeValidatePlugin'
-
+//引入 Web Component
+import {} from './main.ce.js'
 
 const app = createApp(App)
 // app.use(createPinia())
