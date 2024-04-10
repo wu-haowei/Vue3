@@ -12,6 +12,10 @@ const router = createRouter({
       component: HomeView
     },
     {
+      path: '/:filter',
+      component: () => import('../views/ToDoList.vue'),
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting
@@ -80,18 +84,6 @@ const router = createRouter({
     }
     ,
     {
-      path: '/draggable',
-      name: 'draggable',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/draggable.vue'),
-      // beforeEnter: (to, from, next) => {
-      //   next();
-      // }
-    }
-    ,
-    {
       path: '/Canvas',
       name: 'Canvas',
       // route level code-splitting
@@ -112,6 +104,14 @@ const router = createRouter({
       // beforeEnter: (to, from, next) => {
       //   next();
       // }
+    },
+    {
+      path: '/ToDoList',
+      name: 'ToDoList',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/ToDoList.vue')
     }
   ]
 })

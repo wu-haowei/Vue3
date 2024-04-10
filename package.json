@@ -11,9 +11,12 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@notionhq/client": "^2.2.14",
     "@vee-validate/i18n": "^4.12.3",
     "@vee-validate/rules": "^4.12.3",
     "axios": "^1.6.2",
+    "ionicons": "^7.2.2",
+    "jsonwebtoken": "^8.5.1",
     "pinia": "^2.1.7",
     "vee-validate": "^4.12.3",
     "vue": "^3.3.11",
@@ -21,15 +24,18 @@
     "vue-draggable-next": "^2.2.1",
     "vue-router": "^4.2.5",
     "vuedraggable": "^2.24.3",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "winston": "^3.12.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.2",
     "@vue/test-utils": "^2.4.3",
     "eslint": "^8.49.0",
     "eslint-plugin-vue": "^9.17.0",
+    "events": "^3.3.0",
     "jsdom": "^23.0.1",
     "sass": "^1.70.0",
+    "util": "^0.12.4",
     "vite": "^5.0.10",
     "vitest": "^1.0.4"
   }
