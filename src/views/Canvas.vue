@@ -81,7 +81,7 @@ const getTouchPos = (canvas, evt) => {
 }
 
 const touchMove = (evt) => {
-  var touchPos = getTouchPos(canvas.value, evt);
+  var touchPos = getTouchPos(canvas, evt);
 
   ctx.value.lineWidth = 2;
   ctx.value.lineCap = "round"; // 繪制圓形的結束線帽
