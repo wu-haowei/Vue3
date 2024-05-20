@@ -21,7 +21,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      component: () => import('../views/KeepAlive.vue')
     },
     {
       path: '/twse',
@@ -112,6 +112,25 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/ToDoList.vue')
+    },
+    {
+      path: '/KeepAlive',
+      name: 'KeepAlive',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/KeepAlive.vue'),
+      meta: {
+        keepAlive: false 
+      }
+    },
+    {
+      path: '/KeepAliveNot',
+      name: 'KeepAliveNot',
+      component: () => import('../views/KeepAliveNot.vue'),
+      meta: {
+        keepAlive: false 
+      }
     }
   ]
 })

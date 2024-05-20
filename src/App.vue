@@ -1,10 +1,10 @@
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
+import { RouterLink, RouterView, useRoute } from "vue-router";
 import HelloWorld from "./components/HelloWorld.vue";
 import axios from "axios";
 import { ref } from "vue";
 
-
+const route = useRoute();
 
 
 
@@ -41,11 +41,10 @@ const add = () => {
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
+      <!-- <HelloWorld msg="You did it!" /> -->
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
@@ -58,15 +57,22 @@ const add = () => {
         <RouterLink to="/Canvas">簽名檔</RouterLink>
         <RouterLink to="/Notion">Notion</RouterLink>
         <RouterLink to="/ToDoList">ToDoList</RouterLink>
-
-
+        <!-- https://cn.vuejs.org/guide/built-ins/keep-alive.html -->
+        <RouterLink to="/KeepAlive">KeepAlive</RouterLink>
+        <RouterLink to="/KeepAliveNot">KeepAliveNot</RouterLink>
         <button @click="add">Count is: {{ count }}</button>
       </nav>
 
     </div>
   </header>
 
-  <RouterView />
+  <RouterView v-slot="{ Component }">
+    <KeepAlive  :exclude="['KeepAliveNot']">
+      <component :is="Component" />
+    </KeepAlive>
+  </RouterView>
+
+  <!-- <RouterView /> -->
 </template>
 
 <style scoped>
@@ -131,6 +137,4 @@ nav a:first-of-type {
     margin-top: 1rem;
   }
 }
-
-
 </style>
