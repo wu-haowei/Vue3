@@ -131,6 +131,14 @@ const router = createRouter({
       meta: {
         keepAlive: false 
       }
+    },
+    {
+      path: '/ModelModifires',
+      name: 'ModelModifires',
+      component: () => import('../views/ModelModifires.vue'),
+      meta: {
+        keepAlive: false 
+      }
     }
   ]
 })
