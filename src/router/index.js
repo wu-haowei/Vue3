@@ -121,7 +121,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/KeepAlive.vue'),
       meta: {
-        keepAlive: false 
+        keepAlive: false
       }
     },
     {
@@ -129,7 +129,7 @@ const router = createRouter({
       name: 'KeepAliveNot',
       component: () => import('../views/KeepAliveNot.vue'),
       meta: {
-        keepAlive: false 
+        keepAlive: false
       }
     },
     {
@@ -137,7 +137,32 @@ const router = createRouter({
       name: 'ModelModifires',
       component: () => import('../views/ModelModifires.vue'),
       meta: {
-        keepAlive: false 
+        keepAlive: false
+      }
+    },
+    {
+      path: '/Slot',
+      name: 'Slot',
+      component: () => import('../views/SlotView.vue'),
+      meta: {
+        keepAlive: false
+      }
+    },
+    {
+      path: '/SlotFancyList',
+      name: 'SlotFancyList',
+      component: () => import('../views/SlotFancyListView.vue'),
+      meta: {
+        keepAlive: false
+      }
+    }
+    ,
+    {
+      path: '/Inject',
+      name: 'Inject',
+      component: () => import('../views/InjectView.vue'),
+      meta: {
+        keepAlive: false
       }
     }
   ]

@@ -60,6 +60,10 @@ const add = () => {
         <!-- https://cn.vuejs.org/guide/built-ins/keep-alive.html -->
         <RouterLink to="/KeepAlive">KeepAlive</RouterLink>
         <RouterLink to="/KeepAliveNot">KeepAliveNot</RouterLink>
+        <RouterLink to="/ModelModifires">製訂 v-model 修飾符</RouterLink>
+        <RouterLink to="/Slot">slot</RouterLink>
+        <RouterLink to="/SlotFancyList">SlotFancyList</RouterLink>
+        <RouterLink to="/Inject">Inject</RouterLink>
         <button @click="add">Count is: {{ count }}</button>
       </nav>
 
@@ -67,7 +71,7 @@ const add = () => {
   </header>
 
   <RouterView v-slot="{ Component }">
-    <KeepAlive  :exclude="['KeepAliveNot']">
+    <KeepAlive    :exclude="['KeepAliveNot']">
       <component :is="Component" />
     </KeepAlive>
   </RouterView>
