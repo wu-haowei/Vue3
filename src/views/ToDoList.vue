@@ -100,7 +100,7 @@ watch(route, (newVal) => {
   </section>
 </template>
 
-<style>
+<style scoped>
 @import '@/assets/index.css';
 
 .filters li a.router-link-exact-active {

@@ -2,8 +2,38 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import store from "@/stores/stores";
 
+function removeQueryParams(to) {
+  if (Object.keys(to.query).length)
+    return { path: to.path, query: {}, hash: to.hash }
+}
+
+function removeHash(to) {
+  if (to.hash) return { path: to.path, query: to.query, hash: '' }
+}
+
 
 const router = createRouter({
+  scrollBehavior(to, from, savedPosition) {
+    console.log(to);
+
+    //瀏覽器上一頁
+    if (savedPosition) {
+      return savedPosition
+    }
+    else if (to.hash) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve({
+            el: to.hash,
+            behavior: 'smooth',//滾動行為
+          })
+        }, 500)
+      })
+    }
+    else {
+      return { top: 20 }
+    }
+  },
   history: createWebHistory(import.meta.env.BASE_URL),//形式
   routes: [
     {
@@ -16,20 +46,25 @@ const router = createRouter({
       component: () => import('../views/ToDoList.vue'),
     },
     {
-      path: '/about',
+      path: '/about/:id',
       name: 'about',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/KeepAlive.vue')
+      component: () => import('../views/KeepAlive.vue'),
+      meta: { transition: 'fade',mode:'out-in' },
+      props: true
+
     },
     {
       path: '/twse',
       name: 'twse',
+      hash: 'start',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/TwseView.vue')
+      component: () => import('../views/TwseView.vue'),
+      meta: { transition: 'moveUp' ,mode:''},
     },
     {
       path: '/inputbar',
@@ -42,17 +77,11 @@ const router = createRouter({
     {
       path: '/validate',
       name: 'validate',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/Validate.vue'),
     },
     {
       path: '/Router',
       name: 'Router',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/Router.vue'),
       // beforeEnter: (to, from, next) => {
       //   next();
@@ -62,63 +91,33 @@ const router = createRouter({
     {
       path: '/Vuex',
       name: 'Vuex',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/Vuex.vue'),
-      // beforeEnter: (to, from, next) => {
-      //   next();
-      // }
     }
     ,
     {
       path: '/Suspense',
       name: 'Suspense',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/Suspense.vue'),
-      // beforeEnter: (to, from, next) => {
-      //   next();
-      // }
-    }
-    ,
+
+    },
     {
       path: '/Canvas',
       name: 'Canvas',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/Canvas.vue'),
-      // beforeEnter: (to, from, next) => {
-      //   next();
-      // }
     },
     {
       path: '/Notion',
       name: 'Notion',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/Notion.vue'),
-      // beforeEnter: (to, from, next) => {
-      //   next();
-      // }
     },
     {
       path: '/ToDoList',
       name: 'ToDoList',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/ToDoList.vue')
     },
     {
       path: '/KeepAlive',
       name: 'KeepAlive',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/KeepAlive.vue'),
       meta: {
         keepAlive: false
@@ -171,20 +170,36 @@ const router = createRouter({
 //to:進入
 //from:來源
 //next:是否允許
-// router.beforeEach((to, from, next) => {
+
+router.beforeEach(async (to, from, next) => {
+  console.log(store.getters["isLogin"]);
+  // console.log(from);
+  console.log(to.path);
+  if (to.path != '/Vuex' && to.path != '/') {
+    if (!store.getters["isLogin"]) {
+      // return { name: 'Vuex' }
+      next({ name: 'Vuex' })
+      // next(false);
+    } else {
+      next(true);
+    }
+  } else {
+    console.log(2);
+    next(true);
+  }
+})
+// router.beforeEach(async (to, from) => {
 //   console.log(store.getters["isLogin"]);
 //   // console.log(from);
 //   console.log(to.path);
 //   if (to.path != '/Vuex' && to.path != '/') {
-
 //     if (!store.getters["isLogin"]) {
-//       next(false);
-//       router.push("/Vuex");
+//       return { name: 'Vuex' }
 //     } else {
 //       next(true);
 //     }
-//   }else{
-//   console.log(2);
+//   } else {
+//     console.log(2);
 //     next(true);
 //   }
 // })

@@ -47,12 +47,12 @@ const add = () => {
       <!-- <HelloWorld msg="You did it!" /> -->
       <nav>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/twse">twse</RouterLink>
+        <RouterLink to="/about/123">About</RouterLink>
+        <RouterLink to="/twse#start">twse</RouterLink>
         <RouterLink to="/inputbar">驗證碼</RouterLink>
         <RouterLink to="/validate">表單驗證</RouterLink>
         <RouterLink to="/Router">路由守衛</RouterLink>
-        <RouterLink to="/Vuex">Vuex</RouterLink>
+        <RouterLink to="/Vuex">Vuex(登入口)</RouterLink>
         <RouterLink to="/Suspense">Suspense</RouterLink>
         <RouterLink to="/Canvas">簽名檔</RouterLink>
         <RouterLink to="/Notion">Notion</RouterLink>
@@ -71,15 +71,83 @@ const add = () => {
   </header>
 
   <RouterView v-slot="{ Component }">
-    <KeepAlive    :exclude="['KeepAliveNot']">
-      <component :is="Component" />
-    </KeepAlive>
+    <!--使用Transition  component template內只能有一層 -->
+    <Transition :name="route.meta.transition || 'slide'" :mode="route.meta.mode || 'out-in'">
+      <KeepAlive :exclude="['KeepAliveNot']">
+        <component :is="Component" :key="$route.path">
+        </component>
+      </KeepAlive>
+    </Transition>
   </RouterView>
 
   <!-- <RouterView /> -->
 </template>
 
-<style scoped>
+<style>
+/* 左側插入 */
+.slide-enter-active,
+.slide-leave-active {
+  transition: opacity 1s, transform 1s;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  opacity: 0;
+  transform: translateX(30%);
+}
+
+/* 左側插入 */
+
+
+.moveUp-enter-active {
+  animation: fadIn 1s ease-in;
+}
+
+@keyframes fadIn {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+  }
+
+}
+
+.moveUp-leave-active {
+  animation: moveUp 0.3s ease-in;
+
+}
+
+@keyframes moveUp {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-400px);
+  }
+
+}
+
+
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+
+
 header {
   line-height: 1.5;
   max-height: 100vh;

@@ -8,28 +8,14 @@
       <img :src="imgref">
     </div> -->
 
-    <!-- <input v-model="obj.count" />
-    obj.count {{ obj.count }}
-    obj.count1 {{ obj.count1 }}
-
-    <input v-model="arr.arr1" />
-    arr.arr1 {{ arr.arr1 }}
-    arr.arr2 {{ arr.arr2 }} -->
-
     <div>
-    <p>Count: {{ count }}</p>
-    <button @click="increment">Increment</button>
-  </div>
+      <p>Count: {{ count }}</p>
+      <button @click="increment">Increment</button>
+    </div>
   </div>
 </template>
 <script setup>
-import { ref, provide, reactive, watch, watchEffect,nextTick } from 'vue';
-
-// import Logger from "../lib/logger";
-// Logger.error("This is an error log");
-
-// import signatureFileCanvasElement from "../components/identify.vue";
-
+import { ref, provide, reactive, watch, watchEffect, nextTick, computed } from 'vue';
 
 const imgref = ref('');
 const outSideSaveNum = ref(0);
@@ -40,41 +26,11 @@ const obj = reactive({ count: '0', count1: '0' });
 const arr = reactive({ arr1: '0', arr2: '0' });
 
 
-// watch(obj, (newVaule, oldVaule) => {
-//   console.log('watch', newVaule, oldVaule);
-// },
-//  { immediate: true }//初始化 呼叫
-// )
-
-
-// watch(
-//   () => obj.count,
-//   () => {
-//     console.log('obj.count');
-//   }
-// )
-
-
-// watch(obj, (newVaule, oldVaule) => {
-//   console.log('watch', newVaule, oldVaule);
-// },
-//  { immediate: true }//初始化 呼叫
-// )
-
-
-
-
-
 const count = ref(0);
 
-// watch(count, () => {
-//   nextTick(() => {
-//     console.log('Count 已更新');
-//   });
-// }, { flush: 'post' });
 
 watch(count, () => {
-    console.log(`Count 更新前${count.value}`);
+  console.log(`Count 更新前${count.value}`);
 }, { flush: 'pre' });
 
 const increment = () => {
@@ -93,18 +49,12 @@ const increment = () => {
 
 // })
 
-
-
-
-
-
-
 const sendMessage = (e) => {
   outSideSaveNum.value++;
 };
 </script>
 
-<style>
+<style scoped>
 @media (min-width: 1024px) {
   .about {
     min-height: 100vh;

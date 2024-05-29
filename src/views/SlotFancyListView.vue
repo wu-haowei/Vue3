@@ -1,20 +1,31 @@
 <template>
-
   <div class="about">
-    <FancyList api-url="url" :per-page="10">
-      <template #item="{ body, username, likes }">
-        <div class="item">
-          <p>{{ body }}</p>
-          <p class="meta">by {{ username }} | {{ likes }} likes</p>
-        </div>
-      </template>
-    </FancyList>
+    <div>
+      <button @click="increment">Increment</button>
+
+      <FancyButton v-slot="slotProps"><strong>Click</strong> me {{ slotProps.text }}</FancyButton>
+      <SignedSlot>
+        <template v-slot:header="{ text }">
+          <h1>Here might be a page title {{ text }}</h1>
+        </template>
+
+        <template #default="slotProps">
+          <p>A paragraph for the main content.{{ slotProps }}</p>
+          <p>And another one.</p>
+        </template>
+
+        <template #footer>
+          <p>Here's some contact info</p>
+        </template>
+      </SignedSlot>
+
+    </div>
   </div>
 </template>
 <script setup>
-import { ref, provide, reactive, watch, watchEffect, nextTick,onMounted } from 'vue';
-import FancyList from '@/components/slots/FancyList.vue';
-
+import { ref, provide, reactive, watch, watchEffect, nextTick } from 'vue';
+import FancyButton from '@/components/slots/FancyButton.vue';
+import SignedSlot from '@/components/slots/SignedSlots.vue'
 
 </script>
 
@@ -25,10 +36,5 @@ import FancyList from '@/components/slots/FancyList.vue';
     display: flex;
     align-items: center;
   }
-}
-
-.meta {
-  font-size: 0.8em;
-  color: #42b883;
 }
 </style>

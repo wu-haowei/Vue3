@@ -1,5 +1,4 @@
 <template>
-
   <div class="about">
     <div>
       <button @click="increment">Increment</button>
@@ -30,7 +29,7 @@ import SignedSlot from '@/components/slots/SignedSlots.vue'
 
 </script>
 
-<style>
+<style scoped>
 @media (min-width: 1024px) {
   .about {
     min-height: 100vh;

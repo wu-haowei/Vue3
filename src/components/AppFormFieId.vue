@@ -2,14 +2,8 @@
   <div class="form-group">
     <label :for="props.name">{{ props.lable }}</label>
 
-    <VField
-      :name="props.name"
-      :lable="props.lable"
-      @input="$emit('modelUpdate',$event)"
-      :id="props.name"
-      class=""
-      v-bind="$attrs"
-    />
+    <VField :name="props.name" :lable="props.lable" :placeholder="props.placeholder"
+      @input="$emit('modelUpdate', $event)" :id="props.name" class="" v-bind="$attrs" />
     <ErrorMessage :name="props.name" class="" />
   </div>
 </template>
@@ -19,7 +13,8 @@
 const props = defineProps({
   name: { type: String, required: true },
   lable: { type: String, required: true },
-  modelValue: { type: String, default: '' }
+  modelValue: { type: String, default: '' },
+  placeholder: { type: String, required: false },
 });
 </script>
 <!-- :modelValue="props.modelValue" -->

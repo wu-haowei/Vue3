@@ -18,9 +18,9 @@ const asyncIncrement = () => {
 }
 const logIn = (data) => {
 
-  console.log( data);
+  console.log(data);
 
-  
+
   store.dispatch("logIn", {
     token: getGUID(),
     account: data["Account"],
@@ -30,7 +30,7 @@ const logIn = (data) => {
 
 const test = (value) => {
   logIn(value);
-  formRef.value.resetForm();
+  formRef1.value.resetForm();
 };
 
 const getGUID = () => {
@@ -52,7 +52,7 @@ watch(isConfirmed, (val, oldVal) => {
   console.log(val);
 })
 
-const formRef = ref(null);
+const formRef1 = ref(null);
 </script>
 
 <template>
@@ -60,18 +60,17 @@ const formRef = ref(null);
     <p>Count: {{ store.state.count }}</p>
     <button @click="increment">Increment</button>
     <button @click="asyncIncrement">Async Increment</button>
-      <VForm ref="formRef" v-slot="{ errors, meta, resetForm }" @submit="test">
-      <AppFormFieId name="Account" lable="Account" rules="required"></AppFormFieId>
-      <AppFormFieId name="Name" lable="Name" rules="required"></AppFormFieId>
+    <VForm ref="formRef1" v-slot="{ errors, meta, resetForm }" @submit="test">
+      <AppFormFieId name="Account" lable="Account" rules="required" placeholder="任意輸入"></AppFormFieId>
+      <AppFormFieId name="Name" lable="Name" rules="required" placeholder="任意輸入"></AppFormFieId>
       <ErrorMessage name="password" />
-
-      <button  type="submit">登入</button>
+      <button type="submit">登入</button>
     </VForm>
 
   </div>
 </template>
-  
-<style>
+
+<style scoped>
 @media (min-width: 1024px) {
   .about {
     min-height: 100vh;
@@ -80,4 +79,3 @@ const formRef = ref(null);
   }
 }
 </style>
-  
