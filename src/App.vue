@@ -47,7 +47,7 @@ const add = () => {
       <!-- <HelloWorld msg="You did it!" /> -->
       <nav>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about/123">About</RouterLink>
+        <RouterLink to="/about">About</RouterLink>
         <RouterLink to="/twse#start">twse</RouterLink>
         <RouterLink to="/inputbar">驗證碼</RouterLink>
         <RouterLink to="/validate">表單驗證</RouterLink>

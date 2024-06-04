@@ -1,10 +1,13 @@
 <template>
   <div>
-    <canvas ref="canvas" width="500" height="250"></canvas>
-    <div style="display: flex;width:500px;">
-      <button @click="convertToImage" class="green-button" style="margin-right: 0.1em;">{{ props.save
+    <canvas ref="canvas" :style="{ backgroundColor: canvasColor }"></canvas>
+    <div :style="{ display: 'flex', width: canvasWidth + 'px' }">
+      <button @click="convertToImage" :class="{ greenButton: true }"
+        :style="{ marginRight: '0.1em', backgroundColor: imageButtonColor }">{{ props.save
         }}</button>
-      <button @click="clear" class="red-button" style="margin-left: 0.1em;">{{ props.clear }}</button>
+      <button @click="clear" :class="{ redButton: true }"
+        :style="{ marginLeft: '0.1em', backgroundColor: clearButtonColor }">{{
+          props.clear }}</button>
     </div>
     <!-- <div id="image">
       <img :src="img">
@@ -12,7 +15,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted, defineProps, inject, watch } from "vue";
+import { ref, onMounted, defineProps, inject, watch, computed } from "vue";
 
 
 const props = defineProps({
@@ -30,33 +33,88 @@ const props = defineProps({
     type: Number,
     default: 0,
     required: false
-  }
+  },
+  canvasWidth: {
+    type: Number,
+    default: 500,
+    required: false
+  },
+  canvasHeight: {
+    type: Number,
+    default: 250,
+    required: false
+  },
+  imageButtonColor: {
+    type: String,
+    default: "#4CAF50",
+    required: false
+  },
+  clearButtonColor: {
+    type: String,
+    default: '#FF5733',
+    required: false
+  },
+  canvasColor: {
+    type: String,
+    default: "bisque",
+    required: false
+  },
 })
 
-// watch(
-//   () => props.saveUp,
-//   (count, prevCount) => {
-//     // console.log('person 改變了', count, prevCount)
-//     convertToImage();
-//   }
-// )
 
 const img = ref(null);
 const canvas = ref(null);
 const ctx = ref(null);
 
-onMounted(() => {
-  ctx.value = canvas.value.getContext('2d');
-  let width = canvas.value.width,
-    height = canvas.value.height;
 
+const getCanvasWidth = computed({
+  get() {
+    return props.canvasWidth;
+  }
+})
+const getCanvasHeight = computed({
+  get() {
+    return props.canvasHeight;
+  }
+})
+
+//初始化
+const canvasMounted = () => {
   if (window.devicePixelRatio) {
-    canvas.value.style.width = width + "px";
-    canvas.value.style.height = height + "px";
-    canvas.value.height = height * window.devicePixelRatio;
-    canvas.value.width = width * window.devicePixelRatio;
+    canvas.value.style.width = getCanvasWidth.value + "px";
+    canvas.value.style.height = getCanvasHeight.value + "px";
+    canvas.value.width = getCanvasWidth.value * window.devicePixelRatio;
+    canvas.value.height = getCanvasHeight.value * window.devicePixelRatio;
     ctx.value.scale(window.devicePixelRatio, window.devicePixelRatio);
   }
+}
+//改變寬高度
+watch(
+  () => props.canvasWidth,
+  () => {
+    canvasMounted();
+  }
+);
+watch(
+  () => props.canvasHeight,
+  () => {
+    canvasMounted();
+  }
+);
+
+onMounted(() => {
+  ctx.value = canvas.value.getContext('2d');
+  // let width = props.canvasWidth,
+  //   height = props.canvasHeight;
+
+  // if (window.devicePixelRatio) {
+  //   canvas.value.style.width = props.canvasWidth + "px";
+  //   canvas.value.style.height = props.canvasHeight + "px";
+  //   canvas.value.width = props.canvasWidth * window.devicePixelRatio;
+  //   canvas.value.height = height * window.devicePixelRatio;
+  //   ctx.value.scale(window.devicePixelRatio, window.devicePixelRatio);
+  // }
+  canvasMounted();
 
   canvas.value.addEventListener('mousedown', function (evt) {
     var mousePos = getMousePos(canvas.value, evt);
@@ -82,6 +140,8 @@ onMounted(() => {
     canvas.value.removeEventListener('touchmove', touchMove, false);
   }, false);
 })
+
+
 //清除
 const clear = () => {
   ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
@@ -92,7 +152,7 @@ const imageEmit = defineEmits(['update-image']);
 const convertToImage = () => {
   var image = canvas.value.toDataURL("image/png");
   // img.value = image;
-  console.log(image);
+  // console.log(image);
   imageEmit('update-image', image);
 }
 
@@ -141,21 +201,21 @@ const mouseMove = (evt) => {
 
 
 <style>
-@media (min-width: 1024px) {
+/* @media (min-width: 1024px) {
   .about {
     min-height: 100vh;
     display: flex;
     align-items: center;
   }
-}
+} */
 
 canvas {
   background: #eee;
 }
 
-
-
 .red-button,
+.redButton,
+.greenButton,
 .green-button {
   flex: 1;
   border: none;
@@ -167,18 +227,10 @@ canvas {
   font-weight: bold;
 }
 
-.red-button {
-  background-color: #FF5733;
-  /* Red color */
-}
-
-.green-button {
-  background-color: #4CAF50;
-  /* Green color */
-}
-
 .red-button:hover,
-.green-button:hover {
+.green-button:hover,
+.redButton:hover,
+.greenButton:hover {
   opacity: 0.8;
   /* Reduce opacity on hover for visual feedback */
 }
