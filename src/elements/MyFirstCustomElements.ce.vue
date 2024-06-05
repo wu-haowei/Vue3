@@ -2,10 +2,10 @@
   <div>
     <canvas ref="canvas" :style="{ backgroundColor: canvasColor }"></canvas>
     <div :style="{ display: 'flex', width: canvasWidth + 'px' }">
-      <button @click="convertToImage" :class="{ greenButton: true }"
+      <button v-if="getIsConvertToImage" @click="convertToImage" :class="{ greenButton: true }"
         :style="{ marginRight: '0.1em', backgroundColor: imageButtonColor }">{{ props.save
         }}</button>
-      <button @click="clear" :class="{ redButton: true }"
+      <button v-if="getIsClear" @click="clear" :class="{ redButton: true }"
         :style="{ marginLeft: '0.1em', backgroundColor: clearButtonColor }">{{
           props.clear }}</button>
     </div>
@@ -15,7 +15,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted, defineProps, inject, watch, computed } from "vue";
+import { ref, onMounted, defineProps, inject, watch, computed, defineExpose } from "vue";
 
 
 const props = defineProps({
@@ -27,6 +27,16 @@ const props = defineProps({
   clear: {
     type: String,
     default: '清除',
+    required: false
+  },
+  isClear: {
+    type: String,
+    default: "true",
+    required: false
+  },
+  isConvertToImage: {
+    type: String,
+    default: "true",
     required: false
   },
   outSideSave: {
@@ -77,7 +87,16 @@ const getCanvasHeight = computed({
     return props.canvasHeight;
   }
 })
-
+const getIsClear = computed({
+  get() {
+    return props.isClear?.toString().toLowerCase() == "false" ? false : true;
+  }
+})
+const getIsConvertToImage = computed({
+  get() {
+    return props.isConvertToImage?.toString().toLowerCase() == "false" ? false : true;
+  }
+})
 //初始化
 const canvasMounted = () => {
   if (window.devicePixelRatio) {
@@ -156,6 +175,9 @@ const convertToImage = () => {
   imageEmit('update-image', image);
 }
 
+
+
+
 const getMousePos = (canvas, evt) => {
   var rect = canvas.getBoundingClientRect();
   return {
@@ -195,6 +217,11 @@ const mouseMove = (evt) => {
   ctx.value.lineTo(mousePos.x, mousePos.y);
   ctx.value.stroke();
 }
+
+defineExpose({
+  clear,
+  convertToImage
+})
 
 </script>
 
