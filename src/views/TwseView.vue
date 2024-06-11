@@ -26,7 +26,7 @@ onMounted(() => {
 <template>
   <div class="twse">
     <h1>This is an about page</h1>
-    <div style="overflow: auto; height: 40vh;">
+    <div >
       <p> Dolor enim velit vero sit duis no magna tempor ut nonumy ipsum. Amet sea et gubergren justo eros ipsum
         lobortis
         stet ea sadipscing ipsum at elitr diam accumsan elitr. Ad sit rebum sit. Hendrerit consequat et at amet. No sed

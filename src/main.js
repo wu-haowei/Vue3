@@ -9,10 +9,12 @@ import App from './App.vue'
 import router from './router'
 
 import VeeValidatePlugin from '@/plugins/VeeValidatePlugin'
+// import { useRegisterSW } from 'virtual:pwa-register/vue';
 //引入 Web Component
-import {} from './main.ce.js'
+// import {} from './main.ce.js'
 
 const app = createApp(App)
+// useRegisterSW();
 // app.use(createPinia())
 app.use(VeeValidatePlugin)
 app.use(createPinia())

@@ -52,7 +52,7 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
-      meta: { transition: 'fade',mode:'out-in' },
+      meta: { transition: 'fade', mode: 'out-in' },
       props: true
 
     },
@@ -64,7 +64,7 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/TwseView.vue'),
-      meta: { transition: 'moveUp' ,mode:''},
+      meta: { transition: 'moveUp', mode: '' },
     },
     {
       path: '/inputbar',
@@ -167,14 +167,17 @@ const router = createRouter({
   ]
 })
 
+//(一)
 //to:進入
 //from:來源
 //next:是否允許
 
 router.beforeEach(async (to, from, next) => {
-  console.log(store.getters["isLogin"]);
+  // console.log('beforeEach');
+
+  // console.log(store.getters["isLogin"]);
   // console.log(from);
-  console.log(to.path);
+  // console.log(to.path);
   if (to.path != '/Vuex' && to.path != '/') {
     if (!store.getters["isLogin"]) {
       // return { name: 'Vuex' }
@@ -188,6 +191,23 @@ router.beforeEach(async (to, from, next) => {
     next(true);
   }
 })
+//(二)
+router.beforeResolve((to, from, next) => {
+  // console.log('beforeResolve');
+  next();
+})
+//(三)
+router.afterEach(async (to, from) => {
+  // console.log('afterEach');
+})
+
+// beforeRouteEnter 路由進入前
+// beforeRouteUpdate 路由更新前
+// beforeRouteLeave 路由離開前
+// 路由獨享守衛
+// beforeEnter 路由進入前
+
+
 // router.beforeEach(async (to, from) => {
 //   console.log(store.getters["isLogin"]);
 //   // console.log(from);
