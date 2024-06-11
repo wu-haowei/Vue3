@@ -4,8 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "vite --mode development",
+    "runproduction": "vite --mode production",
+    "build": "vite build",  
+    "build:lib": "BUILD_LIB=true vite build",
+    "buildproduction": "vite build --mode production",
     "preview": "vite preview",
     "test:unit": "vitest",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
@@ -19,6 +22,7 @@
     "jsonwebtoken": "^8.5.1",
     "pinia": "^2.1.7",
     "vee-validate": "^4.12.3",
+    "vite-plugin-pwa": "^0.20.0",
     "vue": "^3.3.11",
     "vue-carousel-3d": "^1.0.1",
     "vue-draggable-next": "^2.2.1",
@@ -37,6 +41,7 @@
     "sass": "^1.70.0",
     "util": "^0.12.4",
     "vite": "^5.0.10",
+    "vite-plugin-vue-devtools": "^7.2.1",
     "vitest": "^1.0.4"
   }
 }
