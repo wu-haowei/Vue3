@@ -10,7 +10,7 @@ import vue from '@vitejs/plugin-vue'
 const isLib = process.env.BUILD_LIB === 'true';
 
 export default defineConfig({
-  base: "/ViteDemo",
+  base: "/Vue3",
   plugins: [
     vue(
       // treat all tags with a dash as custom elements
