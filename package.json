@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --mode development",
     "runproduction": "vite --mode production",
-    "build": "vite build",  
+    "build": "vite build",
     "build:lib": "BUILD_LIB=true vite build",
     "buildproduction": "vite build --mode production",
     "preview": "vite preview",

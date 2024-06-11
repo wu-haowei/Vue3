@@ -44,7 +44,3 @@ C.html
 _web.config
 .env.development
 .env.production
-
-package-lock.json
-package.json
-vite.config.js.timestamp-1716177343768-19b783128762a.mjs
