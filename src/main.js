@@ -2,11 +2,11 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 // import { createPinia } from 'pinia'
-import { createStore } from 'vuex'
+// import { createStore } from 'vuex'
 import { createPinia } from 'pinia'
 
 import App from './App.vue'
-import router from './router'
+import { createMyRouter } from './router'
 
 import VeeValidatePlugin from '@/plugins/VeeValidatePlugin'
 // import { useRegisterSW } from 'virtual:pwa-register/vue';
@@ -14,6 +14,7 @@ import VeeValidatePlugin from '@/plugins/VeeValidatePlugin'
 // import {} from './main.ce.js'
 
 const app = createApp(App)
+const router = createMyRouter();
 // useRegisterSW();
 // app.use(createPinia())
 app.use(VeeValidatePlugin)
