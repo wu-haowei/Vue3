@@ -57,13 +57,13 @@ const router = createRouter({
 
     },
     {
-      path: '/twse',
-      name: 'twse',
-      hash: 'start',
+      path: '/Hash',
+      name: 'Hash',
+      // hash: 'start',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/TwseView.vue'),
+      component: () => import('../views/HashView.vue'),
       meta: { transition: 'moveUp', mode: '' },
     },
     {
@@ -163,6 +163,28 @@ const router = createRouter({
       meta: {
         keepAlive: false
       }
+    },
+    {
+      path: '/StaggeringListTransitions',
+      name: 'StaggeringListTransitions',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/StaggeringListTransitions.vue'),
+      meta: { transition: 'fade', mode: 'out-in' },
+      props: true
+
+    },
+    {
+      path: '/TeleportView',
+      name: 'TeleportView',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/TeleportView.vue'),
+      meta: { transition: 'moveUp', mode: '' },
+      props: true
+
     }
   ]
 })

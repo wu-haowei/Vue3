@@ -2,7 +2,9 @@
   <div>
     <Suspense>
       <template #fallback>
-        <Loading />
+        <Teleport to="body">
+          <Loading />
+        </Teleport>
       </template>
       <template #default>
         <Dashboard :time="2000" />

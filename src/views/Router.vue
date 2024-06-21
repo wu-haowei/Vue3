@@ -26,14 +26,12 @@ watch(isConfirmed, (val, oldVal) => {
 
 <template>
   <div class="inputBar">
-    <h1>Router</h1>
+    <p>使用 Router 偵測是否異動未保存</p>
     <div class="verity-box">
       <input type="text" @change="isConfirmed = false"><br />
       <button @click="isConfirmed = true">Save</button>
     </div>
   </div>
 </template>
-  
-<style scoped>
-</style>
-  
+
+<style scoped></style>

@@ -47,10 +47,7 @@ const updateImage = (img) => {
 }
 const obj = reactive({ count: '0', count1: '0' });
 const arr = reactive({ arr1: '0', arr2: '0' });
-
-
 const count = ref(0);
-
 
 watch(count, () => {
   console.log(`Count 更新前${count.value}`);
@@ -68,8 +65,6 @@ const increment = () => {
 //   setTimeout(() => {
 //     obj.count = new Date().getTime();
 //   }, 1);
-
-
 // })
 
 const sendMessage = (e) => {

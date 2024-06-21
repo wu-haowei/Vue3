@@ -48,10 +48,10 @@ const add = () => {
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/twse#start">twse</RouterLink>
+        <RouterLink to="/Hash#start">定位Id</RouterLink>
         <RouterLink to="/inputbar">驗證碼</RouterLink>
         <RouterLink to="/validate">表單驗證</RouterLink>
-        <RouterLink to="/Router">路由守衛</RouterLink>
+        <RouterLink to="/Router">異動提示</RouterLink>
         <RouterLink to="/Vuex">Vuex(登入口)</RouterLink>
         <RouterLink to="/Suspense">Suspense</RouterLink>
         <RouterLink to="/Canvas">簽名檔</RouterLink>
@@ -64,6 +64,8 @@ const add = () => {
         <RouterLink to="/Slot">slot</RouterLink>
         <RouterLink to="/SlotFancyList">SlotFancyList</RouterLink>
         <RouterLink to="/Inject">Inject</RouterLink>
+        <RouterLink to="/StaggeringListTransitions">漸進延遲動畫</RouterLink>
+        <RouterLink to="/TeleportView">Teleport</RouterLink>
         <button @click="add">Count is: {{ count }}</button>
       </nav>
 

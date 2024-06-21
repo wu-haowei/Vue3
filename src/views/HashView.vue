@@ -17,8 +17,8 @@ const cja = () => {
 
 // 生命周期钩子
 onMounted(() => {
-  console.log(`The initial count is 123.`)
-  cja();
+  // console.log(`The initial count is 123.`)
+  // cja();
 });
 </script>
 
