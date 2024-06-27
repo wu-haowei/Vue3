@@ -1,13 +1,13 @@
 <template>
 
   <div class="about">
+    <h1 class="text-base" style="display: none;">IsRayNotArray</h1>
     <!-- <h1>This is an about page</h1> -->
     <!-- <my-first-custom-element @update-image="updateImage" ></my-first-custom-element> -->
     <!-- <signature-file-canvas-element @update-image="updateImage" :saveUp="outSideSaveNum" :save="'保存'" :clear="'清除'"></signature-file-canvas-element> -->
     <!-- <div id="image">
       <img :src="imgref">
     </div> -->
-
     <div>
       <p>Count: {{ count }}</p>
       <button @click="increment">Increment</button>
@@ -19,7 +19,16 @@
 
 
 import { ref, provide, reactive, watch, watchEffect, nextTick, computed, defineAsyncComponent } from 'vue';
+import { onBeforeRouteUpdate, onBeforeRouteLeave } from 'vue-router'
 
+//更新
+onBeforeRouteUpdate(() => {
+  console.log('onBeforeRouteUpdate');
+})
+onBeforeRouteLeave(() => {
+  console.log('onBeforeRouteLeave');
+
+})
 
 
 // const AsyncComp = defineAsyncComponent(() =>
