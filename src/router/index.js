@@ -216,7 +216,16 @@ export const createMyRouter = function () {
         meta: { transition: 'moveUp', mode: '' , requiresAuth: false},
         props: true
 
-      }
+      },
+      {
+        path: '/Draggable',
+        name: 'Draggable',
+        component: () => import('../views/Draggable.vue'),
+        meta: {
+          requiresAuth: false,
+          keepAlive: false
+        }
+      },
     ]
   })
 
