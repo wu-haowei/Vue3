@@ -29,16 +29,10 @@ coverage
 
 *.tsbuildinfo
 開啟檔案.bat
-A copy 2.html
-A copy 3.html
-A copy 4.html
-A copy 5.html
-A copy 6.html
-A copy 7.html
-A copy 8.html
+A copy *.html
 A copy.html
+_web.config
 A.html
 B.html
 C copy.html
 C.html
-_web.config

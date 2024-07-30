@@ -1,0 +1,14 @@
+# version: '3.8'
+services:
+  vite-app:
+    build: .
+    ports:
+      - '3000:3000'  # 將容器的 3000 連接埠對應到主機的 3000 連接埠
+    volumes:
+      - .:/app       # 將目前目錄掛載到容器的 /app 目錄
+      - /app/node_modules  #防止 node_modules 被覆蓋
+    environment:
+      - CHOKIDAR_USEPOLLING=true  # 啟用輪詢模式以便在 Windows 上正確運作
+
+
+      #docker-compose up --build
