@@ -1,50 +1,10 @@
 <script setup>
 import { RouterLink, RouterView, useRoute } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
-import axios from "axios";
-import { ref } from "vue";
-
 const route = useRoute();
-
-
-
-
-const count = ref(0);
-
-
-// const add = () => {
-//   count.value = ++count.value;
-//   axios
-//     .get("api/v1/opendata/t187ap05_P")
-//     .then((response) => {
-//       if (response.status == 200) {
-//         console.log(response);
-//       }
-//     })
-//     .catch((error) => console.log(error));
-// };
-
-
-const add = () => {
-  count.value = ++count.value;
-  axios
-    .get("api/v1/opendata/t187ap05_P")
-    .then((response) => {
-      if (response.status == 200) {
-        console.log(response);
-      }
-    })
-    .catch((error) => console.log(error));
-};
-
 </script>
-
 <template>
   <header>
-    <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
-
     <div class="wrapper">
-      <!-- <HelloWorld msg="You did it!" /> -->
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
@@ -66,9 +26,8 @@ const add = () => {
         <RouterLink to="/Inject">Inject</RouterLink>
         <RouterLink to="/StaggeringListTransitions">漸進延遲動畫</RouterLink>
         <RouterLink to="/TeleportView">Teleport</RouterLink>
-        <button @click="add">Count is: {{ count }}</button>
+        <RouterLink to="/Draggable">Draggable</RouterLink>
       </nav>
-
     </div>
   </header>
 
@@ -81,7 +40,6 @@ const add = () => {
       </KeepAlive>
     </Transition>
   </RouterView>
-
   <!-- <RouterView /> -->
 </template>
 
@@ -99,12 +57,9 @@ const add = () => {
 }
 
 /* 左側插入 */
-
-
 .moveUp-enter-active {
   animation: fadIn 1s ease-in;
 }
-
 @keyframes fadIn {
   0% {
     opacity: 0;
@@ -119,12 +74,9 @@ const add = () => {
   }
 
 }
-
 .moveUp-leave-active {
   animation: moveUp 0.3s ease-in;
-
 }
-
 @keyframes moveUp {
   0% {
     transform: translateY(0);
@@ -133,10 +85,7 @@ const add = () => {
   100% {
     transform: translateY(-400px);
   }
-
 }
-
-
 
 .fade-enter-active,
 .fade-leave-active {
