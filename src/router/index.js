@@ -226,6 +226,15 @@ export const createMyRouter = function () {
           keepAlive: false
         }
       },
+      {
+        path: '/USTreasurySecurities',
+        name: 'USTreasurySecurities',
+        component: () => import('../views/USTreasurySecurities.vue'),
+        meta: {
+          requiresAuth: false,
+          keepAlive: false
+        }
+      },
     ]
   })
 
