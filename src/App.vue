@@ -28,6 +28,7 @@ const route = useRoute();
         <RouterLink to="/TeleportView">Teleport</RouterLink>
         <RouterLink to="/Draggable">Draggable</RouterLink>
         <RouterLink to="/USTreasurySecurities">10 年期固定期限美國公債的市場收益率</RouterLink>
+        <RouterLink to="/IntersectionObserver">圖片懶加載</RouterLink>
 
       </nav>
     </div>

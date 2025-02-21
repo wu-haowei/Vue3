@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory,createWebHashHistory  } from 'vue-router'
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import store from "@/stores/stores";
 
@@ -38,7 +38,7 @@ export const createMyRouter = function () {
     // history: createWebHistory(import.meta.env.BASE_URL),//形式
     //無servirc 配置
     //在內部傳遞的實際 URL 之前使用了一個哈希字元（#）。由於這部分 URL 從未被傳送到伺服器，所以它不需要在伺服器層級上進行任何特殊處理。不過，它在 SEO 中確實有不好的影響。
-    history:createWebHashHistory(),
+    history: createWebHashHistory(),
     routes: [
       {
         path: '/',
@@ -205,7 +205,7 @@ export const createMyRouter = function () {
         path: '/StaggeringListTransitions',
         name: 'StaggeringListTransitions',
         component: () => import('../views/StaggeringListTransitions.vue'),
-        meta: { transition: 'fade', mode: 'out-in' ,   requiresAuth: true},
+        meta: { transition: 'fade', mode: 'out-in', requiresAuth: true },
         props: true
 
       },
@@ -213,7 +213,7 @@ export const createMyRouter = function () {
         path: '/TeleportView',
         name: 'TeleportView',
         component: () => import('../views/TeleportView.vue'),
-        meta: { transition: 'moveUp', mode: '' , requiresAuth: false},
+        meta: { transition: 'moveUp', mode: '', requiresAuth: false },
         props: true
 
       },
@@ -230,6 +230,15 @@ export const createMyRouter = function () {
         path: '/USTreasurySecurities',
         name: 'USTreasurySecurities',
         component: () => import('../views/USTreasurySecurities.vue'),
+        meta: {
+          requiresAuth: false,
+          keepAlive: false
+        }
+      },
+      {
+        path: '/IntersectionObserver',
+        name: 'IntersectionObserver',
+        component: () => import('../views/IntersectionObserver.vue'),
         meta: {
           requiresAuth: false,
           keepAlive: false
