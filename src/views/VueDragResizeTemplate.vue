@@ -43,7 +43,7 @@
             class="list-grid-item"
             :style="{ width: element.width, height: element.height }"
             :class="{ 'not-draggable': !enabled }"
-            @mousedown="startResize($event, element)"
+            @dblclick="startResize($event, element)"
           >
             {{ element.name }}
           </div>
