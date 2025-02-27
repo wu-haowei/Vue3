@@ -24,9 +24,9 @@
       </div>
     </div>
 
-    <div class="col-6">
+    <div class="col-6" ref="parent">
       <draggable
-        :list="getlist"
+        :list="list"
         :disabled="!enabled"
         item-key="name"
         class="list-Grid"
@@ -49,8 +49,7 @@
             <span>
               <div>
                 <div>
-                  ID：{{ element.name }} /
-                  <label for="chartWidth">X：</label>
+                  <!-- <label for="chartWidth">X：</label>
                   <input
                     id="chartWidth"
                     type="number"
@@ -68,14 +67,19 @@
                     :max="1000"
                     :style="{ width: '50px' }"
                   />
-                  <input
-                    type="checkbox"
-                    :id="`checkbox_${element.id}`"
-                    :name="`checkbox_${element.id}`"
-                    v-model.lazy="element.isPlaceholder"
-                  />
-                  <label :for="`checkbox_${element.id}`">佔位</label>
-
+                -->
+                  <label :for="`checkbox_${element.id}`">
+                    <input
+                      type="checkbox"
+                      :id="`checkbox_${element.id}`"
+                      :name="`checkbox_${element.id}`"
+                      v-model.lazy="element.isPlaceholder"
+                    />
+                    佔位</label
+                  >
+                  |
+                  <button @click="edit(element)">編輯</button>
+                  |
                   <button @click="del(element.id)">刪除</button>
                 </div>
               </div>
@@ -83,6 +87,7 @@
               <HighChart
                 v-show="!element.isPlaceholder"
                 :width="element.width"
+                :parent="getParent"
                 :height="element.height"
                 :chartData="element.data"
                 :title="`ID：${element.name}`"
@@ -94,6 +99,7 @@
                   }
                 "
               ></HighChart>
+              <span v-if="element.isPlaceholder">{{ element.id }}</span>
             </span>
           </div>
         </template>
@@ -165,6 +171,13 @@ const list = ref([
 //   document.removeEventListener("mousemove", resize);
 //   document.removeEventListener("mouseup", stopResize);
 // };
+const parent = ref(null);
+
+const getParent = computed(() => {
+console.log('getParent');
+
+  return parent.value ? parent.value.offsetWidth : 0;
+});
 
 const getId = computed(() => {
   return Math.max(...list.value.map((item) => item.id)) + 1;
@@ -175,13 +188,14 @@ const getlist = computed(() => {
 });
 
 const add = () => {
-  list.value.unshift({
-    name: getId.value,
-    id: getId.value,
-    width: 300,
-    height: 300,
-    isPlaceholder: true,
-  });
+  // list.value.unshift({
+  //   name: getId.value,
+  //   id: getId.value,
+  //   width: 300,
+  //   height: 300,
+  //   isPlaceholder: true,
+  // });
+  list.value.unshift(setData(getId.value));
 };
 
 const del = (e) => {
@@ -195,6 +209,24 @@ const del = (e) => {
         f.isDelete = true;
       }
     });
+  }
+};
+
+const edit = (e) => {
+  var result1 = prompt("輸入寬度");
+
+  if (result1 && !isNaN(Number(result1))) {
+    var result2 = prompt("輸入高度");
+    if (result2 && !isNaN(Number(result2))) {
+      if (window.confirm(`你輸入 寬度：${result1} 高度：${result2}`)) {
+        e.width = Number(result1);
+        e.height = Number(result2);
+      }
+    } else {
+      window.alert("於高度輸入取消");
+    }
+  } else {
+    window.alert("於寬度輸入取消");
   }
 };
 
@@ -216,19 +248,22 @@ const generateRandomArray = () => {
   return randomArray;
 };
 
-onMounted(() => {
+const setData = (index) => {
   let arr = [300, 400, 500, 600];
+  return {
+    name: index.toString(),
+    id: index,
+    width: arr[Math.floor(Math.random() * arr.length)],
+    height: arr[Math.floor(Math.random() * arr.length)],
+    data: generateRandomArray(),
+    isPlaceholder: Math.floor(Math.random() * 1000) % 2 == 0 ? true : false,
+    isDelete: false,
+  };
+};
 
+onMounted(() => {
   for (let index = 20; index > 0; index--) {
-    list.value.push({
-      name: index.toString(),
-      id: index,
-      width: arr[Math.floor(Math.random() * arr.length)],
-      height: arr[Math.floor(Math.random() * arr.length)],
-      data: generateRandomArray(),
-      isPlaceholder: Math.floor(Math.random() * 1000) % 2 == 0 ? true : false,
-      isDelete: false,
-    });
+    list.value.push(setData(index));
   }
   list.value.reverse();
 });

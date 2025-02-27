@@ -15,10 +15,14 @@ const props = defineProps({
   height: { type: Number, default: 200 },
   chartData: { type: Array, default: null },
   title: { type: String, default: "Vite + Highcharts" },
+  parent: { type: Number, default: 0 },
 });
 
 const getPropsWidth = computed(() => {
   return props.width;
+});
+const getPropsParent = computed(() => {
+  return props.parent;
 });
 
 const getPropsHeight = computed(() => {
@@ -33,7 +37,11 @@ const chartComponent = ref(null);
 const chartOptions = ref({
   chart: {
     type: "line",
-    width: props.width.toString(),
+    // width: props.width.toString(),
+    width:
+      props.width > props.parent && props.parent != 0
+        ? props.parent.toString()
+        : props.width.toString(),
     height: (props.height * 0.7).toString(),
   },
   title: {
@@ -56,26 +64,39 @@ const chartOptions = ref({
 });
 
 // 監聽寬高變化，動態更新 Highcharts
-watch([getPropsWidth, getPropsHeight], ([newWidth, newHeight]) => {
-  console.log("watch");
+watch(
+  [getPropsWidth, getPropsHeight, getPropsParent],
+  ([newWidth, newHeight, newParent]) => {
+    console.log("watch");
 
-  if (chartComponent.value) {
-    chartComponent.value.chart.update({
-      chart: {
-        width: newWidth.toString(),
-        height: (newHeight * 0.7).toString(),
-      },
-    });
+    if (chartComponent.value) {
+      chartComponent.value.chart.update({
+        chart: {
+          width:
+            // newWidth >newWidth?newWidth.toString():newParent.toString(),
+
+            newWidth > newParent && newParent != 0
+              ? newParent.toString()
+              : newWidth.toString(),
+
+          height: (newHeight * 0.7).toString(),
+        },
+      });
+    }
   }
-});
+);
 
-// 確保 Highcharts 在掛載時同步初始寬高
 onMounted(() => {
   console.log("onMounted");
+
   if (chartComponent.value) {
     chartComponent.value.chart.update({
       chart: {
-        width: props.width.toString(),
+        // width: props.width.toString(),
+        width:
+          props.width > props.parent && props.parent != 0
+            ? props.parent.toString()
+            : props.width.toString(),
         height: (props.height * 0.7).toString(),
       },
     });
