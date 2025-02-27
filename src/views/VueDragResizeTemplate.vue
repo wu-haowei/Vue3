@@ -1,5 +1,6 @@
 <template>
   <!-- https://github.com/SortableJS/vue.draggable.next/tree/master -->
+
   <div class="row">
     <div class="col-2">
       <div class="form-group">
@@ -8,7 +9,7 @@
           role="group"
           aria-label="Basic example"
         >
-          {{ list }}
+          <!-- {{ list }} -->
           <button class="btn btn-secondary" @click="add">Add</button>
           <button class="btn btn-secondary" @click="replace">Replace</button>
         </div>
@@ -41,11 +42,29 @@
         <template #item="{ element }">
           <div
             class="list-grid-item"
-            :style="{ width: element.width, height: element.height }"
+             :key="element.width + '-' + element.height"
+            :style="{
+              width: element.width + 'px',
+              height: element.height + 'px',
+            }"
             :class="{ 'not-draggable': !enabled }"
-            @dblclick="startResize($event, element)"
           >
-            {{ element.name }}
+            <span v-if="!element.isPlaceholder">
+              {{ element.name }}
+              {{ element.height }}
+              <HighChart
+                v-if="!element.isPlaceholder"
+                :width="element.width"
+                :height="element.height"
+                @update:widthHeight="
+                  (val) => {
+                    console.log('update:widthHeight', val);
+                    element.width = val.width;
+                    element.height = val.height;
+                  }
+                "
+              ></HighChart>
+            </span>
           </div>
         </template>
       </draggable>
@@ -58,6 +77,8 @@
 <script setup>
 import { ref, computed, defineOptions } from "vue";
 import draggable from "vuedraggable";
+
+import HighChart from "@/components/HighChart.vue";
 
 const id = ref(1);
 
@@ -72,26 +93,27 @@ const enabled = ref(true);
 const dragging = ref(false);
 
 const list = ref([
-  { name: "John", id: 0, width: "100px", height: "100px" },
-  { name: "Joao", id: 1, width: "100px", height: "100px" },
-  { name: "Jean", id: 2, width: "100px", height: "100px" },
-  { name: "Alice", id: 3, width: "100px", height: "100px" },
-  { name: "Bob", id: 4, width: "100px", height: "100px" },
-  { name: "Charlie", id: 5, width: "100px", height: "100px" },
-  { name: "David", id: 6, width: "100px", height: "100px" },
-  { name: "Emma", id: 7, width: "100px", height: "100px" },
-  { name: "Frank", id: 8, width: "100px", height: "100px" },
-  { name: "Grace", id: 9, width: "100px", height: "100px" },
-  { name: "Henry", id: 10, width: "100px", height: "100px" },
-  { name: "Ivy", id: 11, width: "100px", height: "100px" },
-  { name: "Jack", id: 12, width: "100px", height: "100px" },
-  { name: "Kelly", id: 13, width: "100px", height: "100px" },
-  { name: "Leo", id: 14, width: "100px", height: "100px" },
-  { name: "Mona", id: 15, width: "100px", height: "100px" },
-  { name: "Nancy", id: 16, width: "100px", height: "100px" },
-  { name: "Oscar", id: 17, width: "100px", height: "100px" },
-  { name: "Paul", id: 18, width: "100px", height: "100px" },
-  { name: "Quincy", id: 19, width: "100px", height: "100px" },
+  { name: "John", id: 0, width: 500, height: 500, isPlaceholder: false },
+  { name: "John", id: 20, width: 500, height: 500, isPlaceholder: true },
+  { name: "Joao", id: 1, width: 400, height: 400, isPlaceholder: false },
+  { name: "Jean", id: 2, width: 500, height: 500, isPlaceholder: false },
+  { name: "Alice", id: 3, width: 500, height: 500, isPlaceholder: false },
+  { name: "Bob", id: 4, width: 500, height: 500, isPlaceholder: false },
+  { name: "Charlie", id: 5, width: 500, height: 500, isPlaceholder: false },
+  { name: "David", id: 6, width: 300, height: 300, isPlaceholder: false },
+  { name: "Emma", id: 7, width: 300, height: 300, isPlaceholder: false },
+  { name: "Frank", id: 8, width: 300, height: 300, isPlaceholder: false },
+  { name: "Grace", id: 9, width: 300, height: 300, isPlaceholder: false },
+  { name: "Henry", id: 10, width: 300, height: 300, isPlaceholder: false },
+  { name: "Ivy", id: 11, width: 300, height: 300, isPlaceholder: false },
+  { name: "Jack", id: 12, width: 300, height: 300, isPlaceholder: false },
+  { name: "Kelly", id: 13, width: 300, height: 300, isPlaceholder: false },
+  { name: "Leo", id: 14, width: 300, height: 300, isPlaceholder: false },
+  { name: "Mona", id: 15, width: 300, height: 300, isPlaceholder: false },
+  { name: "Nancy", id: 16, width: 300, height: 300, isPlaceholder: false },
+  { name: "Oscar", id: 17, width: 300, height: 300, isPlaceholder: false },
+  { name: "Paul", id: 18, width: 300, height: 300, isPlaceholder: false },
+  { name: "Quincy", id: 19, width: 300, height: 300, isPlaceholder: false },
 ]);
 
 const resizingElement = ref(false);
@@ -105,9 +127,9 @@ const startResize = (event, element) => {
 const resize = (event) => {
   if (!resizingElement.value) return;
   resizingElement.value.width =
-    event.clientX - event.target.parentElement.offsetLeft + "px";
+    event.clientX - event.target.parentElement.offsetLeft + "";
   resizingElement.value.height =
-    event.clientY - event.target.parentElement.offsetTop + "px";
+    event.clientY - event.target.parentElement.offsetTop + "";
 };
 
 const stopResize = () => {
@@ -132,7 +154,7 @@ const checkMove = (e) => {
 
 <style scoped>
 .buttons {
-  margin-top: 35px;
+  margin-top: 35;
 }
 
 .ghost {
@@ -145,21 +167,24 @@ const checkMove = (e) => {
 }
 
 .list-Grid {
+  border: 1px solid #ccc;
+  margin: 0 -1px;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin-right: -15px;
-  margin-left: -15px;
+  margin-right: -15;
+  margin-left: -15;
 }
 
 .list-grid-item {
-  /* width: 100px;
-  height: 100px; */
+  /* width: 300;
+  height: 300; */
+  border: 1px solid #0fa9cf;
+  background: #e2b6b6;
   display: inline-block;
-  background-color: #fff;
-  border: solid 1px rgb(0, 0, 0, 0.2);
-  padding: 10px;
-  margin: 12px;
+  border: solid 1 rgb(0, 0, 0, 0.2);
+  padding: 10;
+  margin: 12;
 }
 </style>
