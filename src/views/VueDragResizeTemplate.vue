@@ -3,23 +3,19 @@
 
   <div class="row">
     <div class="col-2">
-      <div class="form-group">
+      <div class="form-group" style="display: flex;justify-content: space-between;">
+        <div class="form-check">
+          <button class="btn btn-secondary" @click="enabled = !enabled">
+            {{ enabled ? "檢視" : "編輯" }}
+          </button>
+        </div>
         <div
+          v-show="enabled"
           class="btn-group-vertical buttons"
           role="group"
           aria-label="Basic example"
         >
           <button class="btn btn-secondary" @click="add">Add</button>
-        </div>
-
-        <div class="form-check">
-          <input
-            id="disabled"
-            type="checkbox"
-            v-model="enabled"
-            class="form-check-input"
-          />
-          <label class="form-check-label" for="disabled">enabled</label>
         </div>
       </div>
     </div>
@@ -109,7 +105,7 @@ defineOptions({
   },
 });
 
-const enabled = ref(true);
+const enabled = ref(!true);
 
 const dragging = ref(false);
 
