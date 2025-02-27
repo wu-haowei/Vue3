@@ -42,16 +42,45 @@
         <template #item="{ element }">
           <div
             class="list-grid-item"
-             :key="element.width + '-' + element.height"
+            :key="element.width + '-' + element.height"
             :style="{
               width: element.width + 'px',
               height: element.height + 'px',
+              background: !element.isPlaceholder ? '#e2b6b6' : 'transparent',
             }"
             :class="{ 'not-draggable': !enabled }"
           >
-            <span v-if="!element.isPlaceholder">
-              {{ element.name }}
-              {{ element.height }}
+            <span>
+              <div>
+                {{ element.name }}
+                <div>
+                  <label for="chartWidth">X：</label>
+                  <input
+                    id="chartWidth"
+                    type="number"
+                    v-model.lazy="element.width"
+                    placeholder="寬度"
+                    :max="2000"
+                  />
+                  <label for="chartHeight">Y：</label>
+                  <input
+                    id="chartHeight"
+                    type="number"
+                    v-model.lazy="element.height"
+                    placeholder="高度"
+                    :max="1000"
+                  />
+
+                  <input
+                    type="checkbox"
+                    :id="`checkbox_${element.id}`"
+                    :name="`checkbox_${element.id}`"
+                    v-model.lazy="element.isPlaceholder"
+                  />
+                  <label :for="`checkbox_${element.id}`">佔位</label>
+                </div>
+              </div>
+
               <HighChart
                 v-if="!element.isPlaceholder"
                 :width="element.width"
@@ -93,50 +122,50 @@ const enabled = ref(true);
 const dragging = ref(false);
 
 const list = ref([
-  { name: "John", id: 0, width: 500, height: 500, isPlaceholder: false },
-  { name: "John", id: 20, width: 500, height: 500, isPlaceholder: true },
-  { name: "Joao", id: 1, width: 400, height: 400, isPlaceholder: false },
-  { name: "Jean", id: 2, width: 500, height: 500, isPlaceholder: false },
-  { name: "Alice", id: 3, width: 500, height: 500, isPlaceholder: false },
-  { name: "Bob", id: 4, width: 500, height: 500, isPlaceholder: false },
-  { name: "Charlie", id: 5, width: 500, height: 500, isPlaceholder: false },
-  { name: "David", id: 6, width: 300, height: 300, isPlaceholder: false },
-  { name: "Emma", id: 7, width: 300, height: 300, isPlaceholder: false },
-  { name: "Frank", id: 8, width: 300, height: 300, isPlaceholder: false },
-  { name: "Grace", id: 9, width: 300, height: 300, isPlaceholder: false },
-  { name: "Henry", id: 10, width: 300, height: 300, isPlaceholder: false },
-  { name: "Ivy", id: 11, width: 300, height: 300, isPlaceholder: false },
-  { name: "Jack", id: 12, width: 300, height: 300, isPlaceholder: false },
-  { name: "Kelly", id: 13, width: 300, height: 300, isPlaceholder: false },
-  { name: "Leo", id: 14, width: 300, height: 300, isPlaceholder: false },
-  { name: "Mona", id: 15, width: 300, height: 300, isPlaceholder: false },
-  { name: "Nancy", id: 16, width: 300, height: 300, isPlaceholder: false },
-  { name: "Oscar", id: 17, width: 300, height: 300, isPlaceholder: false },
-  { name: "Paul", id: 18, width: 300, height: 300, isPlaceholder: false },
-  { name: "Quincy", id: 19, width: 300, height: 300, isPlaceholder: false },
+  { name: "0", id: 0, width: 500, height: 500, isPlaceholder: false },
+  { name: "1", id: 1, width: 500, height: 500, isPlaceholder: true },
+  { name: "2", id: 2, width: 400, height: 400, isPlaceholder: false },
+  { name: "3", id: 3, width: 500, height: 500, isPlaceholder: false },
+  { name: "4", id: 4, width: 500, height: 500, isPlaceholder: false },
+  { name: "5", id: 5, width: 500, height: 500, isPlaceholder: false },
+  { name: "6", id: 6, width: 500, height: 500, isPlaceholder: false },
+  { name: "7", id: 7, width: 300, height: 300, isPlaceholder: false },
+  { name: "8", id: 8, width: 300, height: 300, isPlaceholder: false },
+  { name: "9", id: 9, width: 300, height: 300, isPlaceholder: false },
+  { name: "10", id: 10, width: 300, height: 300, isPlaceholder: false },
+  { name: "11", id: 11, width: 300, height: 300, isPlaceholder: false },
+  { name: "12", id: 12, width: 300, height: 300, isPlaceholder: false },
+  { name: "13", id: 13, width: 300, height: 300, isPlaceholder: false },
+  { name: "14", id: 14, width: 300, height: 300, isPlaceholder: false },
+  { name: "15", id: 15, width: 300, height: 300, isPlaceholder: false },
+  { name: "16", id: 16, width: 300, height: 300, isPlaceholder: false },
+  { name: "17", id: 17, width: 300, height: 300, isPlaceholder: false },
+  { name: "18", id: 18, width: 300, height: 300, isPlaceholder: false },
+  { name: "19", id: 19, width: 300, height: 300, isPlaceholder: false },
+  { name: "20", id: 20, width: 300, height: 300, isPlaceholder: false },
 ]);
 
-const resizingElement = ref(false);
+// const resizingElement = ref(false);
 
-const startResize = (event, element) => {
-  resizingElement.value = element;
-  document.addEventListener("mousemove", resize);
-  document.addEventListener("mouseup", stopResize);
-};
+// const startResize = (event, element) => {
+//   resizingElement.value = element;
+//   document.addEventListener("mousemove", resize);
+//   document.addEventListener("mouseup", stopResize);
+// };
 
-const resize = (event) => {
-  if (!resizingElement.value) return;
-  resizingElement.value.width =
-    event.clientX - event.target.parentElement.offsetLeft + "";
-  resizingElement.value.height =
-    event.clientY - event.target.parentElement.offsetTop + "";
-};
+// const resize = (event) => {
+//   if (!resizingElement.value) return;
+//   resizingElement.value.width =
+//     event.clientX - event.target.parentElement.offsetLeft + "";
+//   resizingElement.value.height =
+//     event.clientY - event.target.parentElement.offsetTop + "";
+// };
 
-const stopResize = () => {
-  resizingElement.value = null;
-  document.removeEventListener("mousemove", resize);
-  document.removeEventListener("mouseup", stopResize);
-};
+// const stopResize = () => {
+//   resizingElement.value = null;
+//   document.removeEventListener("mousemove", resize);
+//   document.removeEventListener("mouseup", stopResize);
+// };
 const draggingInfo = computed(() => (dragging.value ? "under drag" : ""));
 
 const add = () => {
@@ -181,7 +210,7 @@ const checkMove = (e) => {
   /* width: 300;
   height: 300; */
   border: 1px solid #0fa9cf;
-  background: #e2b6b6;
+
   display: inline-block;
   border: solid 1 rgb(0, 0, 0, 0.2);
   padding: 10;

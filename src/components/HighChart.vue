@@ -1,27 +1,5 @@
 <template>
   <div>
-    <div>
-      <div :style="{ margin: 'auto', width: chartWidth*0.8 + 'px' }">
-        <label for="chartWidth">X：</label>
-        <input
-          id="chartWidth"
-          type="number"
-          v-model.lazy="chartWidth"
-          placeholder="寬度"
-          :max="2000"
-        />
-      </div>
-      <div :style="{ margin: 'auto', width: chartWidth*0.8 + 'px' }">
-        <label for="chartHeight">Y：</label>
-        <input
-          id="chartHeight"
-          type="number"
-          v-model.lazy="chartHeight"
-          placeholder="高度"
-          :max="1000"
-        />
-      </div>
-    </div>
     <Chart ref="chartComponent" :options="chartOptions"> </Chart>
   </div>
 </template>
