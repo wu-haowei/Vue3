@@ -2,8 +2,12 @@
   <!-- https://github.com/SortableJS/vue.draggable.next/tree/master -->
 
   <div class="row">
+    {{ windowInnerWidth }}
     <div class="col-2">
-      <div class="form-group" style="display: flex;justify-content: space-between;">
+      <div
+        class="form-group"
+        style="display: flex; justify-content: space-between"
+      >
         <div class="form-check">
           <button class="btn btn-secondary" @click="enabled = !enabled">
             {{ enabled ? "檢視" : "編輯" }}
@@ -108,6 +112,7 @@ defineOptions({
 const enabled = ref(!true);
 
 const dragging = ref(false);
+const windowInnerWidth = ref(0);
 
 const list = ref([
   // { name: "0", id: 0, width: 500, height: 500,data:[2, 3, 2, 4], isPlaceholder: false },
@@ -187,10 +192,21 @@ const setData = (index) => {
 };
 
 onMounted(() => {
+  window.addEventListener("resize", () => {
+    console.log("視窗寬度變更為：" + window.innerWidth);
+
+    // windowInnerWidth.value = window.innerWidth;
+  });
   for (let index = 20; index > 0; index--) {
     list.value.push(setData(index));
   }
   list.value.reverse();
+
+  if (window.innerWidth < 768) {
+    list.value = list.value.filter((f) => {
+      return !f.isPlaceholder;
+    });
+  }
 });
 </script>
 
