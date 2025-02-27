@@ -244,6 +244,15 @@ export const createMyRouter = function () {
           keepAlive: false
         }
       },
+      {
+        path: '/VueDragResizeTemplate',
+        name: 'VueDragResizeTemplate',
+        component: () => import('../views/VueDragResizeTemplate.vue'),
+        meta: {
+          requiresAuth: false,
+          keepAlive: false
+        }
+      },
     ]
   })
 
