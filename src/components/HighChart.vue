@@ -5,28 +5,39 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps, defineEmits, onMounted } from "vue";
+import { ref, watch, defineProps, defineEmits, onMounted, computed } from "vue";
 import { Chart } from "highcharts-vue";
 
-const emit = defineEmits(["update:widthHeight"]);
+// const emit = defineEmits(["update:widthHeight"]);
 
 const props = defineProps({
   width: { type: Number, default: 300 },
   height: { type: Number, default: 200 },
+  chartData: { type: Array, default: null },
+  title: { type: String, default: "Vite + Highcharts" },
 });
 
-const chartWidth = ref(props.width);
-const chartHeight = ref(props.height);
+const getPropsWidth = computed(() => {
+  return props.width;
+});
+
+const getPropsHeight = computed(() => {
+  return props.height;
+});
+const getChartData = computed(() => {
+  return props.chartData;
+});
+
 const chartComponent = ref(null);
 
 const chartOptions = ref({
   chart: {
     type: "line",
-    width: (chartWidth.value * 0.8).toString(),
-    height: (chartHeight.value * 0.8).toString(),
+    width: props.width.toString(),
+    height: (props.height * 0.7).toString(),
   },
   title: {
-    text: "Vite + Highcharts",
+    text: props.title,
     align: "center", // 讓標題置中
   },
   legend: {
@@ -35,7 +46,7 @@ const chartOptions = ref({
   series: [
     {
       name: "Data",
-      data: [1, 3, 2, 4],
+      data: getChartData.value,
       dataLabels: {
         enabled: true,
         align: "center", // 數據標籤置中
@@ -45,13 +56,14 @@ const chartOptions = ref({
 });
 
 // 監聽寬高變化，動態更新 Highcharts
-watch([chartWidth, chartHeight], ([newWidth, newHeight]) => {
-  emit("update:widthHeight", { width: newWidth, height: newHeight });
+watch([getPropsWidth, getPropsHeight], ([newWidth, newHeight]) => {
+  console.log("watch");
+
   if (chartComponent.value) {
     chartComponent.value.chart.update({
       chart: {
-        width: (newWidth * 0.8).toString(),
-        height: (newHeight * 0.8).toString(),
+        width: newWidth.toString(),
+        height: (newHeight * 0.7).toString(),
       },
     });
   }
@@ -63,8 +75,8 @@ onMounted(() => {
   if (chartComponent.value) {
     chartComponent.value.chart.update({
       chart: {
-        width: (chartWidth.value * 0.8).toString(),
-        height: (chartHeight.value * 0.8).toString(),
+        width: props.width.toString(),
+        height: (props.height * 0.7).toString(),
       },
     });
   }

@@ -9,9 +9,7 @@
           role="group"
           aria-label="Basic example"
         >
-          <!-- {{ list }} -->
           <button class="btn btn-secondary" @click="add">Add</button>
-          <button class="btn btn-secondary" @click="replace">Replace</button>
         </div>
 
         <div class="form-check">
@@ -21,16 +19,14 @@
             v-model="enabled"
             class="form-check-input"
           />
-          <label class="form-check-label" for="disabled">DnD enabled</label>
+          <label class="form-check-label" for="disabled">enabled</label>
         </div>
       </div>
     </div>
 
     <div class="col-6">
-      <h3>Draggable {{ draggingInfo }}</h3>
-
       <draggable
-        :list="list"
+        :list="getlist"
         :disabled="!enabled"
         item-key="name"
         class="list-Grid"
@@ -52,8 +48,8 @@
           >
             <span>
               <div>
-                {{ element.name }}
                 <div>
+                  ID：{{ element.name }} /
                   <label for="chartWidth">X：</label>
                   <input
                     id="chartWidth"
@@ -61,6 +57,7 @@
                     v-model.lazy="element.width"
                     placeholder="寬度"
                     :max="2000"
+                    :style="{ width: '50px' }"
                   />
                   <label for="chartHeight">Y：</label>
                   <input
@@ -69,8 +66,8 @@
                     v-model.lazy="element.height"
                     placeholder="高度"
                     :max="1000"
+                    :style="{ width: '50px' }"
                   />
-
                   <input
                     type="checkbox"
                     :id="`checkbox_${element.id}`"
@@ -78,13 +75,17 @@
                     v-model.lazy="element.isPlaceholder"
                   />
                   <label :for="`checkbox_${element.id}`">佔位</label>
+
+                  <button @click="del(element.id)">刪除</button>
                 </div>
               </div>
 
               <HighChart
-                v-if="!element.isPlaceholder"
+                v-show="!element.isPlaceholder"
                 :width="element.width"
                 :height="element.height"
+                :chartData="element.data"
+                :title="`ID：${element.name}`"
                 @update:widthHeight="
                   (val) => {
                     console.log('update:widthHeight', val);
@@ -104,12 +105,10 @@
 </template>
 
 <script setup>
-import { ref, computed, defineOptions } from "vue";
+import { ref, computed, defineOptions, onMounted } from "vue";
 import draggable from "vuedraggable";
 
 import HighChart from "@/components/HighChart.vue";
-
-const id = ref(1);
 
 defineOptions({
   name: "VueDragResizeTemplate",
@@ -122,27 +121,27 @@ const enabled = ref(true);
 const dragging = ref(false);
 
 const list = ref([
-  { name: "0", id: 0, width: 500, height: 500, isPlaceholder: false },
-  { name: "1", id: 1, width: 500, height: 500, isPlaceholder: true },
-  { name: "2", id: 2, width: 400, height: 400, isPlaceholder: false },
-  { name: "3", id: 3, width: 500, height: 500, isPlaceholder: false },
-  { name: "4", id: 4, width: 500, height: 500, isPlaceholder: false },
-  { name: "5", id: 5, width: 500, height: 500, isPlaceholder: false },
-  { name: "6", id: 6, width: 500, height: 500, isPlaceholder: false },
-  { name: "7", id: 7, width: 300, height: 300, isPlaceholder: false },
-  { name: "8", id: 8, width: 300, height: 300, isPlaceholder: false },
-  { name: "9", id: 9, width: 300, height: 300, isPlaceholder: false },
-  { name: "10", id: 10, width: 300, height: 300, isPlaceholder: false },
-  { name: "11", id: 11, width: 300, height: 300, isPlaceholder: false },
-  { name: "12", id: 12, width: 300, height: 300, isPlaceholder: false },
-  { name: "13", id: 13, width: 300, height: 300, isPlaceholder: false },
-  { name: "14", id: 14, width: 300, height: 300, isPlaceholder: false },
-  { name: "15", id: 15, width: 300, height: 300, isPlaceholder: false },
-  { name: "16", id: 16, width: 300, height: 300, isPlaceholder: false },
-  { name: "17", id: 17, width: 300, height: 300, isPlaceholder: false },
-  { name: "18", id: 18, width: 300, height: 300, isPlaceholder: false },
-  { name: "19", id: 19, width: 300, height: 300, isPlaceholder: false },
-  { name: "20", id: 20, width: 300, height: 300, isPlaceholder: false },
+  // { name: "0", id: 0, width: 500, height: 500,data:[2, 3, 2, 4], isPlaceholder: false },
+  // { name: "1", id: 1, width: 500, height: 500,data:[3, 3, 2, 4], isPlaceholder: true },
+  // { name: "2", id: 2, width: 400, height: 400,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "3", id: 3, width: 500, height: 500,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "4", id: 4, width: 500, height: 500,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "5", id: 5, width: 500, height: 500,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "6", id: 6, width: 500, height: 500,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "7", id: 7, width: 300, height: 300,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "8", id: 8, width: 300, height: 300,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "9", id: 9, width: 300, height: 300,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "10", id: 10, width: 300, height: 300,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "11", id: 11, width: 300, height: 300,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "12", id: 12, width: 300, height: 300,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "13", id: 13, width: 300, height: 300,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "14", id: 14, width: 300, height: 300,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "15", id: 15, width: 300, height: 300,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "16", id: 16, width: 300, height: 300,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "17", id: 17, width: 300, height: 300,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "18", id: 18, width: 300, height: 300,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "19", id: 19, width: 300, height: 300,data:[1, 3, 2, 4], isPlaceholder: false },
+  // { name: "20", id: 20, width: 300, height: 300,data:[1, 3, 2, 4], isPlaceholder: false },
 ]);
 
 // const resizingElement = ref(false);
@@ -166,19 +165,73 @@ const list = ref([
 //   document.removeEventListener("mousemove", resize);
 //   document.removeEventListener("mouseup", stopResize);
 // };
-const draggingInfo = computed(() => (dragging.value ? "under drag" : ""));
+
+const getId = computed(() => {
+  return Math.max(...list.value.map((item) => item.id)) + 1;
+});
+
+const getlist = computed(() => {
+  return list.value.filter((f) => !f.isDelete);
+});
 
 const add = () => {
-  list.value.push({ name: "Juan " + id.value, id: id.value++ });
+  list.value.unshift({
+    name: getId.value,
+    id: getId.value,
+    width: 300,
+    height: 300,
+    isPlaceholder: true,
+  });
 };
 
-const replace = () => {
-  list.value = [{ name: "Edgard", id: id.value++ }];
+const del = (e) => {
+  // list.value = list.value.filter((f) => {
+  //   return f.id != e;
+  // });
+
+  if (window.confirm(`確定刪除 ${e}`)) {
+    list.value.forEach((f) => {
+      if (f.id == e) {
+        f.isDelete = true;
+      }
+    });
+  }
 };
 
 const checkMove = (e) => {
   console.log("Future index: " + e.draggedContext.futureIndex);
 };
+
+const getRandomInt = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+const generateRandomArray = () => {
+  const arrayLength = getRandomInt(5, 20);
+  const randomArray = [];
+
+  for (let i = 0; i < arrayLength; i++) {
+    randomArray.push(getRandomInt(1, 100));
+  }
+
+  return randomArray;
+};
+
+onMounted(() => {
+  let arr = [300, 400, 500, 600];
+
+  for (let index = 20; index > 0; index--) {
+    list.value.push({
+      name: index.toString(),
+      id: index,
+      width: arr[Math.floor(Math.random() * arr.length)],
+      height: arr[Math.floor(Math.random() * arr.length)],
+      data: generateRandomArray(),
+      isPlaceholder: Math.floor(Math.random() * 1000) % 2 == 0 ? true : false,
+      isDelete: false,
+    });
+  }
+  list.value.reverse();
+});
 </script>
 
 <style scoped>
@@ -210,6 +263,7 @@ const checkMove = (e) => {
   /* width: 300;
   height: 300; */
   border: 1px solid #0fa9cf;
+  margin: 0 -2px 0 1px;
 
   display: inline-block;
   border: solid 1 rgb(0, 0, 0, 0.2);
