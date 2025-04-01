@@ -253,6 +253,13 @@ export const createMyRouter = function () {
           keepAlive: false
         }
       },
+      {
+        path: '/AdvancedChat',
+        name: 'AdvancedChat',
+        component: () => import('../views/AdvancedChat.vue'),
+        meta: { transition: 'fade', mode: 'out-in', requiresAuth: false },
+        props: true,
+      },
     ]
   })
 

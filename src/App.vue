@@ -30,6 +30,7 @@ const route = useRoute();
         <RouterLink to="/USTreasurySecurities">10 年期固定期限美國公債的市場收益率</RouterLink>
         <RouterLink to="/IntersectionObserver">圖片懶加載</RouterLink>
         <RouterLink to="/VueDragResizeTemplate">拖曳套件</RouterLink>
+        <RouterLink to="/AdvancedChat">即時通訊</RouterLink>
       </nav>
     </div>
   </header>

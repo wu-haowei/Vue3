@@ -7,10 +7,10 @@ import vue from '@vitejs/plugin-vue'
 // import { VitePWA } from 'vite-plugin-pwa'
 // https://vitejs.dev/config/
 
-const isLib = process.env.BUILD_LIB === 'true';
+// const isLib = process.env.BUILD_LIB === 'true';
 
 export default defineConfig({
-  base: "/Vue3",
+  base: "/",
   plugins: [
     vue(
       // treat all tags with a dash as custom elements
@@ -35,35 +35,30 @@ export default defineConfig({
     }
   },
   build: {
-    // ...(isLib ? {
-    //   lib: {
-    //     // Could also be a dictionary or array of multiple entry points
-    //     // entry: resolve(__dirname, 'lib/main.js'),
-    //     entry: './src/main.ce.js',
-    //     name: 'CustomElements',
-    //     // the proper extensions will be added
-    //     fileName: (format) => `custom-elements.${format}.js`,
+    // lib: {
+    //   // Could also be a dictionary or array of multiple entry points
+    //   // entry: resolve(__dirname, 'lib/main.js'),
+    //   entry: './src/main.ce.js',
+    //   name: 'CustomElements',
+    //   // the proper extensions will be added
+    //   fileName: (format) => `custom-elements.${format}.js`,
+    // },
+    // rollupOptions: {
+    //   // make sure to externalize deps that shouldn't be bundled
+    //   // into your library
+    //   external: ['vue'],
+    //   output: {
+    //     // Provide global variables to use in the UMD build
+    //     // for externalized deps
+    //     globals: {
+    //       vue: 'Vue',
+    //     },
     //   },
-    //   // rollupOptions: {
-    //   //   // make sure to externalize deps that shouldn't be bundled
-    //   //   // into your library
-    //   //   external: ['vue'],
-    //   //   output: {
-    //   //     // Provide global variables to use in the UMD build
-    //   //     // for externalized deps
-    //   //     globals: {
-    //   //       vue: 'Vue',
-    //   //     },
-    //   //   },
-    //   // },
-    // } : {
-    //   outDir: 'dist-app', // 应用程序构建的输出目录
-    //   rollupOptions: {
-    //     input: 'index.html',
-    //   }
-    // })
+    // },
   },
   server: {
+    host: '0.0.0.0',
+    port: 3000,
     proxy: {
       '/api': {
         // target: 'https://openapi.twse.com.tw/',
