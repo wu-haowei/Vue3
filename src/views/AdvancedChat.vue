@@ -1,7 +1,7 @@
 <template>
   <div>
     <vue-advanced-chat
-      height="calc(100vh - 20px)"
+      height="calc(80vh - 20px)"
       :current-user-id="currentUserId"
       :rooms="JSON.stringify(rooms)"
       :rooms-loaded="true"
@@ -10,16 +10,25 @@
       @send-message="sendMessage"
       @fetch-messages="fetchMessages"
       @open-file="openFile($event.detail[0])"
+      @send-message-reaction="sendMessageReaction($event.detail[0])"
+      @edit-message="editMessage($event.detail[0])"
     />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { register } from "vue-advanced-chat";
-register();
+import { ref, defineOptions } from "vue";
 // https://github.com/advanced-chat/vue-advanced-chat?tab=readme-ov-file
 // https://github.com/advanced-chat/vue-advanced-chat-sandbox
+import { register } from "vue-advanced-chat";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+register();
+
+defineOptions({
+  name: "AdvancedChat",
+  components: {},
+});
+
 // 定義響應式變數
 const currentUserId = ref("1234");
 const rooms = ref([
@@ -61,6 +70,7 @@ const addMessages = (data = "預設訊息", reset = false) => {
     username: "Gemini",
     date: new Date().toDateString(),
     timestamp: new Date().toString().substring(16, 21),
+    reactions: {}, // 預設無表情符號
   });
   return newMessages;
 };
@@ -69,18 +79,25 @@ const openFile = ({ file }) => {
   window.open(file.file.localUrl, "_blank");
 };
 
-// 傳送訊息
-const sendMessage = (event) => {
-  console.log(import.meta.env.VITE_GEMINI);
+const sendMessageReaction = async ({ reaction, remove, messageId, roomId }) => {
+  console.log("reaction", reaction);
+  console.log("remove", remove);
+  console.log("messageId", messageId);
+  console.log("roomId", roomId);
+  // const message = messages.value.find((msg) => msg._id === messageId);
+};
 
+// 傳送訊息
+const sendMessage = async (event) => {
   const message = event.detail[0];
   messages.value.push({
-    _id: messages.value.length,
+    _id: messages.value.length + 1,
     content: message.content,
     senderId: currentUserId.value,
     timestamp: new Date().toString().substring(16, 21),
     date: new Date().toDateString(),
     files: message.files || [],
+    reactions: {}, // 預設無表情符號
   });
 
   const myHeaders = new Headers();
@@ -90,35 +107,16 @@ const sendMessage = (event) => {
       {
         parts: [
           {
-            text: `【Reply in the same language】 ${message.content}`,
+            text: `【Reply in the same language. If you are in Chinese, please use Traditional Chinese.】 ${message.content}`,
           },
         ],
       },
     ],
   });
-  fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI}`,
-    {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    }
-  )
-    .then((response) => {
-      return response.json();
-    })
-    .then((result) => {
-      messages.value = [
-        ...messages.value,
-        ...addMessages(result.candidates[0].content.parts[0].text),
-      ];
-      // console.log(result)
-    })
-    .catch((error) => {
-      console.error(error);
-    })
-    .finally(() => {});
+  const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const result = await model.generateContent(raw);
+  messages.value = [...messages.value, ...addMessages(result.response.text())];
 };
 
 // 新訊息測試
