@@ -40,7 +40,7 @@ jobs:
       - name: Create .env File
         run: |
           echo "VITE_GEMINI=${{ secrets.VITE_GEMINI }}" > .env
-          echo "VITE_URL=${{ secrets.VITE_URL }}" >> .env
+          echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
       - name: Build
         run: npm run build
       - name: Setup Pages
