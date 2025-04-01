@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
 
   return {
-    base: env.VITE_API_URL || '/',
+    base:  '/Vue3',
     plugins: [
       vue({
         template: {
