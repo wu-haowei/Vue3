@@ -2,7 +2,6 @@
   <!-- https://github.com/SortableJS/vue.draggable.next/tree/master -->
 
   <div class="row">
-    {{ windowInnerWidth }}
     <div class="col-2">
       <div
         class="form-group"
@@ -70,14 +69,13 @@
 
               <HighChart
                 v-show="!element.isPlaceholder"
+                :chartData="element.data"
+                :title="`ID：${element.name}`"
                 :width="element.width"
                 :parent="getParent"
                 :height="element.height"
-                :chartData="element.data"
-                :title="`ID：${element.name}`"
                 @update:widthHeight="
                   (val) => {
-                    console.log('update:widthHeight', val);
                     element.width = val.width;
                     element.height = val.height;
                   }
@@ -99,13 +97,12 @@
 <script setup>
 import { ref, computed, defineOptions, onMounted } from "vue";
 import draggable from "vuedraggable";
-
 import HighChart from "@/components/HighChart.vue";
 
 defineOptions({
-  name: "VueDragResizeTemplate",
+  name: "VueDragResize",
   components: {
-    draggable,
+    // draggable,
   },
 });
 
@@ -121,8 +118,6 @@ const list = ref([
 const parent = ref(null);
 
 const getParent = computed(() => {
-  console.log("getParent");
-
   return parent.value ? parent.value.offsetWidth : 0;
 });
 
@@ -160,9 +155,7 @@ const edit = (e) => {
   }
 };
 
-const checkMove = (e) => {
-  console.log("Future index: " + e.draggedContext.futureIndex);
-};
+const checkMove = (e) => {};
 
 const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -193,8 +186,6 @@ const setData = (index) => {
 
 onMounted(() => {
   window.addEventListener("resize", () => {
-    console.log("視窗寬度變更為：" + window.innerWidth);
-
     // windowInnerWidth.value = window.innerWidth;
   });
   for (let index = 20; index > 0; index--) {
