@@ -14,7 +14,6 @@ import store from "@/stores/stores";
 export const createMyRouter = function () {
   const router = createRouter({
     scrollBehavior(to, from, savedPosition) {
-      console.log(to);
 
       //瀏覽器上一頁
       if (savedPosition) {
@@ -46,6 +45,7 @@ export const createMyRouter = function () {
         component: HomeView,//會都載入(小網站)
         meta: {
           requiresAuth: false,
+          mode: 'out-in'
         }
       },
       {
@@ -53,6 +53,7 @@ export const createMyRouter = function () {
         component: () => import('../views/ToDoList.vue'),
         meta: {
           requiresAuth: false,
+          mode: 'out-in'
         }
       },
       {
@@ -70,7 +71,10 @@ export const createMyRouter = function () {
         name: 'Hash',
         // hash: 'start',
         component: () => import('../views/HashView.vue'),
-        meta: { transition: 'moveUp', mode: '', requiresAuth: false },
+        meta: {
+          transition: 'moveUp',
+          mode: 'out-in', requiresAuth: false
+        },
       },
       {
         path: '/inputbar',
@@ -78,7 +82,8 @@ export const createMyRouter = function () {
         component: () => import('../views/InputBarView.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
         }
       },
       {
@@ -87,7 +92,8 @@ export const createMyRouter = function () {
         component: () => import('../views/Validate.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
         }
       },
       {
@@ -96,7 +102,8 @@ export const createMyRouter = function () {
         component: () => import('../views/Router.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
         }
         // beforeEnter: (to, from, next) => {
         //   next();
@@ -108,7 +115,8 @@ export const createMyRouter = function () {
         component: () => import('../views/Vuex.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
         }
       },
       {
@@ -117,7 +125,8 @@ export const createMyRouter = function () {
         component: () => import('../views/Suspense.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
         }
       },
       {
@@ -126,7 +135,8 @@ export const createMyRouter = function () {
         component: () => import('../views/Canvas.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
         }
       },
       {
@@ -135,7 +145,8 @@ export const createMyRouter = function () {
         component: () => import('../views/Notion.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
         }
       },
       {
@@ -144,7 +155,8 @@ export const createMyRouter = function () {
         component: () => import('../views/ToDoList.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
         }
       },
       {
@@ -153,7 +165,8 @@ export const createMyRouter = function () {
         component: () => import('../views/KeepAlive.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
         }
       },
       {
@@ -162,7 +175,8 @@ export const createMyRouter = function () {
         component: () => import('../views/KeepAliveNot.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
         }
       },
       {
@@ -171,7 +185,8 @@ export const createMyRouter = function () {
         component: () => import('../views/ModelModifires.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
         }
       },
       {
@@ -180,7 +195,8 @@ export const createMyRouter = function () {
         component: () => import('../views/SlotView.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
         }
       },
       {
@@ -189,7 +205,8 @@ export const createMyRouter = function () {
         component: () => import('../views/SlotFancyListView.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
         }
       },
       {
@@ -198,7 +215,9 @@ export const createMyRouter = function () {
         component: () => import('../views/InjectView.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
+
         }
       },
       {
@@ -213,7 +232,10 @@ export const createMyRouter = function () {
         path: '/TeleportView',
         name: 'TeleportView',
         component: () => import('../views/TeleportView.vue'),
-        meta: { transition: 'moveUp', mode: '', requiresAuth: false },
+        meta: {
+          transition: 'moveUp', mode: 'out-in'
+          , requiresAuth: false
+        },
         props: true
 
       },
@@ -223,7 +245,9 @@ export const createMyRouter = function () {
         component: () => import('../views/Draggable.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
+
         }
       },
       {
@@ -232,7 +256,9 @@ export const createMyRouter = function () {
         component: () => import('../views/USTreasurySecurities.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
+
         }
       },
       {
@@ -241,24 +267,50 @@ export const createMyRouter = function () {
         component: () => import('../views/IntersectionObserver.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in'
+
         }
       },
       {
-        path: '/VueDragResizeTemplate',
-        name: 'VueDragResizeTemplate',
-        component: () => import('../views/VueDragResizeTemplate.vue'),
+        path: '/VueDragResize',
+        name: 'VueDragResize',
+        component: () => import('../views/VueDragResize.vue'),
         meta: {
           requiresAuth: false,
-          keepAlive: false
+          keepAlive: false,
+          mode: 'out-in',
         }
       },
       {
         path: '/AdvancedChat',
         name: 'AdvancedChat',
         component: () => import('../views/AdvancedChat.vue'),
-        meta: { transition: 'fade', mode: 'out-in', requiresAuth: false },
-        props: true,
+        meta: {
+          requiresAuth: false,
+          keepAlive: false,
+          mode: 'out-in'
+        }
+      },
+      {
+        path: '/AdvancedChatOpenAI',
+        name: 'AdvancedChatOpenAI',
+        component: () => import('../views/AdvancedChatOpenAI.vue'),
+        meta: {
+          requiresAuth: false,
+          keepAlive: false,
+          mode: 'out-in'
+        }
+      },
+      {
+        path: '/IndexedDB',
+        name: 'IndexedDB',
+        component: () => import('../views/IndexedDB.vue'),
+        meta: {
+          requiresAuth: false,
+          keepAlive: false,
+          mode: 'out-in'
+        }
       },
     ]
   })
@@ -269,7 +321,6 @@ export const createMyRouter = function () {
   //next:是否允許
 
   router.beforeEach(async (to, from, next) => {
-    console.log('beforeEach');
     if (to.path != '/Vuex' && to.path != '/') {
       if (!store.getters["isLogin"] && to.meta.requiresAuth) {
         next({ name: 'Vuex' })
@@ -278,7 +329,6 @@ export const createMyRouter = function () {
         next(true);
       }
     } else {
-      console.log(2);
       next(true);
     }
   })
@@ -286,13 +336,12 @@ export const createMyRouter = function () {
   //(二)
   router.beforeResolve(() => {
     //可處理 進入頁面前初始化資料
-    console.log('beforeResolve');
+    // console.log('beforeResolve');
   })
 
   //(三)
   router.afterEach(async (to, form, failure) => {
     //處理錯誤(官網說明)
-    console.log('afterEach', failure);
   })
 
   // beforeRouteEnter 路由進入前

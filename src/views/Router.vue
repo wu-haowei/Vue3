@@ -19,8 +19,6 @@ onBeforeRouteLeave((to, from) => {
 })
 
 watch(isConfirmed, (val, oldVal) => {
-  console.log(oldVal);
-  console.log(val);
 })
 </script>
 

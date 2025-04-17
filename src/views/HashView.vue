@@ -4,7 +4,6 @@ import { onMounted } from 'vue';
 
 
 const cja = () => {
-  console.log(`The initial count is 123.`)
   axios.get('api/v1/opendata/t187ap05_P')
     .then((response) => {
       if (response.status == 200) { console.log(response) }

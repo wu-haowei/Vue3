@@ -17,10 +17,6 @@ const asyncIncrement = () => {
   store.dispatch('asyncIncrement');
 }
 const logIn = (data) => {
-
-  console.log(data);
-
-
   store.dispatch("logIn", {
     token: getGUID(),
     account: data["Account"],
@@ -48,8 +44,6 @@ const getGUID = () => {
 }
 
 watch(isConfirmed, (val, oldVal) => {
-  console.log(oldVal);
-  console.log(val);
 })
 
 const formRef1 = ref(null);

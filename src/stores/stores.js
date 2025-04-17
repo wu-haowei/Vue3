@@ -30,7 +30,6 @@ export default createStore({
       }, 1000);
     },
     logIn(context, options) {
-      console.log(options);
       context.commit("setLogIn", { options });
     }
   },

@@ -67,7 +67,6 @@ const chartOptions = ref({
 watch(
   [getPropsWidth, getPropsHeight, getPropsParent],
   ([newWidth, newHeight, newParent]) => {
-    console.log("watch");
 
     if (chartComponent.value) {
       chartComponent.value.chart.update({
@@ -87,8 +86,6 @@ watch(
 );
 
 onMounted(() => {
-  console.log("onMounted");
-
   if (chartComponent.value) {
     chartComponent.value.chart.update({
       chart: {

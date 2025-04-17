@@ -22,7 +22,6 @@ const notion = new Client({
 const getPage = async () => {
   const pageId = 'f6062a01fa4e49569080094fdff476f4'// process.env.NOTION_PAGE_ID; // 我們的 page ID
   const response = await notion.pages.retrieve({ page_id: pageId });
-  console.log(response);
   // response 會是 page object
   return response;
 };
@@ -118,8 +117,6 @@ onMounted(async () => {
     .then(response => console.log(response.data))
     .catch(error => console.error(error));
 
-
-  // console.log(pages);
 
 });
 

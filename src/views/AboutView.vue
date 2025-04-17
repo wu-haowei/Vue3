@@ -23,11 +23,8 @@ import { onBeforeRouteUpdate, onBeforeRouteLeave } from 'vue-router'
 
 //更新
 onBeforeRouteUpdate(() => {
-  console.log('onBeforeRouteUpdate');
 })
 onBeforeRouteLeave(() => {
-  console.log('onBeforeRouteLeave');
-
 })
 
 
@@ -59,7 +56,6 @@ const arr = reactive({ arr1: '0', arr2: '0' });
 const count = ref(0);
 
 watch(count, () => {
-  console.log(`Count 更新前${count.value}`);
 }, { flush: 'pre' });
 
 const increment = () => {

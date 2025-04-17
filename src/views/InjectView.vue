@@ -21,7 +21,6 @@ const getMoney = computed({
       num.value = value;
     else {
       num.value = 49;
-      console.log('超過數量');
     }
   }
 })
