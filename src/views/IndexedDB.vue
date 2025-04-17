@@ -359,14 +359,14 @@ onMounted(async () => {
     if (slideshowItem.value.length > 0)
       await setIndexedDB(slideshowItem.value[currentIndex.value]);
   }, 5000);
-  Interval.getData = setInterval(async () => {
-    getData();
-  }, 5000);
+  // Interval.getData = setInterval(async () => {
+  //   getData();
+  // }, 5000);
 });
 
 onBeforeUnmount(async () => {
-  clearInterval(Interval.changeText);
-  clearInterval(Interval.getData);
+  if (Interval.changeText) clearInterval(Interval.changeText);
+  if (Interval.getData) clearInterval(Interval.getData);
 });
 </script>
 
