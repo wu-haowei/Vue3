@@ -22,6 +22,7 @@
     "highcharts-vue": "^1.4.3",
     "ionicons": "^7.2.2",
     "jsonwebtoken": "^8.5.1",
+    "openai": "^4.93.0",
     "pinia": "^2.1.7",
     "vee-validate": "^4.12.3",
     "vite-plugin-pwa": "^0.20.0",

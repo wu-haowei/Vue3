@@ -27,20 +27,24 @@ const route = useRoute();
         <RouterLink to="/StaggeringListTransitions">漸進延遲動畫</RouterLink>
         <RouterLink to="/TeleportView">Teleport</RouterLink>
         <RouterLink to="/Draggable">拖曳欄位</RouterLink>
-        <RouterLink to="/USTreasurySecurities">10 年期固定期限美國公債的市場收益率</RouterLink>
+        <RouterLink to="/USTreasurySecurities"
+          >10 年期固定期限美國公債的市場收益率</RouterLink
+        >
         <RouterLink to="/IntersectionObserver">圖片懶加載</RouterLink>
-        <RouterLink to="/VueDragResizeTemplate">拖曳套件</RouterLink>
-        <RouterLink to="/AdvancedChat">即時通訊</RouterLink>
+        <RouterLink to="/VueDragResize">拖曳套件</RouterLink>
+        <!-- <RouterLink to="/AdvancedChat">即時通訊</RouterLink> -->
+        <RouterLink to="/AdvancedChatOpenAI">即時通訊</RouterLink>
+        <RouterLink to="/IndexedDB">瀏覽器內建的資料庫(IndexedDB)</RouterLink>
       </nav>
     </div>
   </header>
 
   <RouterView v-slot="{ Component }">
     <!--使用Transition  component template內只能有一層 -->
-    <Transition :name="route.meta.transition || 'slide'" :mode="route.meta.mode || 'out-in'">
-      <KeepAlive :exclude="['KeepAliveNot']">
-        <component :is="Component" :key="$route.path">
-        </component>
+    <!-- :mode="route.meta.mode || 'out-in'" -->
+    <Transition name="slide">
+      <KeepAlive :include="['KeepAlive']">
+        <component :is="Component" :key="$route.path"> </component>
       </KeepAlive>
     </Transition>
   </RouterView>
@@ -76,7 +80,6 @@ const route = useRoute();
   100% {
     opacity: 1;
   }
-
 }
 .moveUp-leave-active {
   animation: moveUp 0.3s ease-in;
@@ -100,8 +103,6 @@ const route = useRoute();
 .fade-leave-to {
   opacity: 0;
 }
-
-
 
 header {
   line-height: 1.5;
