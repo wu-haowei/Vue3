@@ -83,6 +83,10 @@ import {
 } from "vue";
 const base = import.meta.env.BASE_URL;
 
+import { useIndexedDB } from "@/stores/indexedDB";
+
+const { openDB, save, get, getAll, remove } = useIndexedDB();
+
 defineOptions({
   name: "AdvancedChatOpenAI",
   components: {},
@@ -113,8 +117,8 @@ const getToday = computed({
   set: (val) => (today.value = val),
 });
 
-const getTodayDateString = () => {
-  const date = new Date();
+const getTodayDateString = (time = new Date()) => {
+  const date = time;
   return date.toISOString().split("T")[0];
 };
 
@@ -148,27 +152,46 @@ const playSound = (code = "ERR01") => {
   }, 3000);
 };
 
-const initDB = async () => {
-  const request = indexedDB.open("ttl-grafanaDB");
-
-  request.onupgradeneeded = (event) => {
-    const _db = event.target.result;
-    if (!_db.objectStoreNames.contains(getToday.value)) {
-      _db.createObjectStore(getToday.value, {
+const initDB = async (version = 0) => {
+  // const request = indexedDB.open("ttl-grafanaDB");
+  await new Promise((resolve, reject) => {
+    openDB(
+      getToday.value,
+      {
         keyPath: "seq",
         autoIncrement: false,
+      },
+      version
+    )
+      .then((res) => {
+        db.value = res;
+        console.log("資料庫已開啟：", db.value);
+        resolve(true);
+      })
+      .catch((error) => {
+        console.error("資料庫開啟失敗：", error);
+        reject(error);
       });
-    }
-  };
+  });
 
-  request.onsuccess = (event) => {
-    db.value = event.target.result;
-    cleanupOldData();
-  };
+  // request.onupgradeneeded = (event) => {
+  //   const _db = event.target.result;
+  //   if (!_db.objectStoreNames.contains(getToday.value)) {
+  //     _db.createObjectStore(getToday.value, {
+  //       keyPath: "seq",
+  //       autoIncrement: false,
+  //     });
+  //   }
+  // };
 
-  request.onerror = (event) => {
-    console.error("資料庫開啟失敗：", event.target.errorCode);
-  };
+  // request.onsuccess = (event) => {
+  //   db.value = event.target.result;
+  //   cleanupOldData();
+  // };
+
+  // request.onerror = (event) => {
+  //   console.error("資料庫開啟失敗：", event.target.errorCode);
+  // };
 };
 
 const setIndexedDB = async (data) => {
@@ -176,13 +199,18 @@ const setIndexedDB = async (data) => {
     console.error("資料庫尚未初始化");
     return;
   }
-  if (data.seq == 10) {
+  if (data.seq == 4) {
+    getToday.value = getTodayDateString(
+      new Date(new Date().setDate(new Date().getDate() - 1))
+    );
+  }
+  if (data.seq == 8) {
     getToday.value = getTodayDateString();
   }
 
   if (!db.value.objectStoreNames.contains(getToday.value)) {
     await new Promise((resolve, reject) => {
-      this.cleanupOldData().then(() => {
+      cleanupOldData().then(() => {
         // 等待 onsuccess 被觸發後才 resolve
         const interval = setInterval(() => {
           if (db.value.objectStoreNames.contains(getToday.value)) {
@@ -190,7 +218,6 @@ const setIndexedDB = async (data) => {
             resolve();
           }
         }, 100);
-        // 最多等 5 秒
         setTimeout(() => {
           clearInterval(interval);
           reject("等待 store 建立超時");
@@ -267,52 +294,22 @@ const getStoresToDelete = async () => {
   );
 };
 
-const updateDb = async (storesToDelete) => {
-  const oldDb = db.value;
-  const oldVersion = oldDb.version;
-
-  if (storesToDelete.length === 0) {
-    console.log("✅ 沒有過期資料需要清除");
-    return null;
-  }
-
-  oldDb.close();
-  // 切換版本即時更新
-  return indexedDB.open("ttl-grafanaDB", oldVersion + 1);
-};
-
 const cleanupOldData = async () => {
   if (!db.value) return;
 
   const storesToDelete = await getStoresToDelete();
-  const request = await updateDb(storesToDelete);
-
-  if (!request) return;
-
-  request.onupgradeneeded = (event) => {
-    const db = event.target.result;
-
-    if (!db.objectStoreNames.contains(getToday.value)) {
-      db.createObjectStore(getToday.value, {
-        keyPath: "seq",
-        autoIncrement: true,
+  if (storesToDelete.length === 0) {
+    console.log("✅ 沒有過期資料需要清除");
+    return;
+  } else {
+    await initDB(db.value.version + 1)
+      .then(() => {
+        console.log("資料庫升級成功，過期資料已清除");
+      })
+      .catch((error) => {
+        console.error("資料庫升級失敗：", error);
       });
-    }
-
-    // 刪除不是今天的 store
-    storesToDelete.forEach((storeName) => {
-      db.deleteObjectStore(storeName);
-      console.log(`🗑️ 已刪除過期 store：${storeName}`);
-    });
-  };
-
-  request.onsuccess = (event) => {
-    db.value = event.target.result;
-  };
-
-  request.onerror = (event) => {
-    console.error("升級資料庫以清除過期資料失敗：", event.target.errorCode);
-  };
+  }
 };
 
 const enableAudio = async () => {
@@ -350,18 +347,24 @@ const getData = async () => {
 };
 
 onMounted(async () => {
-  today.value = await getTodayDateString();
-  await initDB();
-  await getData();
+  today.value = "2025-04-16"; //await getTodayDateString();
+  await initDB(0)
+    .then(async () => {
+      await getData();
+      Interval.changeText = setInterval(async () => {
+        if (slideshowItem.value.length > 0) {
+          setIndexedDB(slideshowItem.value[currentIndex.value]);
+          changeText();
+        }
+      }, 5000);
 
-  Interval.changeText = setInterval(async () => {
-    await changeText();
-    if (slideshowItem.value.length > 0)
-      await setIndexedDB(slideshowItem.value[currentIndex.value]);
-  }, 5000);
-  // Interval.getData = setInterval(async () => {
-  //   getData();
-  // }, 5000);
+      // Interval.getData = setInterval(async () => {
+      //   getData();
+      // }, 5000);
+    })
+    .catch((error) => {
+      console.error("初始化資料庫失敗：", error);
+    });
 });
 
 onBeforeUnmount(async () => {
