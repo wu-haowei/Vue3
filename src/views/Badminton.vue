@@ -3,27 +3,33 @@
     <!-- <h2>羽球比賽記分板</h2> -->
 
     <!-- 發球方選擇 -->
-    <div v-if="!gameStarted" class="starter-select">
-      <label>選擇發球場地：</label>
-      <select v-model="server">
+    <div v-if="!gameStarted"  >
+      <label for="startGame">選擇發球場地：</label>
+      <select v-model="server" @change="startGame" id="startGame">
         <option disabled value="">--請選擇--</option>
         <option value="A">場地 A</option>
         <option value="B">場地 B</option>
       </select>
-      <button @click="startGame" :disabled="!server">開始比賽</button>
     </div>
 
     <!-- 計分顯示 -->
     <div v-else>
       <div class="flip-board">
-        <div class="score-card" @click="scorePoint('A')" :disabled="!!winner"  :style="{background:lastServer==='A'?'rgb(116 112 112)':'#111'}">
+        <div
+          class="score-card"
+          @click="scorePoint('A')"
+          :disabled="!!winner"
+          :style="{
+            background: lastServer === 'A' ? 'rgb(116 112 112)' : '#111',
+          }"
+        >
           <div class="score-num">{{ leftScore }}</div>
           <div class="player-label">{{ leftPlayerLabel }}</div>
         </div>
 
         <div class="middle-control">
-          <div class="round-info">目前局數: 1</div>
           <button @click="swapSides" class="swap-btn no-select">🔁</button>
+          <div class="round-info">目前局數: 1</div>
           <button
             class="no-select"
             @click="undoLastAction"
@@ -35,11 +41,18 @@
             @touchcancel="handleMouseUp"
             :disabled="history.length === 0"
           >
-            ↩️ 返回上一步（🔄長按重置）
+            ↩️ 上一步
           </button>
         </div>
 
-        <div class="score-card" @click="scorePoint('B')" :disabled="!!winner" :style="{background:lastServer==='B'?'rgb(116 112 112)':'#111'}">
+        <div
+          class="score-card"
+          @click="scorePoint('B')"
+          :disabled="!!winner"
+          :style="{
+            background: lastServer === 'B' ? 'rgb(116 112 112)' : '#111',
+          }"
+        >
           <div class="score-num">{{ rightScore }}</div>
           <div class="player-label">{{ rightPlayerLabel }}</div>
         </div>

@@ -5,7 +5,7 @@
       <!-- 固定在頂部的開關按鈕 -->
       <div class="sidebar-header">
         <button class="toggle-btn" @click="toggleSidebar">
-          {{ isSidebarOpen ? '←' : '→' }}
+          {{ isSidebarOpen ? "←" : "→" }}
         </button>
       </div>
 
@@ -16,7 +16,7 @@
         <div class="menu-group">
           <button class="menu-toggle" @click="toggleMenu">
             📂 功能列表
-            <span>{{ isMenuOpen ? '▲' : '▼' }}</span>
+            <span>{{ isMenuOpen ? "▲" : "▼" }}</span>
           </button>
           <div v-show="isMenuOpen" class="submenu">
             <RouterLink
@@ -46,49 +46,49 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 import { RouterLink, RouterView, useRoute } from "vue-router";
 const route = useRoute();
 
-const isSidebarOpen = ref(true)
-const isMenuOpen = ref(true)
+const isSidebarOpen = ref(true);
+const isMenuOpen = ref(true);
 
 const toggleSidebar = () => {
-  isSidebarOpen.value = !isSidebarOpen.value
-}
+  isSidebarOpen.value = !isSidebarOpen.value;
+};
 
 const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value
-}
+  isMenuOpen.value = !isMenuOpen.value;
+};
 
 // 將除了 "123" 的所有功能選項集中管理
 const otherRoutes = [
-  { to: '/', label: '🏠 Home' },
-  { to: '/about', label: '📄 About' },
-  { to: '/Hash#start', label: '定位 Id' },
-  { to: '/inputbar', label: '驗證碼' },
-  { to: '/validate', label: '表單驗證' },
-  { to: '/Router', label: '異動提示' },
-  { to: '/Vuex', label: 'Vuex(登入口)' },
-  { to: '/Suspense', label: 'Suspense' },
-  { to: '/Canvas', label: '簽名檔' },
-  { to: '/Notion', label: 'Notion' },
-  { to: '/ToDoList', label: 'ToDoList' },
-  { to: '/KeepAlive', label: 'KeepAlive' },
-  { to: '/KeepAliveNot', label: 'KeepAliveNot' },
-  { to: '/ModelModifires', label: 'v-model 修飾符' },
-  { to: '/Slot', label: 'slot' },
-  { to: '/SlotFancyList', label: 'SlotFancyList' },
-  { to: '/Inject', label: 'Inject' },
-  { to: '/StaggeringListTransitions', label: '漸進延遲動畫' },
-  { to: '/TeleportView', label: 'Teleport' },
-  { to: '/Draggable', label: '拖曳欄位' },
-  { to: '/USTreasurySecurities', label: '10年期美國公債' },
-  { to: '/IntersectionObserver', label: '圖片懶加載' },
-  { to: '/VueDragResize', label: '拖曳套件' },
-  { to: '/AdvancedChatOpenAI', label: '即時通訊' },
-  { to: '/IndexedDB', label: 'IndexedDB' },
-]
+  { to: "/", label: "🏠 Home" },
+  { to: "/about", label: "📄 About" },
+  { to: "/Hash#start", label: "定位 Id" },
+  { to: "/inputbar", label: "驗證碼" },
+  { to: "/validate", label: "表單驗證" },
+  { to: "/Router", label: "異動提示" },
+  { to: "/Vuex", label: "Vuex(登入口)" },
+  { to: "/Suspense", label: "Suspense" },
+  { to: "/Canvas", label: "簽名檔" },
+  { to: "/Notion", label: "Notion" },
+  { to: "/ToDoList", label: "ToDoList" },
+  { to: "/KeepAlive", label: "KeepAlive" },
+  { to: "/KeepAliveNot", label: "KeepAliveNot" },
+  { to: "/ModelModifires", label: "v-model 修飾符" },
+  { to: "/Slot", label: "slot" },
+  { to: "/SlotFancyList", label: "SlotFancyList" },
+  { to: "/Inject", label: "Inject" },
+  { to: "/StaggeringListTransitions", label: "漸進延遲動畫" },
+  { to: "/TeleportView", label: "Teleport" },
+  { to: "/Draggable", label: "拖曳欄位" },
+  { to: "/USTreasurySecurities", label: "10年期美國公債" },
+  { to: "/IntersectionObserver", label: "圖片懶加載" },
+  { to: "/VueDragResize", label: "拖曳套件" },
+  { to: "/AdvancedChatOpenAI", label: "即時通訊" },
+  { to: "/IndexedDB", label: "IndexedDB" },
+];
 </script>
 
 
@@ -209,12 +209,7 @@ nav a:first-of-type {
 
  */
 
- 
-
-
-
-
- .app-container {
+.app-container {
   display: flex;
   height: 100vh;
   overflow: hidden;
@@ -231,7 +226,12 @@ nav a:first-of-type {
 }
 
 .sidebar.collapsed {
-  width: 50px;
+  width: 0px;
+}
+
+.sidebar.collapsed .sidebar-header {
+  position: absolute;
+  left: 0px;
 }
 
 .sidebar-header {
