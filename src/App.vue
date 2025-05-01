@@ -1,55 +1,96 @@
+<template>
+  <div class="app-container">
+    <!-- 側邊選單 -->
+    <aside :class="['sidebar', { collapsed: !isSidebarOpen }]">
+      <!-- 固定在頂部的開關按鈕 -->
+      <div class="sidebar-header">
+        <button class="toggle-btn" @click="toggleSidebar">
+          {{ isSidebarOpen ? '←' : '→' }}
+        </button>
+      </div>
+
+      <!-- 只有展開時顯示內容 -->
+      <div v-if="isSidebarOpen" class="sidebar-content">
+        <RouterLink to="/Badminton" class="link">🏸 羽球記分板</RouterLink>
+
+        <div class="menu-group">
+          <button class="menu-toggle" @click="toggleMenu">
+            📂 功能列表
+            <span>{{ isMenuOpen ? '▲' : '▼' }}</span>
+          </button>
+          <div v-show="isMenuOpen" class="submenu">
+            <RouterLink
+              v-for="route in otherRoutes"
+              :key="route.to"
+              :to="route.to"
+              class="link"
+            >
+              {{ route.label }}
+            </RouterLink>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 主內容 -->
+    <main class="main-content">
+      <RouterView v-slot="{ Component }">
+        <Transition name="slide">
+          <KeepAlive :include="['KeepAlive']">
+            <component :is="Component" :key="$route.path" />
+          </KeepAlive>
+        </Transition>
+      </RouterView>
+    </main>
+  </div>
+</template>
+
 <script setup>
+import { ref } from 'vue'
 import { RouterLink, RouterView, useRoute } from "vue-router";
 const route = useRoute();
-</script>
-<template>
-  <header>
-    <div class="wrapper">
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/Hash#start">定位Id</RouterLink>
-        <RouterLink to="/inputbar">驗證碼</RouterLink>
-        <RouterLink to="/validate">表單驗證</RouterLink>
-        <RouterLink to="/Router">異動提示</RouterLink>
-        <RouterLink to="/Vuex">Vuex(登入口)</RouterLink>
-        <RouterLink to="/Suspense">Suspense</RouterLink>
-        <RouterLink to="/Canvas">簽名檔</RouterLink>
-        <RouterLink to="/Notion">Notion</RouterLink>
-        <RouterLink to="/ToDoList">ToDoList</RouterLink>
-        <!-- https://cn.vuejs.org/guide/built-ins/keep-alive.html -->
-        <RouterLink to="/KeepAlive">KeepAlive</RouterLink>
-        <RouterLink to="/KeepAliveNot">KeepAliveNot</RouterLink>
-        <RouterLink to="/ModelModifires">製訂 v-model 修飾符</RouterLink>
-        <RouterLink to="/Slot">slot</RouterLink>
-        <RouterLink to="/SlotFancyList">SlotFancyList</RouterLink>
-        <RouterLink to="/Inject">Inject</RouterLink>
-        <RouterLink to="/StaggeringListTransitions">漸進延遲動畫</RouterLink>
-        <RouterLink to="/TeleportView">Teleport</RouterLink>
-        <RouterLink to="/Draggable">拖曳欄位</RouterLink>
-        <RouterLink to="/USTreasurySecurities"
-          >10 年期固定期限美國公債的市場收益率</RouterLink
-        >
-        <RouterLink to="/IntersectionObserver">圖片懶加載</RouterLink>
-        <RouterLink to="/VueDragResize">拖曳套件</RouterLink>
-        <!-- <RouterLink to="/AdvancedChat">即時通訊</RouterLink> -->
-        <RouterLink to="/AdvancedChatOpenAI">即時通訊</RouterLink>
-        <RouterLink to="/IndexedDB">瀏覽器內建的資料庫(IndexedDB)</RouterLink>
-      </nav>
-    </div>
-  </header>
 
-  <RouterView v-slot="{ Component }">
-    <!--使用Transition  component template內只能有一層 -->
-    <!-- :mode="route.meta.mode || 'out-in'" -->
-    <Transition name="slide">
-      <KeepAlive :include="['KeepAlive']">
-        <component :is="Component" :key="$route.path"> </component>
-      </KeepAlive>
-    </Transition>
-  </RouterView>
-  <!-- <RouterView /> -->
-</template>
+const isSidebarOpen = ref(true)
+const isMenuOpen = ref(true)
+
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value
+}
+
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value
+}
+
+// 將除了 "123" 的所有功能選項集中管理
+const otherRoutes = [
+  { to: '/', label: '🏠 Home' },
+  { to: '/about', label: '📄 About' },
+  { to: '/Hash#start', label: '定位 Id' },
+  { to: '/inputbar', label: '驗證碼' },
+  { to: '/validate', label: '表單驗證' },
+  { to: '/Router', label: '異動提示' },
+  { to: '/Vuex', label: 'Vuex(登入口)' },
+  { to: '/Suspense', label: 'Suspense' },
+  { to: '/Canvas', label: '簽名檔' },
+  { to: '/Notion', label: 'Notion' },
+  { to: '/ToDoList', label: 'ToDoList' },
+  { to: '/KeepAlive', label: 'KeepAlive' },
+  { to: '/KeepAliveNot', label: 'KeepAliveNot' },
+  { to: '/ModelModifires', label: 'v-model 修飾符' },
+  { to: '/Slot', label: 'slot' },
+  { to: '/SlotFancyList', label: 'SlotFancyList' },
+  { to: '/Inject', label: 'Inject' },
+  { to: '/StaggeringListTransitions', label: '漸進延遲動畫' },
+  { to: '/TeleportView', label: 'Teleport' },
+  { to: '/Draggable', label: '拖曳欄位' },
+  { to: '/USTreasurySecurities', label: '10年期美國公債' },
+  { to: '/IntersectionObserver', label: '圖片懶加載' },
+  { to: '/VueDragResize', label: '拖曳套件' },
+  { to: '/AdvancedChatOpenAI', label: '即時通訊' },
+  { to: '/IndexedDB', label: 'IndexedDB' },
+]
+</script>
+
 
 <style>
 /* 左側插入 */
@@ -103,7 +144,7 @@ const route = useRoute();
 .fade-leave-to {
   opacity: 0;
 }
-
+/* 
 header {
   line-height: 1.5;
   max-height: 100vh;
@@ -164,5 +205,101 @@ nav a:first-of-type {
     padding: 1rem 0;
     margin-top: 1rem;
   }
+}
+
+ */
+
+ 
+
+
+
+
+ .app-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 240px;
+  background-color: #2c3e50;
+  color: white;
+  transition: width 0.3s;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar.collapsed {
+  width: 50px;
+}
+
+.sidebar-header {
+  position: sticky;
+  top: 0;
+  background-color: #2c3e50;
+  padding: 10px;
+  z-index: 1;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.sidebar-content {
+  padding: 10px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.link {
+  display: block;
+  padding: 8px;
+  text-decoration: none;
+  color: white;
+  border-radius: 4px;
+}
+
+.link:hover {
+  background-color: #34495e;
+}
+
+.menu-group {
+  margin-top: 16px;
+}
+
+.menu-toggle {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  padding: 8px 0;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.submenu {
+  margin-left: 8px;
+  margin-top: 8px;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: opacity 0.5s;
+}
+.slide-enter-from,
+.slide-leave-to {
+  opacity: 0;
 }
 </style>

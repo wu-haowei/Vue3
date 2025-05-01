@@ -93,7 +93,7 @@ onMounted(() => {
   </div>
 </template>
 
-<style>
+<style scoped>
 p:nth-child(even) {
   background-color: antiquewhite;
 }
