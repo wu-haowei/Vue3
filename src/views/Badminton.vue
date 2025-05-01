@@ -16,17 +16,30 @@
     <!-- 計分顯示 -->
     <div v-else>
       <div class="flip-board">
-        <div class="score-card" @click="scorePoint('A')" :disabled="!!winner">
+        <div class="score-card" @click="scorePoint('A')" :disabled="!!winner"  :style="{background:lastServer==='A'?'rgb(116 112 112)':'#111'}">
           <div class="score-num">{{ leftScore }}</div>
           <div class="player-label">{{ leftPlayerLabel }}</div>
         </div>
 
         <div class="middle-control">
           <div class="round-info">目前局數: 1</div>
-          <button @click="swapSides" class="swap-btn">🔁</button>
+          <button @click="swapSides" class="swap-btn no-select">🔁</button>
+          <button
+            class="no-select"
+            @click="undoLastAction"
+            @mousedown="handleMouseDown"
+            @mouseup="handleMouseUp"
+            @mouseleave="handleMouseUp"
+            @touchstart="handleMouseDown"
+            @touchend="handleMouseUp"
+            @touchcancel="handleMouseUp"
+            :disabled="history.length === 0"
+          >
+            ↩️ 返回上一步（🔄長按重置）
+          </button>
         </div>
 
-        <div class="score-card" @click="scorePoint('B')" :disabled="!!winner">
+        <div class="score-card" @click="scorePoint('B')" :disabled="!!winner" :style="{background:lastServer==='B'?'rgb(116 112 112)':'#111'}">
           <div class="score-num">{{ rightScore }}</div>
           <div class="player-label">{{ rightPlayerLabel }}</div>
         </div>
@@ -35,7 +48,7 @@
       <div class="status" v-if="!winner">
         <p>目前發球方：{{ server }}</p>
         <p>發球位置：{{ servePosition }}</p>
-        <p>上次發球方：{{ lastServer || "尚未發球" }}</p>
+        <!-- <p>上次發球方：{{ lastServer || "尚未發球" }}</p> -->
       </div>
 
       <div class="winner" v-else>
@@ -49,15 +62,6 @@
         <button @click="scorePoint('B')" :disabled="!!winner">
           場地 B 得分
         </button> -->
-        <button
-          @click="undoLastAction"
-          @mousedown="handleMouseDown"
-          @mouseup="handleMouseUp"
-          @mouseleave="handleMouseUp"
-          :disabled="history.length === 0"
-        >
-          ↩️ 返回上一步（🔄長按重置）
-        </button>
       </div>
     </div>
   </div>
