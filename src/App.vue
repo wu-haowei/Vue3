@@ -1,16 +1,19 @@
 <template>
   <div class="app-container">
     <!-- 側邊選單 -->
-    <aside :class="['sidebar', { collapsed: !isSidebarOpen }]">
-      <!-- 固定在頂部的開關按鈕 -->
-      <div class="sidebar-header">
-        <button class="toggle-btn" @click="toggleSidebar">
-          {{ isSidebarOpen ? "←" : "→" }}
-        </button>
-      </div>
+    <aside class="sidebar" :class="{ open: isSidebarOpen }">
+      <div class="sidebar-content">
+        <div class="sidebar-header">
+          <button class="toggle-btn" @click="toggleSidebar">
+            <template v-if="isSidebarOpen">✖</template>
+            <template v-else>
+              <span class="burger-line"></span>
+              <span class="burger-line"></span>
+              <span class="burger-line"></span>
+            </template>
+          </button>
+        </div>
 
-      <!-- 只有展開時顯示內容 -->
-      <div v-if="isSidebarOpen" class="sidebar-content">
         <RouterLink to="/LogIn" class="link" v-show="!store.getters['isLogin']"
           >🔐 LogIn</RouterLink
         >
@@ -35,6 +38,9 @@
         </div>
       </div>
     </aside>
+
+    <!-- 背景遮罩 -->
+    <div class="overlay" v-if="isSidebarOpen" @click="toggleSidebar"></div>
 
     <!-- 主內容 -->
     <main class="main-content">
@@ -72,10 +78,7 @@ const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
 
-// 將除了 "123" 的所有功能選項集中管理
 const otherRoutes = [
-  // { to: "/", label: "🏠 Home" },
-  // { to: "/about", label: "📄 About" },
   { to: "/Hash#start", label: "定位 Id" },
   { to: "/inputbar", label: "驗證碼" },
   { to: "/validate", label: "表單驗證" },
@@ -154,116 +157,86 @@ const otherRoutes = [
 .fade-leave-to {
   opacity: 0;
 }
-/* 
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
 }
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-
- */
 
 .app-container {
-  display: flex;
+  position: relative;
   height: 100vh;
   overflow: hidden;
 }
 
+/* 側邊欄覆蓋主畫面 */
 .sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 240px;
+  height: 100vh;
   background-color: #2c3e50;
   color: white;
-  transition: width 0.3s;
+  z-index: 1000;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
-.sidebar.collapsed {
-  width: 0px;
-}
-
-.sidebar.collapsed .sidebar-header {
-  position: absolute;
-  left: 0px;
+.sidebar.open {
+  transform: translateX(0);
 }
 
 .sidebar-header {
-  position: sticky;
+  right: -50px;
   top: 0;
-  background-color: #2c3e50;
+  position: fixed;
   padding: 10px;
-  z-index: 1;
+  background-color: #2c3e50;
 }
 
 .toggle-btn {
-  background: none;
+  right: -50px;
+  background-color: #2c3e50;
   border: none;
   color: white;
   font-size: 20px;
   cursor: pointer;
+  padding: 8px;
+  border-radius: 4px 0 0 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+.burger-line {
+  width: 20px;
+  height: 2px;
+  background-color: white;
+  display: block;
 }
 
 .sidebar-content {
+  position: relative;
   padding: 10px;
-  flex: 1;
   overflow-y: auto;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 900;
 }
 
 .link {
@@ -273,7 +246,6 @@ nav a:first-of-type {
   color: white;
   border-radius: 4px;
 }
-
 .link:hover {
   background-color: #34495e;
 }
@@ -281,7 +253,6 @@ nav a:first-of-type {
 .menu-group {
   margin-top: 16px;
 }
-
 .menu-toggle {
   background: none;
   border: none;
@@ -292,18 +263,18 @@ nav a:first-of-type {
   width: 100%;
   text-align: left;
 }
-
 .submenu {
   margin-left: 8px;
   margin-top: 8px;
 }
 
 .main-content {
-  flex: 1;
   padding: 50px;
   overflow-y: auto;
+  height: 100vh;
 }
 
+/* 過場動畫保留 */
 .slide-enter-active,
 .slide-leave-active {
   transition: opacity 0.5s;
