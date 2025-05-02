@@ -52,7 +52,7 @@ export const createMyRouter = function () {
         path: '/:filter',
         component: () => import('../views/ToDoList.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           mode: 'out-in'
         }
       },
@@ -63,7 +63,7 @@ export const createMyRouter = function () {
         // this generates a separate chunk (About.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
         component: () => import('../views/AboutView.vue'),//會拆分頁面(大網站)
-        meta: { transition: 'fade', mode: 'out-in', requiresAuth: false },
+        meta: { transition: 'fade', mode: 'out-in', requiresAuth: true },
         props: true,
       },
       {
@@ -73,7 +73,7 @@ export const createMyRouter = function () {
         component: () => import('../views/HashView.vue'),
         meta: {
           transition: 'moveUp',
-          mode: 'out-in', requiresAuth: false
+          mode: 'out-in', requiresAuth: true
         },
       },
       {
@@ -81,7 +81,7 @@ export const createMyRouter = function () {
         name: 'inputbar',
         component: () => import('../views/InputBarView.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -91,7 +91,7 @@ export const createMyRouter = function () {
         name: 'validate',
         component: () => import('../views/Validate.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -101,7 +101,7 @@ export const createMyRouter = function () {
         name: 'Router',
         component: () => import('../views/Router.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -110,9 +110,9 @@ export const createMyRouter = function () {
         // }
       },
       {
-        path: '/Vuex',
-        name: 'Vuex',
-        component: () => import('../views/Vuex.vue'),
+        path: '/LogIn',
+        name: 'LogIn',
+        component: () => import('../views/LogIn.vue'),
         meta: {
           requiresAuth: false,
           keepAlive: false,
@@ -124,7 +124,7 @@ export const createMyRouter = function () {
         name: 'Suspense',
         component: () => import('../views/Suspense.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -134,7 +134,7 @@ export const createMyRouter = function () {
         name: 'Canvas',
         component: () => import('../views/Canvas.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -144,7 +144,7 @@ export const createMyRouter = function () {
         name: 'Notion',
         component: () => import('../views/Notion.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -154,7 +154,7 @@ export const createMyRouter = function () {
         name: 'ToDoList',
         component: () => import('../views/ToDoList.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -164,7 +164,7 @@ export const createMyRouter = function () {
         name: 'KeepAlive',
         component: () => import('../views/KeepAlive.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -174,7 +174,7 @@ export const createMyRouter = function () {
         name: 'KeepAliveNot',
         component: () => import('../views/KeepAliveNot.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -184,7 +184,7 @@ export const createMyRouter = function () {
         name: 'ModelModifires',
         component: () => import('../views/ModelModifires.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -194,7 +194,7 @@ export const createMyRouter = function () {
         name: 'Slot',
         component: () => import('../views/SlotView.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -204,7 +204,7 @@ export const createMyRouter = function () {
         name: 'SlotFancyList',
         component: () => import('../views/SlotFancyListView.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -214,7 +214,7 @@ export const createMyRouter = function () {
         name: 'Inject',
         component: () => import('../views/InjectView.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
 
@@ -234,7 +234,7 @@ export const createMyRouter = function () {
         component: () => import('../views/TeleportView.vue'),
         meta: {
           transition: 'moveUp', mode: 'out-in'
-          , requiresAuth: false
+          , requiresAuth: true
         },
         props: true
 
@@ -244,7 +244,7 @@ export const createMyRouter = function () {
         name: 'Draggable',
         component: () => import('../views/Draggable.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
 
@@ -255,7 +255,7 @@ export const createMyRouter = function () {
         name: 'USTreasurySecurities',
         component: () => import('../views/USTreasurySecurities.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
 
@@ -266,7 +266,7 @@ export const createMyRouter = function () {
         name: 'IntersectionObserver',
         component: () => import('../views/IntersectionObserver.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
 
@@ -277,7 +277,7 @@ export const createMyRouter = function () {
         name: 'VueDragResize',
         component: () => import('../views/VueDragResize.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in',
         }
@@ -287,7 +287,7 @@ export const createMyRouter = function () {
         name: 'AdvancedChat',
         component: () => import('../views/AdvancedChat.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -297,7 +297,7 @@ export const createMyRouter = function () {
         name: 'AdvancedChatOpenAI',
         component: () => import('../views/AdvancedChatOpenAI.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -307,7 +307,7 @@ export const createMyRouter = function () {
         name: 'IndexedDB',
         component: () => import('../views/IndexedDB.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
         }
@@ -331,9 +331,9 @@ export const createMyRouter = function () {
   //next:是否允許
 
   router.beforeEach(async (to, from, next) => {
-    if (to.path != '/Vuex' && to.path != '/') {
+    if (to.path != '/home' && to.path != '/') {
       if (!store.getters["isLogin"] && to.meta.requiresAuth) {
-        next({ name: 'Vuex' })
+        next({ name: 'home' })
         // next(false);
       } else {
         next(true);

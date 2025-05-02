@@ -3,13 +3,26 @@
     <!-- <h2>羽球比賽記分板</h2> -->
 
     <!-- 發球方選擇 -->
-    <div v-if="!gameStarted"  >
-      <label for="startGame">選擇發球場地：</label>
-      <select v-model="server" @change="startGame" id="startGame">
-        <option disabled value="">--請選擇--</option>
-        <option value="A">場地 A</option>
-        <option value="B">場地 B</option>
-      </select>
+    <div v-if="!gameStarted">
+      <VForm
+        id="badmintonForm"
+        ref="formRef1"
+        v-slot="{ errors, meta, resetForm }"
+        @submit="startGame"
+      >
+        <AppFormFieId
+          type="select"
+          name="選擇發球場地"
+          lable="選擇發球場地"
+          rules="required"
+          :options="[
+            { value: 'A', label: '場地 A' },
+            { value: 'B', label: '場地 B' },
+          ]"
+        >
+        </AppFormFieId>
+        <button type="submit">確定</button>
+      </VForm>
     </div>
 
     <!-- 計分顯示 -->
@@ -17,10 +30,11 @@
       <div class="flip-board">
         <div
           class="score-card"
-          @click="scorePoint('A')"
+          @click="scorePoint(isSwapped ? 'B' : 'A')"
           :disabled="!!winner"
           :style="{
-            background: lastServer === 'A' ? 'rgb(116 112 112)' : '#111',
+            background: lastServe ? 'rgb(116 112 112)' : '#111',
+            border: leftLastPoint ? '3px solid red' : '3px solid #fff',
           }"
         >
           <div class="score-num">{{ leftScore }}</div>
@@ -29,7 +43,9 @@
 
         <div class="middle-control">
           <button @click="swapSides" class="swap-btn no-select">🔁</button>
-          <div class="round-info">目前局數: 1</div>
+          <!-- <div class="round-info">目前局數: 1</div> -->
+          <div class="round-info">----------</div>
+
           <button
             class="no-select"
             @click="undoLastAction"
@@ -47,10 +63,11 @@
 
         <div
           class="score-card"
-          @click="scorePoint('B')"
+          @click="scorePoint(isSwapped ? 'A' : 'B')"
           :disabled="!!winner"
           :style="{
-            background: lastServer === 'B' ? 'rgb(116 112 112)' : '#111',
+            background: !lastServe ? 'rgb(116 112 112)' : '#111',
+            border: rightLastPoint ? '3px solid red' : '3px solid #fff',
           }"
         >
           <div class="score-num">{{ rightScore }}</div>
@@ -82,6 +99,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import AppFormFieId from "../components/AppFormFieId.vue";
 
 const scoreA = ref(0);
 const scoreB = ref(0);
@@ -103,6 +121,20 @@ const leftPlayerLabel = computed(() => (isSwapped.value ? "場地 B" : "場地 A
 const rightPlayerLabel = computed(() =>
   isSwapped.value ? "場地 A" : "場地 B"
 );
+
+const lastServe = computed(() => {
+  return isSwapped.value ? lastServer.value === "B" : lastServer.value === "A";
+});
+
+const leftLastPoint = computed(() => {
+  console.log("leftLastPoint", leftScore.value, rightScore.value);
+  const diff = leftScore.value - rightScore.value;
+  return diff > 0 && (leftScore.value > 19 || leftScore.value > 28);
+});
+const rightLastPoint = computed(() => {
+  const diff = rightScore.value - leftScore.value;
+  return diff > 0 && (rightScore.value > 19 || rightScore.value > 28);
+});
 
 const startGame = () => {
   gameStarted.value = true;
@@ -277,7 +309,7 @@ button:disabled {
 }
 
 .scoreboard {
-  height: 100vh;
+  /* height: 100vh; */
   display: flex;
   flex-direction: column;
   /* justify-content: space-between; */
@@ -386,3 +418,77 @@ button:disabled {
   }
 }
 </style>
+
+
+
+<style>
+.main-content .scoreboard #badmintonForm {
+  max-width: 400px;
+  margin: 5rem auto;
+  padding: 2rem;
+  background: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-family: "Segoe UI", sans-serif;
+}
+
+#badmintonForm .form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+#badmintonForm label {
+  text-align: left;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #ccc;
+  font-size: 0.95rem;
+}
+
+#badmintonForm select {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background: #2b2b2b;
+  color: #fff;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+#badmintonForm input:focus {
+  border-color: #4db8ff;
+  outline: none;
+}
+
+#badmintonForm button[type="submit"] {
+  width: 100%;
+  padding: 0.8rem;
+  background: #4db8ff;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 1rem;
+}
+
+#badmintonForm button[type="submit"]:hover {
+  background: #38a2e8;
+}
+
+#badmintonForm span[role="alert"] {
+  color: #ff4d4d !important;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+</style>
+
+
+

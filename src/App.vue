@@ -11,6 +11,10 @@
 
       <!-- 只有展開時顯示內容 -->
       <div v-if="isSidebarOpen" class="sidebar-content">
+        <RouterLink to="/LogIn" class="link" v-show="!store.getters['isLogin']"
+          >🔐 LogIn</RouterLink
+        >
+        <RouterLink to="/" class="link">🏠 Home</RouterLink>
         <RouterLink to="/Badminton" class="link">🏸 羽球記分板</RouterLink>
 
         <div class="menu-group">
@@ -48,28 +52,34 @@
 <script setup>
 import { ref } from "vue";
 import { RouterLink, RouterView, useRoute } from "vue-router";
+import store from "@/stores/stores";
+
 const route = useRoute();
 
-const isSidebarOpen = ref(true);
-const isMenuOpen = ref(true);
+const isSidebarOpen = ref(false);
+const isMenuOpen = ref(false);
 
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
 };
 
 const toggleMenu = () => {
+  if (!store.getters["isLogin"]) {
+    alert("請先登入");
+    return;
+  }
+
   isMenuOpen.value = !isMenuOpen.value;
 };
 
 // 將除了 "123" 的所有功能選項集中管理
 const otherRoutes = [
-  { to: "/", label: "🏠 Home" },
-  { to: "/about", label: "📄 About" },
+  // { to: "/", label: "🏠 Home" },
+  // { to: "/about", label: "📄 About" },
   { to: "/Hash#start", label: "定位 Id" },
   { to: "/inputbar", label: "驗證碼" },
   { to: "/validate", label: "表單驗證" },
   { to: "/Router", label: "異動提示" },
-  { to: "/Vuex", label: "Vuex(登入口)" },
   { to: "/Suspense", label: "Suspense" },
   { to: "/Canvas", label: "簽名檔" },
   { to: "/Notion", label: "Notion" },
@@ -290,7 +300,7 @@ nav a:first-of-type {
 
 .main-content {
   flex: 1;
-  padding: 20px;
+  padding: 50px;
   overflow-y: auto;
 }
 

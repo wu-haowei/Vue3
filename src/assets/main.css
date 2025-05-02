@@ -1,1 +1,7 @@
 @import './base.css';
+
+
+
+.no-select {
+  user-select: none; /* 禁止選取文字 */
+}
