@@ -1,8 +1,5 @@
 <template>
   <div class="scoreboard">
-    <!-- <h2>羽球比賽記分板</h2> -->
-
-    <!-- 發球方選擇 -->
     <div v-if="!gameStarted">
       <VForm
         id="badmintonForm"
@@ -40,7 +37,6 @@
           <div class="score-num">{{ leftScore }}</div>
           <div class="player-label">{{ leftPlayerLabel }}</div>
         </div>
-
         <div class="middle-control">
           <button @click="swapSides" class="swap-btn no-select">🔁</button>
           <div class="round-info">目前局數: 1</div>
@@ -59,7 +55,6 @@
             ↩️ 上一步
           </button>
         </div>
-
         <div
           class="score-card"
           @click="scorePoint(isSwapped ? 'A' : 'B')"
@@ -77,20 +72,9 @@
       <div class="status" v-if="!winner">
         <p>目前發球方：{{ server }}</p>
         <p>發球位置：{{ servePosition }}</p>
-        <!-- <p>上次發球方：{{ lastServer || "尚未發球" }}</p> -->
       </div>
-
       <div class="winner" v-else>
         <h3>🏆 比賽結束！{{ winner }} 獲勝！</h3>
-      </div>
-
-      <div class="buttons">
-        <!-- <button @click="scorePoint('A')" :disabled="!!winner">
-          場地 A 得分
-        </button>
-        <button @click="scorePoint('B')" :disabled="!!winner">
-          場地 B 得分
-        </button> -->
       </div>
     </div>
   </div>
@@ -325,11 +309,14 @@ button:disabled {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 1.5rem;
-  margin: 2rem 0;
+  /* gap: 0.1rem; */
+  /* margin: 2rem 0; */
 }
 
 .score-card {
+  flex: 1 1; /* 當空間不足就換行 */
+  max-width: 45%;
+  /* min-width: 250px; */
   background: #111;
   border: 3px solid #fff;
   border-radius: 10px;
@@ -403,17 +390,17 @@ button:disabled {
   }
 
   .score-card {
-    width: 80%;
+    max-width: 100%;
   }
 
   .score-num {
-    font-size: 3.5rem;
+    font-size: 4rem;
   }
 
-  button {
-    width: 90%;
-    max-width: 300px;
-    font-size: 1rem;
+  .middle-control {
+    position: static;
+    transform: none;
+    margin: 1rem 0;
   }
 }
 </style>
