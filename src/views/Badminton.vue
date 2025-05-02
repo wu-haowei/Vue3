@@ -43,9 +43,8 @@
 
         <div class="middle-control">
           <button @click="swapSides" class="swap-btn no-select">🔁</button>
-          <!-- <div class="round-info">目前局數: 1</div> -->
-          <div class="round-info">----------</div>
-
+          <div class="round-info">目前局數: 1</div>
+          <!-- <div class="round-info">----------</div> -->
           <button
             class="no-select"
             @click="undoLastAction"
