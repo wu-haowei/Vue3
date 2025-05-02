@@ -9,7 +9,7 @@
       >
         <AppFormFieId
           type="select"
-          name="選擇發球場地"
+          name="server"
           lable="選擇發球場地"
           rules="required"
           :options="[
@@ -18,11 +18,33 @@
           ]"
         >
         </AppFormFieId>
+
+        <AppFormFieId
+          name="A1"
+          lable="場地 A"
+          placeholder="球員 1（左）"
+        ></AppFormFieId>
+
+        <AppFormFieId
+          name="A2"
+          lable="場地 A"
+          placeholder="球員 2（右）"
+        ></AppFormFieId>
+
+        <AppFormFieId
+          name="B1"
+          lable="場地 B"
+          placeholder="球員 1（左）"
+        ></AppFormFieId>
+
+        <AppFormFieId
+          name="B2"
+          lable="場地 B"
+          placeholder="球員 2（右）"
+        ></AppFormFieId>
         <button type="submit">確定</button>
       </VForm>
     </div>
-
-    <!-- 計分顯示 -->
     <div v-else>
       <div class="flip-board">
         <div
@@ -30,12 +52,21 @@
           @click="scorePoint(isSwapped ? 'B' : 'A')"
           :disabled="!!winner"
           :style="{
-            background: lastServe ? 'rgb(116 112 112)' : '#111',
+            background:
+              lastServe === null
+                ? '#111'
+                : lastServe
+                ? 'rgb(116 112 112)'
+                : '#111',
             border: leftLastPoint ? '3px solid red' : '3px solid #fff',
           }"
         >
           <div class="score-num">{{ leftScore }}</div>
-          <div class="player-label">{{ leftPlayerLabel }}</div>
+          <div style="display: flex; justify-content: space-around">
+            <div>{{ leftPlayers.left }}</div>
+            <div class="player-label">{{ leftPlayerLabel }}</div>
+            <div>{{ leftPlayers.right }}</div>
+          </div>
         </div>
         <div class="middle-control">
           <button @click="swapSides" class="swap-btn no-select">🔁</button>
@@ -60,18 +91,38 @@
           @click="scorePoint(isSwapped ? 'A' : 'B')"
           :disabled="!!winner"
           :style="{
-            background: !lastServe ? 'rgb(116 112 112)' : '#111',
+            background:
+              lastServe === null
+                ? '#111'
+                : !lastServe
+                ? 'rgb(116 112 112)'
+                : '#111',
             border: rightLastPoint ? '3px solid red' : '3px solid #fff',
           }"
         >
           <div class="score-num">{{ rightScore }}</div>
-          <div class="player-label">{{ rightPlayerLabel }}</div>
+          <div style="display: flex; justify-content: space-around">
+            <div>{{ rightPlayers.left }}</div>
+
+            <div class="player-label">{{ rightPlayerLabel }}</div>
+            <div>{{ rightPlayers.right }}</div>
+          </div>
         </div>
       </div>
 
       <div class="status" v-if="!winner">
         <p>目前發球方：{{ server }}</p>
-        <p>發球位置：{{ servePosition }}</p>
+        <!-- <p>發球位置：{{ servePosition }}</p> -->
+
+        <!-- <div class="player-label">
+          <div>{{ leftPlayers.left }}</div>
+          <div>{{ leftPlayers.right }}</div>
+        </div> -->
+
+        <!--  <div class="player-label">
+          <div>{{ rightPlayers.left }}</div>
+          <div>{{ rightPlayers.right }}</div>
+        </div> -->
       </div>
       <div class="winner" v-else>
         <h3>🏆 比賽結束！{{ winner }} 獲勝！</h3>
@@ -90,8 +141,21 @@ const server = ref("");
 const lastServer = ref("");
 const winner = ref("");
 const gameStarted = ref(false);
-const isSwapped = ref(false);
+const isSwapped = ref(false); //已交換
 const history = ref([]);
+
+const courtPosition = ref({
+  A: { left: "A左", right: "A右" },
+  B: { left: "B左", right: "B右" },
+});
+
+const leftPlayers = computed(() => {
+  return isSwapped.value ? courtPosition.value.B : courtPosition.value.A;
+});
+
+const rightPlayers = computed(() => {
+  return isSwapped.value ? courtPosition.value.A : courtPosition.value.B;
+});
 
 // 顯示分數 & 名稱 (根據 isSwapped)
 const leftScore = computed(() =>
@@ -106,6 +170,7 @@ const rightPlayerLabel = computed(() =>
 );
 
 const lastServe = computed(() => {
+  if (!lastServer.value) return null; // 尚未有發球方
   return isSwapped.value ? lastServer.value === "B" : lastServer.value === "A";
 });
 
@@ -119,7 +184,12 @@ const rightLastPoint = computed(() => {
   return diff > 0 && (rightScore.value > 19 || rightScore.value > 28);
 });
 
-const startGame = () => {
+const startGame = (data) => {
+  server.value = data["server"];
+  courtPosition.value.A.left = data["A1"] == "" ? "A1" : data["A1"];
+  courtPosition.value.A.right = data["A2"] == "" ? "A2" : data["A2"];
+  courtPosition.value.B.left = data["B1"] == "" ? "B1" : data["B1"];
+  courtPosition.value.B.right = data["B2"] == "" ? "B2" : data["B2"];
   gameStarted.value = true;
 };
 
@@ -140,9 +210,23 @@ const scorePoint = (player) => {
   if (player === "A") {
     scoreA.value++;
     server.value = "A";
+
+    if (lastServer.value === "A") {
+      // A 連續得分 => 交換站位
+      const temp = courtPosition.value.A.left;
+      courtPosition.value.A.left = courtPosition.value.A.right;
+      courtPosition.value.A.right = temp;
+    }
   } else {
     scoreB.value++;
     server.value = "B";
+
+    if (lastServer.value === "B") {
+      // B 連續得分 => 交換站位
+      const temp = courtPosition.value.B.left;
+      courtPosition.value.B.left = courtPosition.value.B.right;
+      courtPosition.value.B.right = temp;
+    }
   }
 
   checkWinner();
@@ -202,86 +286,6 @@ const swapSides = () => {
   isSwapped.value = !isSwapped.value;
 };
 </script>
-<!-- 
-<style scoped>
-.scoreboard {
-  max-width: 600px;
-  margin: auto;
-  padding: 1rem;
-  background: #000;
-  color: #fff;
-  font-family: sans-serif;
-  text-align: center;
-}
-
-.flip-board {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.5rem;
-  margin: 2rem 0;
-}
-
-.score-card {
-  background: #111;
-  border: 3px solid #fff;
-  border-radius: 10px;
-  /* padding: 1.5rem; */
-  width: 120px;
-}
-
-.score-num {
-  font-size: 5rem;
-  font-weight: bold;
-  line-height: 1;
-}
-
-.player-label {
-  margin-top: 0.5rem;
-  font-size: 1rem;
-}
-
-.middle-control {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.round-info {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.swap-btn {
-  font-size: 2rem;
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-}
-
-.status,
-.winner,
-.buttons {
-  margin-top: 1rem;
-}
-
-button {
-  background: #333;
-  color: white;
-  padding: 0.5rem 1rem;
-  margin: 0.3rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-</style> -->
-
 
 <style scoped>
 :global(body, html) {
@@ -434,7 +438,8 @@ button:disabled {
   font-size: 0.95rem;
 }
 
-#badmintonForm select {
+#badmintonForm select,
+input {
   width: 100%;
   padding: 0.6rem 0.9rem;
   border: 1px solid #444;
