@@ -45,7 +45,7 @@
     <!-- 主內容 -->
     <main class="main-content">
       <RouterView v-slot="{ Component }">
-        <Transition name="slide">
+        <Transition name="slide" mode="out-in">
           <KeepAlive :include="['KeepAlive']">
             <component :is="Component" :key="$route.path" />
           </KeepAlive>
@@ -122,7 +122,7 @@ const otherRoutes = [
 .moveUp-enter-active {
   animation: fadIn 1s ease-in;
 }
-@keyframes fadIn {
+/* @keyframes fadIn {
   0% {
     opacity: 0;
   }
@@ -134,11 +134,11 @@ const otherRoutes = [
   100% {
     opacity: 1;
   }
-}
-.moveUp-leave-active {
+} */
+/* .moveUp-leave-active {
   animation: moveUp 0.3s ease-in;
-}
-@keyframes moveUp {
+} */
+/* @keyframes moveUp {
   0% {
     transform: translateY(0);
   }
@@ -146,17 +146,17 @@ const otherRoutes = [
   100% {
     transform: translateY(-400px);
   }
-}
+} */
 
-.fade-enter-active,
+/* .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s;
-}
+} */
 
-.fade-enter,
+/* .fade-enter,
 .fade-leave-to {
   opacity: 0;
-}
+} */
 
 .overlay {
   position: fixed;
@@ -275,12 +275,12 @@ const otherRoutes = [
 }
 
 /* 過場動畫保留 */
-.slide-enter-active,
+/* .slide-enter-active,
 .slide-leave-active {
   transition: opacity 0.5s;
 }
 .slide-enter-from,
 .slide-leave-to {
   opacity: 0;
-}
+} */
 </style>

@@ -21,25 +21,25 @@
 
         <AppFormFieId
           name="A1"
-          lable="場地 A"
+          lable="場地 A左"
           placeholder="球員 1（左）"
         ></AppFormFieId>
 
         <AppFormFieId
           name="A2"
-          lable="場地 A"
+          lable="場地 A右"
           placeholder="球員 2（右）"
         ></AppFormFieId>
 
         <AppFormFieId
           name="B1"
-          lable="場地 B"
+          lable="場地 B左"
           placeholder="球員 1（左）"
         ></AppFormFieId>
 
         <AppFormFieId
           name="B2"
-          lable="場地 B"
+          lable="場地 B右"
           placeholder="球員 2（右）"
         ></AppFormFieId>
         <button type="submit">確定</button>
