@@ -46,7 +46,8 @@
     <main class="main-content">
       <RouterView v-slot="{ Component }">
         <Transition name="slide" mode="out-in">
-          <KeepAlive :include="['KeepAlive']">
+          <!-- <KeepAlive :include="['KeepAlive','Badminton']"> -->
+          <KeepAlive :include="keepAlive">
             <component :is="Component" :key="$route.path" />
           </KeepAlive>
         </Transition>
@@ -56,7 +57,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { RouterLink, RouterView, useRoute } from "vue-router";
 import store from "@/stores/stores";
 
@@ -64,7 +65,9 @@ const route = useRoute();
 
 const isSidebarOpen = ref(false);
 const isMenuOpen = ref(false);
-
+const keepAlive = computed(() => {
+  return route.meta.keepAlive === true ? [route.meta.name] : [];
+}); 
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
 };

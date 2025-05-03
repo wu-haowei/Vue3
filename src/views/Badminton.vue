@@ -20,27 +20,36 @@
         </AppFormFieId>
 
         <AppFormFieId
+          :type="personnel.length > 0 ? 'select' : 'text'"
           name="A1"
           lable="場地 A左"
           placeholder="球員 1（左）"
-        ></AppFormFieId>
+          :options="personnel"
+        >
+        </AppFormFieId>
 
         <AppFormFieId
+          :type="personnel.length > 0 ? 'select' : 'text'"
           name="A2"
           lable="場地 A右"
           placeholder="球員 2（右）"
+          :options="personnel"
         ></AppFormFieId>
 
         <AppFormFieId
+          :type="personnel.length > 0 ? 'select' : 'text'"
           name="B1"
           lable="場地 B左"
           placeholder="球員 1（左）"
+          :options="personnel"
         ></AppFormFieId>
 
         <AppFormFieId
+          :type="personnel.length > 0 ? 'select' : 'text'"
           name="B2"
           lable="場地 B右"
           placeholder="球員 2（右）"
+          :options="personnel"
         ></AppFormFieId>
         <button type="submit">確定</button>
       </VForm>
@@ -53,11 +62,7 @@
           :disabled="!!winner"
           :style="{
             background:
-              lastServe === null
-                ? '#111'
-                : lastServe
-                ? 'rgb(116 112 112)'
-                : '#111',
+              server === (isSwapped ? 'B' : 'A') ? 'rgb(116 112 112)' : '#111',
             border: leftLastPoint ? '3px solid red' : '3px solid #fff',
           }"
         >
@@ -92,11 +97,7 @@
           :disabled="!!winner"
           :style="{
             background:
-              lastServe === null
-                ? '#111'
-                : !lastServe
-                ? 'rgb(116 112 112)'
-                : '#111',
+              server === (isSwapped ? 'A' : 'B') ? 'rgb(116 112 112)' : '#111',
             border: rightLastPoint ? '3px solid red' : '3px solid #fff',
           }"
         >
@@ -111,7 +112,8 @@
       </div>
 
       <div class="status" v-if="!winner">
-        <p>目前發球方：{{ server }}</p>
+        <!-- <p>目前發球方：{{ server }}</p> -->
+        <p>上次發球方：{{ lastServe }}</p>
         <!-- <p>發球位置：{{ servePosition }}</p> -->
 
         <!-- <div class="player-label">
@@ -128,13 +130,34 @@
         <h3>🏆 比賽結束！{{ winner }} 獲勝！</h3>
       </div>
     </div>
+
+    <!-- <button id="show-modal" @click="showModal = true">Show Modal</button> -->
+    <modal :show="showModal" @close="showModal = false">
+      <template #header>
+        <h3>是否確認重置比賽</h3>
+      </template>
+
+      <template #footer>
+        <button @click="reset" style="background-color: red; color: white">
+          確認
+        </button>
+        <button @click="showModal = false">取消</button>
+      </template>
+    </modal>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import AppFormFieId from "../components/AppFormFieId.vue";
+import Modal from "../components/Teleport.vue";
 
+// defineOptions({
+//   name: "Badminton",
+//   components: {},
+// });
+
+const showModal = ref(false);
 const scoreA = ref(0);
 const scoreB = ref(0);
 const server = ref("");
@@ -143,6 +166,8 @@ const winner = ref("");
 const gameStarted = ref(false);
 const isSwapped = ref(false); //已交換
 const history = ref([]);
+
+const personnel = ref([]);
 
 const courtPosition = ref({
   A: { left: "A左", right: "A右" },
@@ -170,8 +195,17 @@ const rightPlayerLabel = computed(() =>
 );
 
 const lastServe = computed(() => {
-  if (!lastServer.value) return null; // 尚未有發球方
-  return isSwapped.value ? lastServer.value === "B" : lastServer.value === "A";
+  // if (!lastServer.value) return null; // 尚未有發球方
+  // return isSwapped.value ? lastServer.value === "B" : lastServer.value === "A";
+
+  if (!lastServer.value) return "無"; // 尚未有發球方
+  return isSwapped.value
+    ? lastServer.value === "B"
+      ? "B"
+      : "A"
+    : lastServer.value === "A"
+    ? "A"
+    : "B";
 });
 
 const leftLastPoint = computed(() => {
@@ -186,10 +220,30 @@ const rightLastPoint = computed(() => {
 
 const startGame = (data) => {
   server.value = data["server"];
-  courtPosition.value.A.left = data["A1"] == "" ? "A1" : data["A1"];
-  courtPosition.value.A.right = data["A2"] == "" ? "A2" : data["A2"];
-  courtPosition.value.B.left = data["B1"] == "" ? "B1" : data["B1"];
-  courtPosition.value.B.right = data["B2"] == "" ? "B2" : data["B2"];
+  if (personnel.value.length > 0) {
+    courtPosition.value.A.left =
+      data["A1"] === ""
+        ? "A1"
+        : personnel.value.find((f) => f.value == data["A1"]).label;
+    courtPosition.value.A.right =
+      data["A2"] === ""
+        ? "A2"
+        : personnel.value.find((f) => f.value == data["A2"]).label;
+    courtPosition.value.B.left =
+      data["B1"] === ""
+        ? "B1"
+        : personnel.value.find((f) => f.value == data["B1"]).label;
+    courtPosition.value.B.right =
+      data["B2"] === ""
+        ? "B2"
+        : personnel.value.find((f) => f.value == data["B2"]).label;
+  } else {
+    courtPosition.value.A.left = data["A1"] == "" ? "A1" : data["A1"];
+    courtPosition.value.A.right = data["A2"] == "" ? "A2" : data["A2"];
+    courtPosition.value.B.left = data["B1"] == "" ? "B1" : data["B1"];
+    courtPosition.value.B.right = data["B2"] == "" ? "B2" : data["B2"];
+  }
+
   gameStarted.value = true;
 };
 
@@ -243,10 +297,10 @@ const undoLastAction = () => {
   isSwapped.value = last.isSwapped;
 };
 
-const servePosition = computed(() => {
-  const score = server.value === "A" ? scoreA.value : scoreB.value;
-  return score % 2 === 0 ? "右邊" : "左邊";
-});
+// const servePosition = computed(() => {
+//   const score = server.value === "A" ? scoreA.value : scoreB.value;
+//   return score % 2 === 0 ? "右邊" : "左邊";
+// });
 
 const checkWinner = () => {
   const diff = Math.abs(scoreA.value - scoreB.value);
@@ -266,16 +320,19 @@ const reset = () => {
   gameStarted.value = false;
   history.value = [];
   isSwapped.value = false;
+
+  showModal.value = false;
 };
 
 const longPressTimer = ref(null);
 
 const handleMouseDown = () => {
   longPressTimer.value = setTimeout(() => {
-    if (confirm("是否確認重置比賽？")) {
-      reset();
-    }
-  }, 2000);
+    // if (confirm("是否確認重置比賽？")) {
+    //   reset();
+    // }
+    showModal.value = true;
+  }, 1500);
 };
 
 const handleMouseUp = () => {
@@ -285,6 +342,21 @@ const handleMouseUp = () => {
 const swapSides = () => {
   isSwapped.value = !isSwapped.value;
 };
+
+onMounted(() => {
+  const hash = window.location.hash;
+  const queryIndex = hash.indexOf("?");
+  if (queryIndex === -1) return null;
+
+  const queryString = hash.slice(queryIndex + 1);
+  const params = new URLSearchParams(queryString);
+  const p = params.get("p");
+  if (p) {
+    p.split(",").forEach((f, index) => {
+      personnel.value.push({ value: index, label: f });
+    });
+  }
+});
 </script>
 
 <style scoped>

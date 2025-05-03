@@ -165,7 +165,7 @@ export const createMyRouter = function () {
         component: () => import('../views/KeepAlive.vue'),
         meta: {
           requiresAuth: true,
-          keepAlive: false,
+          keepAlive: true,
           mode: 'out-in'
         }
       },
@@ -315,11 +315,8 @@ export const createMyRouter = function () {
       {
         path: '/Badminton',
         name: 'Badminton',
-        // route level code-splitting
-        // this generates a separate chunk (About.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
         component: () => import('../views/Badminton.vue'),//會拆分頁面(大網站)
-        meta: { transition: 'fade', mode: 'out-in', requiresAuth: false },
+        meta: { transition: 'fade', mode: 'out-in', requiresAuth: false, keepAlive: true },
         props: true,
       },
     ]
