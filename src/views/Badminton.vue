@@ -68,9 +68,21 @@
         >
           <div class="score-num">{{ leftScore }}</div>
           <div style="display: flex; justify-content: space-around">
-            <div>{{ leftPlayers.left }}</div>
+            <div
+              :class="{
+                'server-name': isServerPlayer(isSwapped ? 'B' : 'A', 'left'),
+              }"
+            >
+              {{ leftPlayers.left }}
+            </div>
             <div class="player-label">{{ leftPlayerLabel }}</div>
-            <div>{{ leftPlayers.right }}</div>
+            <div
+              :class="{
+                'server-name': isServerPlayer(isSwapped ? 'B' : 'A', 'right'),
+              }"
+            >
+              {{ leftPlayers.right }}
+            </div>
           </div>
         </div>
         <div class="middle-control">
@@ -103,10 +115,21 @@
         >
           <div class="score-num">{{ rightScore }}</div>
           <div style="display: flex; justify-content: space-around">
-            <div>{{ rightPlayers.left }}</div>
-
+            <div
+              :class="{
+                'server-name': isServerPlayer(isSwapped ? 'A' : 'B', 'left'),
+              }"
+            >
+              {{ rightPlayers.left }}
+            </div>
             <div class="player-label">{{ rightPlayerLabel }}</div>
-            <div>{{ rightPlayers.right }}</div>
+            <div
+              :class="{
+                'server-name': isServerPlayer(isSwapped ? 'A' : 'B', 'right'),
+              }"
+            >
+              {{ rightPlayers.right }}
+            </div>
           </div>
         </div>
       </div>
@@ -257,6 +280,7 @@ const scorePoint = (player) => {
     lastServer: lastServer.value,
     winner: winner.value,
     isSwapped: isSwapped.value,
+    courtPosition: JSON.parse(JSON.stringify(courtPosition.value)), // 深拷貝位置
   });
 
   lastServer.value = server.value;
@@ -287,6 +311,14 @@ const scorePoint = (player) => {
 };
 
 const undoLastAction = () => {
+  // if (history.value.length === 0) return;
+  // const last = history.value.pop();
+  // scoreA.value = last.scoreA;
+  // scoreB.value = last.scoreB;
+  // server.value = last.server;
+  // lastServer.value = last.lastServer;
+  // winner.value = last.winner;
+  // isSwapped.value = last.isSwapped;
   if (history.value.length === 0) return;
   const last = history.value.pop();
   scoreA.value = last.scoreA;
@@ -295,12 +327,22 @@ const undoLastAction = () => {
   lastServer.value = last.lastServer;
   winner.value = last.winner;
   isSwapped.value = last.isSwapped;
+
+  console.log("回上一步", last.courtPosition);
+
+  courtPosition.value = JSON.parse(JSON.stringify(last.courtPosition)); // 還原站位
 };
 
-// const servePosition = computed(() => {
-//   const score = server.value === "A" ? scoreA.value : scoreB.value;
-//   return score % 2 === 0 ? "右邊" : "左邊";
-// });
+
+const servePosition = computed(() => {
+  const score = server.value === "A" ? scoreA.value : scoreB.value;
+  return score % 2 === 0 ? "right" : "left"; 
+});
+
+const isServerPlayer = (side, position) => {
+  if (server.value !== side) return false;
+  return servePosition.value === position;
+};
 
 const checkWinner = () => {
   const diff = Math.abs(scoreA.value - scoreB.value);
@@ -360,6 +402,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.server-name {
+  background-color: #ffe066; /* 淺黃色底 */
+  color:  #000;
+  padding: 0.25em 0.5em;
+  border-radius: 4px;
+}
+
 :global(body, html) {
   margin: 0;
   padding: 0;
