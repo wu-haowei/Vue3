@@ -71,7 +71,7 @@ const formRef1 = ref(null);
   max-width: 400px;
   margin: 5rem auto;
   padding: 2rem;
-  background: #1e1e1e;
+  /* background: #1e1e1e; */
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
   color: #fff;
@@ -88,7 +88,7 @@ const formRef1 = ref(null);
 #loginInForm label {
   margin-bottom: 0.4rem;
   font-weight: 600;
-  color: #ccc;
+  /* color: #ccc; */
   font-size: 0.95rem;
 }
 
@@ -97,7 +97,7 @@ const formRef1 = ref(null);
   padding: 0.6rem 0.9rem;
   border: 1px solid #444;
   border-radius: 6px;
-  background: #2b2b2b;
+  /* background: #2b2b2b; */
   color: #fff;
   font-size: 1rem;
   transition: border-color 0.3s;
@@ -124,13 +124,6 @@ const formRef1 = ref(null);
 
 #loginInForm button[type="submit"]:hover {
   background: #38a2e8;
-}
-
-#loginInForm span[role="alert"] {
-  color: #ff4d4d !important;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-  font-weight: 500;
 }
 </style>
 

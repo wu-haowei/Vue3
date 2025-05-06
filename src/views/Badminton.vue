@@ -1,6 +1,7 @@
 <template>
   <div class="scoreboard">
     <div v-if="!gameStarted">
+      v1.0.0
       <VForm
         id="badmintonForm"
         ref="formRef1"
@@ -13,8 +14,9 @@
           lable="選擇發球場地"
           rules="required"
           :options="[
-            { value: 'A', label: '場地 A' },
-            { value: 'B', label: '場地 B' },
+            { label: '-- 請選擇 --', value: '', isDisabled: true },
+            { value: 'A', label: '場地 A' , isDisabled: false},
+            { value: 'B', label: '場地 B' , isDisabled: false},
           ]"
         >
         </AppFormFieId>
@@ -56,7 +58,7 @@
     </div>
     <div v-else>
       <div class="flip-board">
-        <div
+        <!-- <div
           class="score-card"
           @click="scorePoint(isSwapped ? 'B' : 'A')"
           :disabled="!!winner"
@@ -65,6 +67,15 @@
               server === (isSwapped ? 'B' : 'A') ? 'rgb(116 112 112)' : '#111',
             border: leftLastPoint ? '3px solid red' : '3px solid #fff',
           }"
+        > -->
+        <div
+          class="score-card"
+          @click="scorePoint(isSwapped ? 'B' : 'A')"
+          :disabled="!!winner"
+          :class="[
+            { 'is-server': server === (isSwapped ? 'B' : 'A') },
+            { 'left-last-point': leftLastPoint },
+          ]"
         >
           <div class="score-num">{{ leftScore }}</div>
           <div style="display: flex; justify-content: space-around">
@@ -103,7 +114,7 @@
             ↩️ 上一步
           </button>
         </div>
-        <div
+        <!-- <div
           class="score-card"
           @click="scorePoint(isSwapped ? 'A' : 'B')"
           :disabled="!!winner"
@@ -112,6 +123,15 @@
               server === (isSwapped ? 'A' : 'B') ? 'rgb(116 112 112)' : '#111',
             border: rightLastPoint ? '3px solid red' : '3px solid #fff',
           }"
+        > -->
+        <div
+          class="score-card"
+          @click="scorePoint(isSwapped ? 'A' : 'B')"
+          :disabled="!!winner"
+          :class="[
+            { 'is-server': server === (isSwapped ? 'A' : 'B') },
+            { 'left-last-point': rightLastPoint },
+          ]"
         >
           <div class="score-num">{{ rightScore }}</div>
           <div style="display: flex; justify-content: space-around">
@@ -333,10 +353,9 @@ const undoLastAction = () => {
   courtPosition.value = JSON.parse(JSON.stringify(last.courtPosition)); // 還原站位
 };
 
-
 const servePosition = computed(() => {
   const score = server.value === "A" ? scoreA.value : scoreB.value;
-  return score % 2 === 0 ? "right" : "left"; 
+  return score % 2 === 0 ? "right" : "left";
 });
 
 const isServerPlayer = (side, position) => {
@@ -404,7 +423,7 @@ onMounted(() => {
 <style scoped>
 .server-name {
   background-color: #ffe066; /* 淺黃色底 */
-  color:  #000;
+  color: #000;
   padding: 0.25em 0.5em;
   border-radius: 4px;
 }
@@ -413,7 +432,7 @@ onMounted(() => {
   margin: 0;
   padding: 0;
   height: 100%;
-  background: #000;
+  /* background: #000; */
 }
 
 .scoreboard {
@@ -448,6 +467,7 @@ onMounted(() => {
   width: 15rem;
   padding: 1rem 0;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .score-num {
@@ -537,10 +557,10 @@ button:disabled {
   max-width: 400px;
   margin: 5rem auto;
   padding: 2rem;
-  background: #1e1e1e;
+  /* background: #1e1e1e; */
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
-  color: #fff;
+  /* color: #fff; */
   font-family: "Segoe UI", sans-serif;
 }
 
@@ -555,7 +575,7 @@ button:disabled {
   text-align: left;
   margin-bottom: 0.4rem;
   font-weight: 600;
-  color: #ccc;
+  /* color: #ccc; */
   font-size: 0.95rem;
 }
 
@@ -565,8 +585,8 @@ input {
   padding: 0.6rem 0.9rem;
   border: 1px solid #444;
   border-radius: 6px;
-  background: #2b2b2b;
-  color: #fff;
+  /* background: #2b2b2b; */
+  /* color: #fff; */
   font-size: 1rem;
   transition: border-color 0.3s;
 }
@@ -594,11 +614,12 @@ input {
   background: #38a2e8;
 }
 
-#badmintonForm span[role="alert"] {
-  color: #ff4d4d !important;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-  font-weight: 500;
+.score-card.is-server {
+  background: rgb(116 112 112);
+}
+
+.score-card.left-last-point {
+  border: 3px solid red;
 }
 </style>
 

@@ -5,18 +5,24 @@
       <div class="sidebar-content">
         <div class="sidebar-header">
           <button class="toggle-btn" @click="toggleSidebar">
-            <template v-if="isSidebarOpen">✖</template>
-            <template v-else>
+            <template v-if="!isSidebarOpen">
               <span class="burger-line"></span>
               <span class="burger-line"></span>
               <span class="burger-line"></span>
             </template>
+            <template v-else>
+              <span class="burger-line cross-line1"></span>
+              <span class="burger-line cross-line2"></span>
+            </template>
           </button>
         </div>
-
+        <button @click="toggleDarkMode" class="theme-toggle">
+          切換主題（{{ isDark ? "深色" : "淺色" }}）
+        </button>
         <RouterLink to="/LogIn" class="link" v-show="!store.getters['isLogin']"
           >🔐 LogIn</RouterLink
         >
+
         <RouterLink to="/" class="link">🏠 Home</RouterLink>
         <RouterLink to="/Badminton" class="link">🏸 羽球記分板</RouterLink>
 
@@ -63,11 +69,18 @@ import store from "@/stores/stores";
 
 const route = useRoute();
 
+const isDark = ref(false);
+
+const toggleDarkMode = () => {
+  isDark.value = !isDark.value;
+  document.body.classList.toggle("dark", isDark.value);
+};
+
 const isSidebarOpen = ref(false);
 const isMenuOpen = ref(false);
 const keepAlive = computed(() => {
   return route.meta.keepAlive === true ? [route.meta.name] : [];
-}); 
+});
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
 };
@@ -217,13 +230,22 @@ const otherRoutes = [
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
 }
 .burger-line {
   width: 20px;
   height: 2px;
   background-color: white;
   display: block;
+}
+
+/* 交叉的 X 樣式 */
+.cross-line1 {
+  transform: rotate(45deg) translate(3px, 3px);
+}
+
+.cross-line2 {
+  transform: rotate(-45deg) translate(3px, -3px);
 }
 
 .sidebar-content {

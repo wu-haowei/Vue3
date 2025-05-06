@@ -15,11 +15,11 @@
     >
       <template v-if="props.type === 'select'">
         <select v-bind="field" :id="props.name" :class="props.name">
-          <option value="" disabled>-- 請選擇 --</option>
           <option
             v-for="(opt, idx) in props.options"
             :key="idx"
             :value="opt.value"
+            :disabled="opt.isDisabled || false"
           >
             {{ opt.label }}
           </option>
@@ -54,9 +54,18 @@ const props = defineProps({
   type: { type: String, default: "text" }, // input / select / checkbox
   options: {
     type: Array,
-    default: () => [],
+    default: () => [{ label: "-- 請選擇 --", value: "", isDisabled: true }],
   },
 });
 </script>
+
+
+
 <!-- :modelValue="props.modelValue" -->
 <!-- v-bind="$attrs"  父層傳進資料都綁定到上面 -->
+<style scoped>
+input {
+  /* https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing */
+  box-sizing: border-box;
+}
+</style>
