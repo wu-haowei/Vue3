@@ -74,7 +74,7 @@ const formRef1 = ref(null);
   /* background: #1e1e1e; */
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
-  color: #fff;
+  /* color: #fff; */
   font-family: "Segoe UI", sans-serif;
 }
 
@@ -98,7 +98,7 @@ const formRef1 = ref(null);
   border: 1px solid #444;
   border-radius: 6px;
   /* background: #2b2b2b; */
-  color: #fff;
+  /* color: #fff; */
   font-size: 1rem;
   transition: border-color 0.3s;
 }
