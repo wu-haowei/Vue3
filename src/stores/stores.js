@@ -1,5 +1,9 @@
 import { createStore } from 'vuex';
 
+import { LoginService } from "@/services/LoginService";
+const loginService = new LoginService();
+
+
 export default createStore({
   state: {
     count: 0,
@@ -12,8 +16,8 @@ export default createStore({
     increment(state) {
       state.count++;
     },
-    async setLogIn(state, options) {
-      state.isLogin = options.isLogin;
+    setLogIn(state, options) {
+      state.isLogin = options;
       // state.token = options.token;
       // state.account = options.account;
       // state.userName = options.userName;
@@ -26,15 +30,20 @@ export default createStore({
       }, 1000);
     },
     async logIn(context, options) {
-      const success = await hashSHA256(options.password) === "40a5c6add604c620ec93497530b89b2dc483e04e7812a6d9c89c879fc7c3a6c8";
-      if (success) {
-        context.commit('setLogIn', {
-          isLogin: true,
-        });
-      } else {
-        context.commit('setLogIn', { isLogin: false });
-      }
-      return success;
+      return new Promise((resolve, reject) => {
+        loginService.login(options.account, options.password)
+          .then(async (res) => {
+            if (res) {
+              context.commit('setLogIn', true);
+            } else {
+              context.commit('setLogIn', false);
+            }
+            resolve(res);
+          })
+          .catch((error) => {
+            reject(false);
+          });
+      });
     }
   },
   getters: {

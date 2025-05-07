@@ -133,6 +133,7 @@ form {
   input,
   select {
     background: var(--color-background-form-input);
+    color: var(--color-background-form-placeholder);
 
     &::placeholder {
       color: var(--color-background-form-placeholder);

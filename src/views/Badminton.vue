@@ -252,7 +252,7 @@ const lastServe = computed(() => {
 });
 
 const leftLastPoint = computed(() => {
-  console.log("leftLastPoint", leftScore.value, rightScore.value);
+  // console.log("leftLastPoint", leftScore.value, rightScore.value);
   const diff = leftScore.value - rightScore.value;
   return diff > 0 && (leftScore.value > 19 || leftScore.value > 28);
 });
@@ -348,7 +348,7 @@ const undoLastAction = () => {
   winner.value = last.winner;
   isSwapped.value = last.isSwapped;
 
-  console.log("回上一步", last.courtPosition);
+  // console.log("回上一步", last.courtPosition);
 
   courtPosition.value = JSON.parse(JSON.stringify(last.courtPosition)); // 還原站位
 };

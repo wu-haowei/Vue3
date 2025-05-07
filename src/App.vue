@@ -64,10 +64,19 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { RouterLink, RouterView, useRoute } from "vue-router";
+import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
+
+/*
+RouterLink |  <router-link> 在 <template> 中建立可點擊切換頁面的連結（相當於 <a>）。可綁定 to 屬性跳轉。
+RouterView |  <router-view> 指定 <router-view> 呈現當前路由對應的元件，是路由內容顯示區塊。
+useRoute   |  取得當前路由物件（route），可以取 params、query、name、path 等資訊。
+useRouter  |  取得路由實例（router），可以進行 push、replace、back 等路由操作。
+*/
+
 import store from "@/stores/stores";
 
 const route = useRoute();
+const router = useRouter();
 
 const isDark = ref(false);
 
@@ -87,11 +96,10 @@ const toggleSidebar = () => {
 
 const toggleMenu = () => {
   if (!store.getters["isLogin"]) {
-    alert("請先登入");
-    return;
+    router.push("Login");
+  } else {
+    isMenuOpen.value = !isMenuOpen.value;
   }
-
-  isMenuOpen.value = !isMenuOpen.value;
 };
 
 const otherRoutes = [
