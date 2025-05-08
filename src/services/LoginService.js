@@ -22,5 +22,15 @@ export class LoginService {
 
     }
 
+    async getStlouisfed(type = 'DGS10') {
+        return apiService.GET(`api/WeatherForecast/Stlouisfed/${type}`)
+            .then((result) => {
+                return result;
+            })
+            .catch((err) => {
+                return Promise.reject(err);
+            });
+    }
+
 
 }

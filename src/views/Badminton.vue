@@ -15,8 +15,8 @@
           rules="required"
           :options="[
             { label: '-- 請選擇 --', value: '', isDisabled: true },
-            { value: 'A', label: '場地 A' , isDisabled: false},
-            { value: 'B', label: '場地 B' , isDisabled: false},
+            { value: 'A', label: '場地 A', isDisabled: false },
+            { value: 'B', label: '場地 B', isDisabled: false },
           ]"
         >
         </AppFormFieId>
@@ -58,16 +58,6 @@
     </div>
     <div v-else>
       <div class="flip-board">
-        <!-- <div
-          class="score-card"
-          @click="scorePoint(isSwapped ? 'B' : 'A')"
-          :disabled="!!winner"
-          :style="{
-            background:
-              server === (isSwapped ? 'B' : 'A') ? 'rgb(116 112 112)' : '#111',
-            border: leftLastPoint ? '3px solid red' : '3px solid #fff',
-          }"
-        > -->
         <div
           class="score-card"
           @click="scorePoint(isSwapped ? 'B' : 'A')"
@@ -99,7 +89,6 @@
         <div class="middle-control">
           <button @click="swapSides" class="swap-btn no-select">🔁</button>
           <div class="round-info">目前局數: 1</div>
-          <!-- <div class="round-info">----------</div> -->
           <button
             class="no-select"
             @click="undoLastAction"
@@ -114,16 +103,6 @@
             ↩️ 上一步
           </button>
         </div>
-        <!-- <div
-          class="score-card"
-          @click="scorePoint(isSwapped ? 'A' : 'B')"
-          :disabled="!!winner"
-          :style="{
-            background:
-              server === (isSwapped ? 'A' : 'B') ? 'rgb(116 112 112)' : '#111',
-            border: rightLastPoint ? '3px solid red' : '3px solid #fff',
-          }"
-        > -->
         <div
           class="score-card"
           @click="scorePoint(isSwapped ? 'A' : 'B')"
@@ -153,33 +132,17 @@
           </div>
         </div>
       </div>
-
       <div class="status" v-if="!winner">
-        <!-- <p>目前發球方：{{ server }}</p> -->
         <p>上次發球方：{{ lastServe }}</p>
-        <!-- <p>發球位置：{{ servePosition }}</p> -->
-
-        <!-- <div class="player-label">
-          <div>{{ leftPlayers.left }}</div>
-          <div>{{ leftPlayers.right }}</div>
-        </div> -->
-
-        <!--  <div class="player-label">
-          <div>{{ rightPlayers.left }}</div>
-          <div>{{ rightPlayers.right }}</div>
-        </div> -->
       </div>
       <div class="winner" v-else>
         <h3>🏆 比賽結束！{{ winner }} 獲勝！</h3>
       </div>
     </div>
-
-    <!-- <button id="show-modal" @click="showModal = true">Show Modal</button> -->
     <modal :show="showModal" @close="showModal = false">
       <template #header>
         <h3>是否確認重置比賽</h3>
       </template>
-
       <template #footer>
         <button @click="reset" style="background-color: red; color: white">
           確認
@@ -331,14 +294,6 @@ const scorePoint = (player) => {
 };
 
 const undoLastAction = () => {
-  // if (history.value.length === 0) return;
-  // const last = history.value.pop();
-  // scoreA.value = last.scoreA;
-  // scoreB.value = last.scoreB;
-  // server.value = last.server;
-  // lastServer.value = last.lastServer;
-  // winner.value = last.winner;
-  // isSwapped.value = last.isSwapped;
   if (history.value.length === 0) return;
   const last = history.value.pop();
   scoreA.value = last.scoreA;
@@ -389,9 +344,6 @@ const longPressTimer = ref(null);
 
 const handleMouseDown = () => {
   longPressTimer.value = setTimeout(() => {
-    // if (confirm("是否確認重置比賽？")) {
-    //   reset();
-    // }
     showModal.value = true;
   }, 1500);
 };
@@ -421,9 +373,9 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.server-name {
-  background-color: #ffe066; /* 淺黃色底 */
-  color: #000;
+.score-card .server-name {
+  background-color: var(--color-background-mark);
+  color: var(--color-background);
   padding: 0.25em 0.5em;
   border-radius: 4px;
 }
@@ -432,20 +384,20 @@ onMounted(() => {
   margin: 0;
   padding: 0;
   height: 100%;
-  /* background: #000; */
 }
 
 .scoreboard {
-  /* height: 100vh; */
   display: flex;
   flex-direction: column;
-  /* justify-content: space-between; */
   justify-content: space-evenly;
   padding: 1rem;
   box-sizing: border-box;
-  color: #fff;
   font-family: sans-serif;
   text-align: center;
+}
+
+.scoreboard .score-card {
+  color: #fff;
 }
 
 .flip-board {
@@ -453,16 +405,13 @@ onMounted(() => {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  /* gap: 0.1rem; */
-  /* margin: 2rem 0; */
 }
 
 .score-card {
   flex: 1 1; /* 當空間不足就換行 */
   max-width: 45%;
-  /* min-width: 250px; */
   background: #111;
-  border: 3px solid #fff;
+  border: 3px solid var(--color-background-form-label);
   border-radius: 10px;
   width: 15rem;
   padding: 1rem 0;
@@ -514,8 +463,8 @@ onMounted(() => {
 }
 
 button {
-  background: #333;
-  color: white;
+  /* background: #333; */
+  /* color: white; */
   padding: 0.5rem 1rem;
   margin: 0.3rem;
   border: none;
@@ -557,10 +506,8 @@ button:disabled {
   max-width: 400px;
   margin: 5rem auto;
   padding: 2rem;
-  /* background: #1e1e1e; */
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
-  /* color: #fff; */
   font-family: "Segoe UI", sans-serif;
 }
 
@@ -575,7 +522,6 @@ button:disabled {
   text-align: left;
   margin-bottom: 0.4rem;
   font-weight: 600;
-  /* color: #ccc; */
   font-size: 0.95rem;
 }
 
@@ -585,8 +531,6 @@ input {
   padding: 0.6rem 0.9rem;
   border: 1px solid #444;
   border-radius: 6px;
-  /* background: #2b2b2b; */
-  /* color: #fff; */
   font-size: 1rem;
   transition: border-color 0.3s;
 }

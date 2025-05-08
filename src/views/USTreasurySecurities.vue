@@ -7,13 +7,12 @@ import { onMounted, reactive } from "vue";
 import { onBeforeRouteUpdate, onBeforeRouteLeave } from "vue-router";
 import { Chart as Highcharts } from "highcharts-vue";
 
+import { LoginService } from "@/services/LoginService";
+const loginService = new LoginService();
+
 //更新
-onBeforeRouteUpdate(() => {
-  console.log("onBeforeRouteUpdate");
-});
-onBeforeRouteLeave(() => {
-  console.log("onBeforeRouteLeave");
-});
+onBeforeRouteUpdate(() => {});
+onBeforeRouteLeave(() => {});
 
 const chartOptions = reactive({
   chart: {
@@ -85,25 +84,34 @@ onMounted(() => {
     redirect: "follow",
   };
 
-  fetch(
-    "https://localhost:44346/api/EIP/SetOrderTable?url=https%3A%2F%2Fapi.stlouisfed.org%2Ffred%2Fseries%2Fobservations%3Fseries_id%3DDGS10%26api_key%3D19145dd7613bda7acafb9574deb88a25%26file_type%3Djson",
-    requestOptions
-  )
-    .then((response) => response.text())
-    .then((result) => {
-      const data = JSON.parse(result);
-      console.log(data);
-      let data1 = data.observations.map((item) => {
+  // fetch("http://localhost:8008/stlouisfed/DGS10")
+  //   .then((response) => response.text())
+  //   .then((result) => {
+  //     const data = JSON.parse(result);
+  //     let data1 = data.observations.map((item) => {
+  //       return [
+  //         new Date(item.date).getTime(),
+  //         /^[0-9]+.?[0-9]*$/.test(item.value) ? Number(item.value) : -1,
+  //       ];
+  //     });
+  //     data1 = data1.filter((item) => item[0] > 0 && item[1] > 0);
+  //     Object.assign(chartOptions.series[0].data, data1);
+  //   })
+  //   .catch((error) => console.error(error));
+
+  loginService
+    .getStlouisfed("DGS10")
+    .then(async (res) => {
+      let data = res.observations.map((item) => {
         return [
           new Date(item.date).getTime(),
           /^[0-9]+.?[0-9]*$/.test(item.value) ? Number(item.value) : -1,
         ];
       });
-      data1 = data1.filter((item) => item[0] > 0 && item[1] > 0);
-      console.log(data1);
-      Object.assign(chartOptions.series[0].data, data1);
+      data = data.filter((item) => item[0] > 0 && item[1] > 0);
+      Object.assign(chartOptions.series[0].data, data);
     })
-    .catch((error) => console.error(error));
+    .catch((error) => {});
 });
 </script>
 

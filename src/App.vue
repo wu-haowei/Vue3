@@ -219,7 +219,7 @@ const otherRoutes = [
 }
 
 .sidebar-header {
-  right: -50px;
+  right: -56px;
   top: 0;
   position: fixed;
   padding: 10px;
@@ -302,7 +302,7 @@ const otherRoutes = [
 }
 
 .main-content {
-  padding: 50px;
+  padding: 100px 50px 0 50px;
   overflow-y: auto;
   height: 100vh;
 }

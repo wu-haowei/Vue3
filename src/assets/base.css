@@ -10,8 +10,13 @@
   /*輸入框背景*/
   --color-background-form-placeholder: #999999;
   /*輸入框文字顏色*/
-  --color-background-form-error: #e74c3c;
   /*錯誤提示文字*/
+  --color-background-form-error: #e74c3c;
+
+
+  --color-background-mark: #FFD700;
+
+
 
 
 
@@ -52,8 +57,10 @@ body.dark {
   /*輸入框背景*/
   --color-background-form-placeholder: #999999;
   /*輸入框文字顏色*/
-  --color-background-form-error: #ff5252;
   /*錯誤提示文字*/
+  --color-background-form-error: #ff5252;
+
+  --color-background-mark: #FFD54F;
 
 
   --color-background-soft: #1e1e1e;
