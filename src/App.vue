@@ -122,7 +122,7 @@ const otherRoutes = [
   { to: "/Draggable", label: "拖曳欄位" },
   { to: "/USTreasurySecurities", label: "10年期美國公債" },
   { to: "/IntersectionObserver", label: "圖片懶加載" },
-  { to: "/VueDragResize", label: "拖曳套件" },
+  // { to: "/VueDragResize", label: "拖曳套件" },
   { to: "/AdvancedChatOpenAI", label: "即時通訊" },
   { to: "/IndexedDB", label: "IndexedDB" },
 ];
@@ -194,7 +194,7 @@ const otherRoutes = [
 
 .app-container {
   position: relative;
-  height: 100vh;
+  /* height: 100vh; */
   overflow: hidden;
 }
 
@@ -302,9 +302,11 @@ const otherRoutes = [
 }
 
 .main-content {
-  padding: 100px 50px 0 50px;
-  overflow-y: auto;
-  height: 100vh;
+  /* padding: 100px 50px 0 50px; */
+  margin: 5rem auto;
+  max-width: 90%;
+  /* overflow-y: auto; */
+  /* height: 100vh; */
 }
 
 /* 過場動畫保留 */

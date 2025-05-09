@@ -258,7 +258,6 @@ export const createMyRouter = function () {
           requiresAuth: true,
           keepAlive: false,
           mode: 'out-in'
-
         }
       },
       {

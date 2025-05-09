@@ -1,13 +1,13 @@
 <template>
   <div class="scoreboard">
     <div v-if="!gameStarted">
-      v1.0.0
       <VForm
         id="badmintonForm"
         ref="formRef1"
         v-slot="{ errors, meta, resetForm }"
         @submit="startGame"
       >
+        v1.0.0
         <AppFormFieId
           type="select"
           name="server"
@@ -390,7 +390,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  padding: 1rem;
+  padding: 0 1rem;
   box-sizing: border-box;
   font-family: sans-serif;
   text-align: center;
@@ -504,7 +504,7 @@ button:disabled {
 <style>
 .main-content .scoreboard #badmintonForm {
   max-width: 400px;
-  margin: 5rem auto;
+  margin: 0rem auto;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
