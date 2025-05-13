@@ -10,6 +10,7 @@
           { label: '-- 請選擇 --', value: '', isDisabled: true },
           { value: 'DGS10', label: 'DGS10', isDisabled: false },
           { value: 'DGS20', label: 'DGS20', isDisabled: false },
+          { value: 'CPIAUCSL', label: '美國整體 CPI', isDisabled: false },
         ]"
       >
       </AppFormFieId>
@@ -37,6 +38,50 @@ const chartOptions = reactive({
     zooming: {
       type: "x",
     },
+  },
+  lang: {
+    months: [
+      "一月",
+      "二月",
+      "三月",
+      "四月",
+      "五月",
+      "六月",
+      "七月",
+      "八月",
+      "九月",
+      "十月",
+      "十一月",
+      "十二月",
+    ],
+    weekdays: [
+      "星期日",
+      "星期一",
+      "星期二",
+      "星期三",
+      "星期四",
+      "星期五",
+      "星期六",
+    ],
+    shortMonths: [
+      "1月",
+      "2月",
+      "3月",
+      "4月",
+      "5月",
+      "6月",
+      "7月",
+      "8月",
+      "9月",
+      "10月",
+      "11月",
+      "12月",
+    ],
+    decimalPoint: ".",
+    thousandsSep: ",",
+  },
+  time: {
+    useUTC: false,
   },
   title: {
     text: "",
@@ -89,8 +134,8 @@ const chartOptions = reactive({
       type: "area",
       name: "USD to EUR",
       data: [
-        [86400000, 7.86],
-        [345600000, 7.88],
+        // [86400000, 7.86],
+        // [345600000, 7.88],
       ],
     },
   ],
@@ -100,21 +145,61 @@ const search = (data) => {
     data.type == "DGS10" ? "10" : data.type == "DGS20" ? "20" : ""
   }-Year Constant Maturity, Quoted on an Investment Basis (${data.type})`;
   chartOptions.series[0].data.splice(0);
-
   loginService
     .getStlouisfed(data.type)
     .then(async (res) => {
-      let data = res.observations.map((item) => {
-        return [
-          new Date(item.date).getTime(),
-          /^[0-9]+.?[0-9]*$/.test(item.value) ? Number(item.value) : -1,
-        ];
-      });
-      data = data.filter((item) => item[0] > 0 && item[1] > 0);
-      Object.assign(chartOptions.series[0].data, data);
+      if (data.type === "CPIAUCSL") {
+        const yoyData = convertCPIToYoYPercent(res.observations);
+        console.log("yoyData", yoyData);
+        Object.assign(chartOptions.series[0].data, yoyData);
+      } else {
+        let _data = res.observations.map((item) => {
+          return [
+            new Date(item.date).getTime(),
+            /^[0-9]+.?[0-9]*$/.test(item.value) ? Number(item.value) : -1,
+          ];
+        });
+        _data = _data.filter((item) => item[0] > 0 && item[1] > 0);
+        console.log("_data", _data);
+
+        Object.assign(chartOptions.series[0].data, _data);
+      }
     })
     .catch((error) => {});
 };
+
+const convertCPIToYoYPercent = (data) => {
+  const map = new Map();
+  data.forEach((item) => {
+    map.set(item.date, parseFloat(item.value));
+  });
+
+  const result = data.map((item) => {
+    const date = new Date(item.date);
+    const lastYearDate = new Date(date);
+    lastYearDate.setFullYear(date.getFullYear() - 1);
+    const lastYearKey = lastYearDate
+      .toISOString()
+      .slice(0, 10)
+      .replace(/-\d{2}$/, "-01");
+
+    const prevValue = map.get(lastYearKey);
+    const currValue = parseFloat(item.value);
+
+    let yoy = null;
+    if (prevValue) {
+      yoy = ((currValue - prevValue) / prevValue) * 100;
+    }
+
+    return [
+      new Date(item.date).getTime(),
+      yoy !== null ? Number(yoy.toFixed(2)) : 0, // 保留兩位小數，或 null
+    ];
+  });
+
+  return result.filter((item) => item[0] > 0 && item[1] > 0);
+};
+
 onMounted(() => {});
 </script>
 

@@ -52,8 +52,8 @@
     <main class="main-content">
       <RouterView v-slot="{ Component }">
         <Transition name="slide" mode="out-in">
-          <!-- <KeepAlive :include="['KeepAlive','Badminton']"> -->
-          <KeepAlive :include="keepAlive">
+          <!-- <KeepAlive :include="getkeepAlive"> -->
+          <KeepAlive :include="['KeepAlive','Badminton']">
             <component :is="Component" :key="$route.path" />
           </KeepAlive>
         </Transition>
@@ -87,9 +87,25 @@ const toggleDarkMode = () => {
 
 const isSidebarOpen = ref(false);
 const isMenuOpen = ref(false);
-const keepAlive = computed(() => {
-  return route.meta.keepAlive === true ? [route.meta.name] : [];
-});
+const kp = ref([]);
+
+// const keepAlive = computed(() => {
+
+//   console.log('keepAlive',route.meta.keepAlive === true ? [route.name] : [])
+//   return route.meta.keepAlive === true ? [route.name] : [];
+// });
+
+const getkeepAlive = () => {
+  console.log('keepAlive');
+
+  if (route.meta.keepAlive === true && !kp.value.includes(route.name)) {
+    kp.value.push(route.name);
+  }
+
+  console.log(kp.value);
+  return kp.value;
+};
+
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
 };

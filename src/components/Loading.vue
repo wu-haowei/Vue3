@@ -37,7 +37,7 @@ export default {};
 }
 
 .lds-spinner div {
-  transform-origin: 40px 40px;
+  /* transform-origin: 40px 40px; */
   animation: lds-spinner 1.2s linear infinite;
 }
 

@@ -2,19 +2,23 @@
 import { ref } from "vue";
 import store from "@/stores/stores";
 import AppFormFieId from "../components/AppFormFieId.vue";
+import Loading from "../components/Loading.vue";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
 
 const logIn = async (data) => {
+  isLoading.value = true;
   const success = await store.dispatch("logIn", {
     token: getGUID(),
     account: data["Account"],
     password: data["password"],
   });
   if (success) {
+    isLoading.value = false;
     router.push("/");
   } else {
+    isLoading.value = false;
     alert("登入失敗");
   }
 };
@@ -39,6 +43,7 @@ const getGUID = () => {
 };
 
 const formRef1 = ref(null);
+const isLoading = ref(false);
 </script>
 
 <template>
@@ -63,6 +68,7 @@ const formRef1 = ref(null);
     ></AppFormFieId>
     <!-- <ErrorMessage name="password" /> -->
     <button type="submit">登入</button>
+    <Loading v-show="isLoading" />
   </VForm>
 </template>
 
