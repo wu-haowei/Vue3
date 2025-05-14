@@ -17,14 +17,80 @@
       <button type="submit">確定</button>
     </VForm>
 
-    <Highcharts :options="chartOptions" />
+    <!-- <Highcharts :options="chartOptions" /> -->
+    <div ref="chartContainer"></div>
+
+    {{ console.log(chart) }}
+    <table>
+      <thead>
+        <th scope="col">Sort</th>
+        <th scope="col">DayTime</th>
+        <th scope="col">Value</th>
+      </thead>
+      <tbody>
+        <template v-if="pagedData.length > 0">
+          <tr
+            v-for="(item, index) of pagedData"
+            :key="index"
+            @click="highlightPoint(index + (currentPage - 1) * itemsPerPage)"
+          >
+            <td data-title="Sort">
+              <span>{{ index + 1 }}</span>
+            </td>
+            <td data-title="DayTime">
+              <span>{{ new Date(item[0]).toLocaleString() }}</span>
+            </td>
+
+            <td data-title="Value">
+              <span>{{ item[1] }}</span>
+            </td>
+          </tr>
+        </template>
+        <template v-else>
+          <tr>
+            <td colspan="3">
+              <slot name="empty">無資料</slot>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+
+    <!-- 分頁控制區 -->
+    <div class="pagination" v-show="pagedData.length > 0">
+      <button @click="currentPage = 1" :disabled="currentPage === 1">
+        第一頁
+      </button>
+      <button @click="prevPage" :disabled="currentPage === 1">上一頁</button>
+      <span>第 {{ currentPage }} / {{ totalPages }} 頁</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages">
+        下一頁
+      </button>
+      <button
+        @click="currentPage = totalPages"
+        :disabled="currentPage === totalPages"
+      >
+        最後
+      </button>
+      <select
+        name="itemsPerPage"
+        id="itemsPerPage"
+        v-model="itemsPerPage"
+        @change="currentPage = 1"
+      >
+        <option :value="10">10</option>
+        <option :value="20">20</option>
+        <option :value="50">50</option>
+        <option :value="100">100</option>
+      </select>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, ref, computed } from "vue";
 import { onBeforeRouteUpdate, onBeforeRouteLeave } from "vue-router";
-import { Chart as Highcharts } from "highcharts-vue";
+import Highcharts from "highcharts";
 import AppFormFieId from "../components/AppFormFieId.vue";
 import { LoginService } from "@/services/LoginService";
 const loginService = new LoginService();
@@ -32,6 +98,65 @@ const loginService = new LoginService();
 //更新
 onBeforeRouteUpdate(() => {});
 onBeforeRouteLeave(() => {});
+const itemsPerPage = ref(10);
+const currentPage = ref(1);
+
+const totalPages = computed(() =>
+  Math.ceil(getData.value.length / itemsPerPage.value)
+);
+
+const pagedData = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  return getData.value.slice(start, start + itemsPerPage.value);
+});
+
+const getData = computed(() => {
+  console.log(chart.value?.series[0]?.data);
+  return (
+    chart.value?.series[0]?.data.reduce((acc, point) => {
+      acc.push([point.x, point.y]);
+      return acc;
+    }, []) || []
+  );
+});
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
+// const highlightPoint = (globalIndex) => {
+//   const series = chart.value?.series?.[0];
+//   if (!series) return;
+//   const point = getData.value[globalIndex];
+//   if (point) {
+//     point.onMouseOver(); // 顯示 tooltip
+//     chart.value.tooltip.refresh(point); // 強制刷新提示框
+//     chart.value.xAxis[0].setExtremes(point.x - 10000000, point.x + 10000000); // 滾動視窗
+//   }
+// };
+
+const highlightPoint = (globalIndex) => {
+  console.log("highlightPoint", globalIndex);
+  const series = chart.value?.series?.[0];
+  if (!series) return;
+  const point = series.data[globalIndex];
+  if (point) {
+    point.onMouseOver(); // ✅ 顯示 tooltip
+    chart.value.tooltip.refresh(point); // ✅ 強制刷新提示框
+    chart.value.xAxis[0].setExtremes(point.x - 10000000, point.x + 10000000); // ✅ 滾動視窗
+  }
+};
+
+const chart = ref(null); // chart 實例
+const chartContainer = ref(null);
 
 const chartOptions = reactive({
   chart: {
@@ -39,49 +164,20 @@ const chartOptions = reactive({
       type: "x",
     },
   },
-  lang: {
-    months: [
-      "一月",
-      "二月",
-      "三月",
-      "四月",
-      "五月",
-      "六月",
-      "七月",
-      "八月",
-      "九月",
-      "十月",
-      "十一月",
-      "十二月",
-    ],
-    weekdays: [
-      "星期日",
-      "星期一",
-      "星期二",
-      "星期三",
-      "星期四",
-      "星期五",
-      "星期六",
-    ],
-    shortMonths: [
-      "1月",
-      "2月",
-      "3月",
-      "4月",
-      "5月",
-      "6月",
-      "7月",
-      "8月",
-      "9月",
-      "10月",
-      "11月",
-      "12月",
-    ],
-    decimalPoint: ".",
-    thousandsSep: ",",
+  credits: {
+    enabled: true, // 啟用右下角的 credits
+    text: "", // 設定自定義的文字
+    href: "/", // 可以選擇性提供鏈接
+    target: "_blank", // 在新標籤頁中開啟鏈接
+    style: {
+      // color: 'rgb(255, 99, 71)', // 設定顏色
+      // fontSize: '0.8em', // 設定字型大小
+      fontFamily: "Arial, sans-serif", // 設定字型
+      cursor: "pointer", // 設定鼠標樣式
+    },
   },
   time: {
-    useUTC: false,
+    useUTC: false, // 禁用 UTC 時間，使用當地時間
   },
   title: {
     text: "",
@@ -92,12 +188,37 @@ const chartOptions = reactive({
         ? "Click and drag in the plot area to zoom in"
         : "Pinch the chart to zoom in",
   },
+  tooltip: {
+    split: false,
+    dateTimeLabelFormats: {
+      millisecond: "%H:%M:%S.%L",
+      second: "%H:%M:%S",
+      minute: "%H:%M",
+      hour: "%H:%M",
+      day: "%m-%d",
+      year: "%Y-%m-%d",
+    },
+    headerFormat: "{point.x:%Y-%m-%d %H:%M:%S}<br>",
+  },
   xAxis: {
     type: "datetime",
+    dateTimeLabelFormats: {
+      day: "%A %e %b %Y", // 顯示完整日期（星期 日 日 月 年）
+      week: "%A, %b %e, %Y", // 顯示一週的開始日（星期 日, 月 日, 年）
+      month: "%m", // 顯示月份和年份
+      year: "%Y", // 顯示年份
+    },
+    events: {
+      setExtremes: function (e) {
+        if (e.trigger !== "zoom") {
+          chart.value.showResetZoom();
+        }
+      },
+    },
   },
   yAxis: {
     title: {
-      text: "Percent",
+      text: "時間",
     },
   },
   legend: {
@@ -132,7 +253,7 @@ const chartOptions = reactive({
   series: [
     {
       type: "area",
-      name: "USD to EUR",
+      name: "value",
       data: [
         // [86400000, 7.86],
         // [345600000, 7.88],
@@ -140,18 +261,30 @@ const chartOptions = reactive({
     },
   ],
 });
+
 const search = (data) => {
-  chartOptions.title.text = `Market Yield on U.S. Treasury Securities at ${
+  const titleText = `Market Yield on U.S. Treasury Securities at ${
     data.type == "DGS10" ? "10" : data.type == "DGS20" ? "20" : ""
   }-Year Constant Maturity, Quoted on an Investment Basis (${data.type})`;
   chartOptions.series[0].data.splice(0);
   loginService
     .getStlouisfed(data.type)
     .then(async (res) => {
+      let newData = [];
+
       if (data.type === "CPIAUCSL") {
-        const yoyData = convertCPIToYoYPercent(res.observations);
-        console.log("yoyData", yoyData);
-        Object.assign(chartOptions.series[0].data, yoyData);
+        newData = convertCPIToYoYPercent(res.observations);
+        // const data = chartOptions.series[0].data;
+        // const total = data.length;
+        // const visibleStartIndex = Math.max(0, total - 7);
+        // const min = data[visibleStartIndex][0];
+        // const max = data[total - 1][0];
+
+        // Object.assign(chartOptions.xAxis, {
+        //   ...chartOptions.xAxis,
+        //   min,
+        //   max,
+        // });
       } else {
         let _data = res.observations.map((item) => {
           return [
@@ -159,10 +292,20 @@ const search = (data) => {
             /^[0-9]+.?[0-9]*$/.test(item.value) ? Number(item.value) : -1,
           ];
         });
-        _data = _data.filter((item) => item[0] > 0 && item[1] > 0);
-        console.log("_data", _data);
+        newData = _data.filter((item) => item[0] > 0 && item[1] > 0);
+        // Object.assign(chartOptions.series[0].data, _data);
+      }
 
-        Object.assign(chartOptions.series[0].data, _data);
+      // ✅ 更新 chart，如果已經初始化過
+      if (chart.value) {
+        // console.log('newData'.newData.length);
+
+        chart.value.setTitle({ text: titleText });
+        chart.value.series[0].setData(newData, true); // true 表示立即 redraw
+      } else {
+        // 初始情況，還未建立圖表時
+        chartOptions.series[0].data = newData;
+        chartOptions.title.text = titleText;
       }
     })
     .catch((error) => {});
@@ -200,7 +343,38 @@ const convertCPIToYoYPercent = (data) => {
   return result.filter((item) => item[0] > 0 && item[1] > 0);
 };
 
-onMounted(() => {});
+onMounted(() => {
+  Highcharts.setOptions({
+    lang: {
+      weekdays: [
+        "星期日",
+        "星期一",
+        "星期二",
+        "星期三",
+        "星期四",
+        "星期五",
+        "星期六",
+      ],
+      months: [
+        "1月",
+        "2月",
+        "3月",
+        "4月",
+        "5月",
+        "6月",
+        "7月",
+        "8月",
+        "9月",
+        "10月",
+        "11月",
+        "12月",
+      ],
+      decimalPoint: ".",
+      thousandsSep: ",",
+    },
+  });
+  chart.value = Highcharts.chart(chartContainer.value, chartOptions);
+});
 </script>
 
 <style >
@@ -248,5 +422,110 @@ onMounted(() => {});
   cursor: pointer;
   transition: background 0.3s ease;
   margin-top: 1rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-family: sans-serif;
+}
+thead,
+tfoot {
+  background-color: rgb(228 240 245);
+}
+
+th,
+td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e0e0e0;
+  text-align: left;
+}
+
+tbody tr {
+  transition: background-color 0.2s ease;
+}
+tbody tr:nth-child(even) {
+  background-color: rgb(237 238 242);
+}
+tbody tr:hover {
+  background-color: rgb(220 230 250);
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 560px) {
+  .pagination {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+  }
+  thead {
+    display: none;
+  }
+
+  tbody td {
+    display: flex;
+    border-bottom: 0;
+    width: auto;
+  }
+
+  tbody td span {
+    flex: 2;
+  }
+
+  tbody td:before {
+    content: attr(data-title);
+    font-weight: 700;
+  }
+
+  tbody td:before {
+    flex: 1;
+    padding: 6px;
+    color: #343434;
+    display: flex;
+    align-items: center;
+  }
+}
+
+@media (max-width: 300px) {
+  .pagination {
+    display: grid;
+    text-align: center;
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.pagination button {
+  padding: 0.4rem 0.8rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+.pagination select {
+  font-size: 1.07rem !important;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer; /*小手樣式 */
+  font-size: 0.9rem;
+}
+
+.pagination button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 0.9rem;
 }
 </style>
