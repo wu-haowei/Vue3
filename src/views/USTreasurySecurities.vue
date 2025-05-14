@@ -19,8 +19,6 @@
 
     <!-- <Highcharts :options="chartOptions" /> -->
     <div ref="chartContainer"></div>
-
-    {{ console.log(chart) }}
     <table>
       <thead>
         <th scope="col">Sort</th>
@@ -48,7 +46,7 @@
         </template>
         <template v-else>
           <tr>
-            <td colspan="3">
+            <td colspan="3" data-title="no-data">
               <slot name="empty">無資料</slot>
             </td>
           </tr>
@@ -143,6 +141,13 @@ const prevPage = () => {
 //   }
 // };
 
+const goTop = (top = 0) => {
+  window.scrollTo({
+    top: top,
+    behavior: "smooth",
+  });
+};
+
 const highlightPoint = (globalIndex) => {
   console.log("highlightPoint", globalIndex);
   const series = chart.value?.series?.[0];
@@ -152,6 +157,7 @@ const highlightPoint = (globalIndex) => {
     point.onMouseOver(); // ✅ 顯示 tooltip
     chart.value.tooltip.refresh(point); // ✅ 強制刷新提示框
     chart.value.xAxis[0].setExtremes(point.x - 10000000, point.x + 10000000); // ✅ 滾動視窗
+    goTop(100);
   }
 };
 
@@ -301,6 +307,7 @@ const search = (data) => {
         // console.log('newData'.newData.length);
 
         chart.value.setTitle({ text: titleText });
+        chart.value.series[0].setData([], true); // false 表示暫時不 redraw
         chart.value.series[0].setData(newData, true); // true 表示立即 redraw
       } else {
         // 初始情況，還未建立圖表時
@@ -476,7 +483,7 @@ tbody tr:hover {
   }
 
   tbody td span {
-    flex: 2;
+    /* flex: 2; */
   }
 
   tbody td:before {
