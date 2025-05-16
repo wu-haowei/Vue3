@@ -53,7 +53,7 @@
       <RouterView v-slot="{ Component }">
         <Transition name="slide" mode="out-in">
           <!-- <KeepAlive :include="getkeepAlive"> -->
-          <KeepAlive :include="['KeepAlive','Badminton']">
+          <KeepAlive :include="['KeepAlive', 'Badminton']">
             <component :is="Component" :key="$route.path" />
           </KeepAlive>
         </Transition>
@@ -96,7 +96,7 @@ const kp = ref([]);
 // });
 
 const getkeepAlive = () => {
-  console.log('keepAlive');
+  console.log("keepAlive");
 
   if (route.meta.keepAlive === true && !kp.value.includes(route.name)) {
     kp.value.push(route.name);
@@ -141,6 +141,7 @@ const otherRoutes = [
   // { to: "/VueDragResize", label: "拖曳套件" },
   { to: "/AdvancedChatOpenAI", label: "即時通訊" },
   { to: "/IndexedDB", label: "IndexedDB" },
+  { to: "/LookSVG", label: "SVG清單" },
 ];
 </script>
 

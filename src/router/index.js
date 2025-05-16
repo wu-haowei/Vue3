@@ -318,6 +318,16 @@ export const createMyRouter = function () {
         meta: { transition: 'fade', mode: 'out-in', requiresAuth: false, keepAlive: true },
         props: true,
       },
+      {
+        path: '/LookSVG',
+        name: 'LookSVG',
+        component: () => import('../views/LookSVG.vue'),
+        meta: {
+          requiresAuth: true,
+          keepAlive: false,
+          mode: 'out-in'
+        }
+      },
     ]
   })
 
