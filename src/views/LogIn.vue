@@ -1,26 +1,45 @@
 <script setup>
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import store from "@/stores/stores";
 import AppFormFieId from "../components/AppFormFieId.vue";
+import Modal from "../components/Teleport.vue";
 import Loading from "../components/Loading.vue";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
 
 const logIn = async (data) => {
-  isLoading.value = true;
-  const success = await store.dispatch("logIn", {
-    token: getGUID(),
-    account: data["Account"],
-    password: data["password"],
-  });
-  if (success) {
+  try {
+    isLoading.value = true;
+    const success = await store.dispatch("logIn", {
+      token: getGUID(),
+      account: data["Account"],
+      password: data["password"],
+    });
+
+    if (success) {
+      router.push("/");
+    } else {
+      // alert("登入失敗");
+      errorMsg.msg = "登入失敗";
+      errorMsg.isShow = true;
+    }
+  } catch (error) {
+    // alert("發生錯誤，請稍後再試！");
+    errorMsg.msg = "發生錯誤，請稍後再試！";
+    errorMsg.isShow = true;
+  } finally {
     isLoading.value = false;
-    router.push("/");
-  } else {
-    isLoading.value = false;
-    alert("登入失敗");
   }
+};
+
+const errorMsg = reactive({
+  isShow: false,
+  msg: "發生錯誤",
+});
+
+const errorMsgIsShowChenge = (isShow) => {
+  errorMsg.isShow = isShow;
 };
 
 const test = (value) => {
@@ -69,6 +88,17 @@ const isLoading = ref(false);
     <!-- <ErrorMessage name="password" /> -->
     <button type="submit">登入</button>
     <Loading v-show="isLoading" />
+    <modal :show="errorMsg.isShow" @close="errorMsgIsShowChenge(false)">
+      <template #header>
+        <h3>系統提示</h3>
+      </template>
+      <template #body>
+        <h3>{{ errorMsg.msg }}</h3>
+      </template>
+      <template #footer>
+        <button @click="errorMsgIsShowChenge(false)">確認</button>
+      </template>
+    </modal>
   </VForm>
 </template>
 

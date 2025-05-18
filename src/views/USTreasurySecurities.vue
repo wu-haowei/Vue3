@@ -8,8 +8,8 @@
         rules="required"
         :options="[
           { label: '-- 請選擇 --', value: '', isDisabled: true },
-          { value: 'DGS10', label: 'DGS10', isDisabled: false },
-          { value: 'DGS20', label: 'DGS20', isDisabled: false },
+          { value: 'DGS10', label: '美債10年期', isDisabled: false },
+          { value: 'DGS20', label: '美債20年期', isDisabled: false },
           { value: 'CPIAUCSL', label: '美國整體 CPI', isDisabled: false },
         ]"
       >
@@ -21,9 +21,9 @@
     <div ref="chartContainer"></div>
     <table>
       <thead>
-        <th scope="col">Sort</th>
-        <th scope="col">DayTime</th>
-        <th scope="col">Value</th>
+        <th scope="col" id="sort">序</th>
+        <th scope="col">時間</th>
+        <th scope="col">值</th>
       </thead>
       <tbody>
         <template v-if="pagedData.length > 0">
@@ -32,14 +32,14 @@
             :key="index"
             @click="highlightPoint(index + (currentPage - 1) * itemsPerPage)"
           >
-            <td data-title="Sort">
+            <td data-title="序">
               <span>{{ index + 1 }}</span>
             </td>
-            <td data-title="DayTime">
+            <td data-title="時間">
               <span>{{ new Date(item[0]).toLocaleString() }}</span>
             </td>
 
-            <td data-title="Value">
+            <td data-title="值">
               <span>{{ item[1] }}</span>
             </td>
           </tr>
@@ -121,12 +121,14 @@ const getData = computed(() => {
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
+    goTop(100);
   }
 };
 
 const prevPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
+    goTop(100);
   }
 };
 
@@ -269,6 +271,7 @@ const chartOptions = reactive({
 });
 
 const search = (data) => {
+  currentPage.value = 1;
   const titleText = `Market Yield on U.S. Treasury Securities at ${
     data.type == "DGS10" ? "10" : data.type == "DGS20" ? "20" : ""
   }-Year Constant Maturity, Quoted on an Investment Basis (${data.type})`;

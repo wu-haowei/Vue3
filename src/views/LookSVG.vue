@@ -1,31 +1,22 @@
 <template>
-  <div class="p-4">
-    <div
-      class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4"
-      style="display: flex; flex-wrap: wrap"
-    >
-      <div
-        v-for="asset in pagedAssets"
-        :key="asset.url"
-        class="border rounded shadow text-center p-2"
-        style="width: 5%"
-      >
-        <img
-          loading="lazy"
-          :src="asset.url"
-          :alt="asset.fileName"
-          class="w-full h-40 object-contain"
-          style="width: 100%"
-        />
-        <div class="mt-2 text-sm truncate" :title="asset.fileName">
-          {{ asset.fileName }}
-        </div>
-        <div class="text-xs text-gray-500">{{ asset.extension }}</div>
-        <div v-if="asset.width" class="text-xs text-gray-400">
-          {{ asset.width }}×{{ asset.height }}
-        </div>
+  <div class="icon-grid">
+    <div v-for="asset in pagedAssets" :key="asset.url" class="icon-card">
+      <img
+        loading="lazy"
+        :src="asset.url"
+        :alt="asset.fileName"
+        class="filename"
+        style="width: 100%"
+      />
+      <div class="mt-2 text-sm truncate" :title="asset.fileName">
+        {{ asset.fileName }}
+      </div>
+      <div class="filetype">{{ asset.extension }}</div>
+      <div v-if="asset.width" class="resolution">
+        {{ asset.width }}×{{ asset.height }}
       </div>
     </div>
+    <!-- 更多 icon-card -->
   </div>
 </template>
 
@@ -115,3 +106,40 @@ onMounted(async () => {
   }
 });
 </script>
+
+<style>
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+.icon-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 8px;
+}
+
+.icon-card img {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
+}
+
+.icon-card .filename {
+  margin-top: 8px;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.icon-card .filetype,
+.icon-card .resolution {
+  font-size: 12px;
+  color: #888;
+}
+</style>

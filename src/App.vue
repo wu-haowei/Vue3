@@ -95,6 +95,10 @@ const kp = ref([]);
 //   return route.meta.keepAlive === true ? [route.name] : [];
 // });
 
+router.afterEach(() => {
+  isSidebarOpen.value = false;
+})
+
 const getkeepAlive = () => {
   console.log("keepAlive");
 

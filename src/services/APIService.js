@@ -1,4 +1,5 @@
 import axios from 'axios';
+import common from '@/components/common';
 
 const instance = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -98,8 +99,13 @@ export class APIService {
     * @param {參數} params
     */
     async POST(url, params, config = null) {
+        const start = Date.now();
         try {
             const res = await instance.post(`${import.meta.env.VITE_API_URL}${url}`, params);
+            const remainingTime = 1000 - (Date.now() - start);
+            if ((remainingTime) > 0) {
+                await common.delay(remainingTime);
+            }
             return res.data;
         } catch (res) {
             return Promise.reject(res.message);
