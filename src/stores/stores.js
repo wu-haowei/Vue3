@@ -11,13 +11,15 @@ export default createStore({
     isLogin: false, //是否登入
     account: "", //帳號
     userName: "", //姓名
+    jwtToken: "",
   },
   mutations: {
     increment(state) {
       state.count++;
     },
     setLogIn(state, options) {
-      state.isLogin = options;
+      state.isLogin = options.result.success;
+      state.jwtToken = options.data || '';
       // state.token = options.token;
       // state.account = options.account;
       // state.userName = options.userName;
@@ -31,14 +33,11 @@ export default createStore({
     },
     async logIn(context, options) {
       return new Promise((resolve, reject) => {
+        debugger;
         loginService.login(options.account, options.password)
           .then(async (res) => {
-            if (res) {
-              context.commit('setLogIn', true);
-            } else {
-              context.commit('setLogIn', false);
-            }
-            resolve(res);
+            context.commit('setLogIn', res);
+            resolve(res.result.success);
           })
           .catch((error) => {
             reject(false);
@@ -55,7 +54,10 @@ export default createStore({
     },
     account: (state) => {
       return state.account;
-    }
+    },
+    getToken: (state) => {
+      return state.jwtToken;
+    },
   }
 });
 

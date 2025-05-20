@@ -121,14 +121,14 @@ const getData = computed(() => {
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
-    goTop(100);
+    scrollToSection("sort");
   }
 };
 
 const prevPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--;
-    goTop(100);
+    scrollToSection("sort");
   }
 };
 
@@ -148,6 +148,12 @@ const goTop = (top = 0) => {
     top: top,
     behavior: "smooth",
   });
+};
+const scrollToSection = (id) => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth" });
+  }
 };
 
 const highlightPoint = (globalIndex) => {

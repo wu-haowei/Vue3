@@ -73,7 +73,8 @@ export const createMyRouter = function () {
         component: () => import('../views/HashView.vue'),
         meta: {
           transition: 'moveUp',
-          mode: 'out-in', requiresAuth: true
+          mode: 'out-in',
+          requiresAuth: true
         },
       },
       {

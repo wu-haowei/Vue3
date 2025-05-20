@@ -1,5 +1,6 @@
 import axios from 'axios';
 import common from '@/components/common';
+import store from "@/stores/stores";
 
 const instance = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -13,6 +14,7 @@ const instance = axios.create({
 //request 新增請求攔截器
 instance.interceptors.request.use(function (config) {
     config.headers['ngrok-skip-browser-warning'] = '1231';
+    config.headers.Authorization = `Bearer ${store.getters["getToken"]}`;
     return config;
 }, function (error) {
     return Promise.reject(error);
