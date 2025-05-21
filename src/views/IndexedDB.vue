@@ -1,15 +1,22 @@
 <template>
   <div>
-    <div class="slider-container">
+    <!-- <div class="slider-container">
       <div class="slider-text">
         <transition name="fade" mode="out-in">
           <span :key="currentIndex">{{ slideshowItem[currentIndex] }}</span>
         </transition>
       </div>
-    </div>
+    </div> -->
 
     <button id="hiddenAudioButton" @click="enableAudio" v-show="!false">
       音效測試
+    </button>
+    <button
+      id="hiddenAudioButton"
+      @click="cleanupOldData(true)"
+      v-show="!false"
+    >
+      清除資料
     </button>
     <h2 style="background: yellow; color: red; text-align: center">
       {{ errMsg }}
@@ -43,13 +50,22 @@
             v-for="(item, index) in slideshowItem"
             :key="item.seq"
             :style="{
-              backgroundColor: item.seq % 2 === 0 ? '#f9f9f9' : 'white',
+              backgroundColor:
+                getNowSeq == item.seq
+                  ? 'red'
+                  : item.seq % 2 === 0
+                  ? '#f9f9f9'
+                  : 'white',
               textAlign: 'center',
             }"
           >
-            <td style="color: black">{{ item.seq }}</td>
-            <td style="color: black">{{ item.CaseNumber }}</td>
-            <td style="color: black">
+            <td :style="{ color: getNowSeq == item.seq ? 'white' : 'black' }">
+              {{ item.seq }}
+            </td>
+            <td :style="{ color: getNowSeq == item.seq ? 'white' : 'black' }">
+              {{ item.CaseNumber }}
+            </td>
+            <td :style="{ color: getNowSeq == item.seq ? 'white' : 'black' }">
               <span v-for="(_item, _index) in errCode" :key="_index">
                 <input
                   type="checkbox"
@@ -64,9 +80,9 @@
         </tbody>
       </table>
       <ol>
-        <li>ERR01: 數量異常！</li>
-        <li>ERR02: 效期異常！</li>
-        <li>ERR03: 數量、 效期異常！</li>
+        <li>ERR01: 數量異常！<span @click="enableAudio(0)">🔊</span></li>
+        <li>ERR02: 效期異常！<span @click="enableAudio(1)">🔊</span></li>
+        <li>ERR03: 數量、 效期異常！<span @click="enableAudio(2)">🔊</span></li>
       </ol>
     </div>
   </div>
@@ -85,10 +101,10 @@ const base = import.meta.env.BASE_URL;
 
 import { useIndexedDB } from "@/stores/indexedDB";
 
-const { openDB, save, get, getAll, remove } = useIndexedDB();
+const { openDB, save, get, getAll, deleteStore, clearStore } = useIndexedDB();
 
 defineOptions({
-  name: "AdvancedChatOpenAI",
+  name: "IndexedDB",
   components: {},
 });
 
@@ -97,6 +113,7 @@ const errMsg = ref("");
 const Interval = reactive({
   changeText: null,
   getData: null,
+  isRunning: false,
 });
 
 const errCode = ref(["ERR01", "ERR02", "ERR03"]);
@@ -140,6 +157,10 @@ const ExceptionMsgStr = (code) => {
 const changeText = () => {
   currentIndex.value = (currentIndex.value + 1) % slideshowItem.value.length;
 };
+
+const getNowSeq = computed(() => {
+  return slideshowItem.value[currentIndex.value].seq;
+});
 
 const playSound = (code = "ERR01") => {
   const el = videos[code];
@@ -199,14 +220,14 @@ const setIndexedDB = async (data) => {
     console.error("資料庫尚未初始化");
     return;
   }
-  if (data.seq == 4) {
-    getToday.value = getTodayDateString(
-      new Date(new Date().setDate(new Date().getDate() - 1))
-    );
-  }
-  if (data.seq == 8) {
-    getToday.value = getTodayDateString();
-  }
+  // if (data.seq == 4) {
+  //   getToday.value = getTodayDateString(
+  //     new Date(new Date().setDate(new Date().getDate() - 1))
+  //   );
+  // }
+  // if (data.seq == 8) {
+  //   getToday.value = getTodayDateString();
+  // }
 
   if (!db.value.objectStoreNames.contains(getToday.value)) {
     await new Promise((resolve, reject) => {
@@ -288,23 +309,35 @@ const setIndexedDB = async (data) => {
   };
 };
 
-const getStoresToDelete = async () => {
-  return Array.from(db.value.objectStoreNames).filter(
-    (name) => name !== getToday.value
-  );
+const getStoresToDelete = async (isAll) => {
+  const allStores = Array.from(db.value.objectStoreNames);
+  return isAll
+    ? allStores
+    : allStores.filter((name) => name !== getToday.value);
 };
 
-const cleanupOldData = async () => {
+const cleanupOldData = async (isAll = false) => {
   if (!db.value) return;
 
-  const storesToDelete = await getStoresToDelete();
+  if (isAll) {
+    pauseSlideshow();
+  }
+
+  const storesToDelete = await getStoresToDelete(isAll);
   if (storesToDelete.length === 0) {
     console.log("✅ 沒有過期資料需要清除");
     return;
   } else {
+    storesToDelete.forEach(async (storeName) => {
+      await clearStore(storeName);
+    });
+
     await initDB(db.value.version + 1)
       .then(() => {
         console.log("資料庫升級成功，過期資料已清除");
+        if (isAll) {
+          startSlideshow();
+        }
       })
       .catch((error) => {
         console.error("資料庫升級失敗：", error);
@@ -312,8 +345,10 @@ const cleanupOldData = async () => {
   }
 };
 
-const enableAudio = async () => {
-  const arrIndex = Math.floor((Math.random() * 100) % errCode.value.length);
+const enableAudio = async (arrIndex = null) => {
+  if (typeof arrIndex != "number") {
+    arrIndex = Math.floor((Math.random() * 100) % errCode.value.length);
+  }
   console.log("音效測試", arrIndex);
   playSound(errCode.value[arrIndex]);
 };
@@ -345,19 +380,30 @@ const getData = async () => {
       });
   });
 };
+// 啟動輪播
+const startSlideshow = () => {
+  if (Interval.isRunning) return;
+  Interval.changeText = setInterval(async () => {
+    if (slideshowItem.value.length > 0) {
+      await setIndexedDB(slideshowItem.value[currentIndex.value]);
+      changeText();
+    }
+  }, 5000);
+  Interval.isRunning = true;
+};
+// 暫停輪播
+const pauseSlideshow = () => {
+  clearInterval(Interval.changeText);
+  // Interval.changeText = null;
+  Interval.isRunning = false;
+};
 
 onMounted(async () => {
-  today.value = "2025-04-16"; //await getTodayDateString();
+  today.value = await getTodayDateString();
   await initDB(0)
     .then(async () => {
       await getData();
-      Interval.changeText = setInterval(async () => {
-        if (slideshowItem.value.length > 0) {
-          setIndexedDB(slideshowItem.value[currentIndex.value]);
-          changeText();
-        }
-      }, 5000);
-
+      startSlideshow();
       // Interval.getData = setInterval(async () => {
       //   getData();
       // }, 5000);

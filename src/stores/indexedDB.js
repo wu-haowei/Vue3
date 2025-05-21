@@ -85,17 +85,64 @@ export const useIndexedDB = () => {
             request.onerror = (e) => reject(e)
         })
     }
-
-    // 刪除資料
-    function remove(storeName, key) {
+    // 刪除特定 key
+    function deleteStore(storeName, version = null) {
         return new Promise((resolve, reject) => {
-            const tx = db.transaction([storeName], 'readwrite')
-            const store = tx.objectStore(storeName)
-            const request = store.delete(key)
+            const req = indexedDB.open(dbName);
 
-            request.onsuccess = () => resolve(true)
-            request.onerror = (e) => reject(e)
-        })
+
+            req.onerror = (e) => {
+                console.error('第一次 openDB 失敗', e);
+                reject(e.target.error);
+            };
+
+            req.onblocked = (e) => {
+                console.warn('資料庫連線被阻塞', e);
+            };
+
+
+            req.onsuccess = (e) => {
+                const currentDB = e.target.result;
+                const newVersion = version || currentDB.version + 1;
+                currentDB.close();
+
+                const deleteReq = indexedDB.open(dbName, newVersion);
+
+                deleteReq.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (db.objectStoreNames.contains(storeName)) {
+                        db.deleteObjectStore(storeName);
+                        console.log(`🗑️ 已刪除整個 store：${storeName}`);
+                    } else {
+                        console.warn(`⚠️ 找不到要刪除的 store：${storeName}`);
+                    }
+                };
+
+                deleteReq.onsuccess = (e) => {
+                    db = e.target.result;
+                    resolve(db);
+                };
+
+                deleteReq.onerror = () => {
+                    console.error('onerror', deleteReq);
+                    reject(deleteReq.error)
+                };
+            };
+        });
+    }
+    // 清空某個 store
+    function clearStore(storeName) {
+        return new Promise((resolve, reject) => {
+            try {
+                const tx = db.transaction(storeName, 'readwrite');
+                const store = tx.objectStore(storeName);
+                const req = store.clear();
+                req.onsuccess = () => resolve(true);
+                req.onerror = () => reject(req.error);
+            } catch (err) {
+                reject(err);
+            }
+        });
     }
 
     return {
@@ -104,6 +151,7 @@ export const useIndexedDB = () => {
         save,
         get,
         getAll,
-        remove,
+        deleteStore,
+        clearStore
     }
 }

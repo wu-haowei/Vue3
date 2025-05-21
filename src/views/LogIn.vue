@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import store from "@/stores/stores";
 import AppFormFieId from "../components/AppFormFieId.vue";
 import Modal from "../components/Teleport.vue";
@@ -63,6 +63,15 @@ const getGUID = () => {
 
 const formRef1 = ref(null);
 const isLoading = ref(false);
+
+onMounted(async () => {
+  if (store.getters["isLogin"]) {
+    await store.dispatch("logOut");
+    if (window.confirm("登出成功")) {
+      router.push("/");
+    }
+  }
+});
 </script>
 
 <template>

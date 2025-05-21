@@ -19,9 +19,9 @@
         <button @click="toggleDarkMode" class="theme-toggle">
           切換主題（{{ isDark ? "深色" : "淺色" }}）
         </button>
-        <RouterLink to="/LogIn" class="link" v-show="!store.getters['isLogin']"
-          >🔐 LogIn</RouterLink
-        >
+        <RouterLink to="/LogIn" class="link">{{
+          store.getters["isLogin"] ? "🔐 登出" : "🔓 登入"
+        }}</RouterLink>
 
         <RouterLink to="/" class="link">🏠 Home</RouterLink>
         <RouterLink to="/Badminton" class="link">🏸 羽球記分板</RouterLink>
@@ -51,7 +51,11 @@
     <!-- 主內容 -->
     <main class="main-content">
       <RouterView v-slot="{ Component }">
-        <Transition name="slide" :mode="$route.meta.mode" @after-enter="onAfterEnter">
+        <Transition
+          name="slide"
+          :mode="$route.meta.mode"
+          @after-enter="onAfterEnter"
+        >
           <!-- <KeepAlive :include="getkeepAlive"> -->
           <KeepAlive :include="['KeepAlive', 'Badminton']">
             <component :is="Component" :key="$route.path" />
@@ -95,15 +99,15 @@ const kp = ref([]);
 //   return route.meta.keepAlive === true ? [route.name] : [];
 // });
 
-const onAfterEnter=()=> {
-  const hash = window.location.hash.split('#')[2] // 因為第一個 hash 是 router 的
+const onAfterEnter = () => {
+  const hash = window.location.hash.split("#")[2]; // 因為第一個 hash 是 router 的
   if (hash) {
-    const el = document.getElementById(hash)
+    const el = document.getElementById(hash);
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' })
+      el.scrollIntoView({ behavior: "smooth" });
     }
   }
-}
+};
 
 router.afterEach(() => {
   isSidebarOpen.value = false;
