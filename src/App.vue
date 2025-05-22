@@ -67,6 +67,8 @@
           </KeepAlive>
         </Transition>
       </RouterView>
+      <!-- 固定顯示 PWA 組件 -->
+      <PWA />
     </main>
   </div>
 </template>
@@ -74,7 +76,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
-
+import PWA from "./views/PWA.vue"; // 引入 PWA 組件
 /*
 RouterLink |  <router-link> 在 <template> 中建立可點擊切換頁面的連結（相當於 <a>）。可綁定 to 屬性跳轉。
 RouterView |  <router-view> 指定 <router-view> 呈現當前路由對應的元件，是路由內容顯示區塊。

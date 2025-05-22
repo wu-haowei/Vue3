@@ -25,7 +25,6 @@
     "openai": "^4.93.0",
     "pinia": "^2.1.7",
     "vee-validate": "^4.12.3",
-    "vite-plugin-pwa": "^0.20.0",
     "vue": "^3.3.11",
     "vue-advanced-chat": "^2.1.0",
     "vue-carousel-3d": "^1.0.1",
@@ -46,6 +45,7 @@
     "sass": "^1.70.0",
     "util": "^0.12.4",
     "vite": "^5.0.10",
+    "vite-plugin-pwa": "^1.0.0",
     "vite-plugin-vue-devtools": "^7.2.1",
     "vitest": "^1.0.4"
   }
