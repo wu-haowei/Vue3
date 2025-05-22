@@ -45,7 +45,11 @@ export default createStore({
             resolve(res.result.success);
           })
           .catch((error) => {
-            reject(false);
+            if (error.code == 401) {
+              resolve(false);
+            } else {
+              reject(false);
+            }
           });
       });
     },

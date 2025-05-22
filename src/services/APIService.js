@@ -110,7 +110,28 @@ export class APIService {
             }
             return res.data;
         } catch (res) {
-            return Promise.reject(res.message);
+
+            if (res.response) {
+                // 伺服器有回應，但 status code 不在 2xx 範圍
+                const { status, data } = res.response;
+                return Promise.reject({
+                    code: status,
+                    message: data?.message || 'Request failed',
+                    data: data
+                });
+            } else if (res.request) {
+                // 沒有收到伺服器回應
+                return Promise.reject({
+                    code: 0,
+                    message: 'No response from server'
+                });
+            } else {
+                // 其他錯誤
+                return Promise.reject({
+                    code: -1,
+                    message: res.message || 'Unknown error'
+                });
+            }
         }
     }
     /**

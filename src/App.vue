@@ -4,7 +4,12 @@
     <aside class="sidebar" :class="{ open: isSidebarOpen }">
       <div class="sidebar-content">
         <div class="sidebar-header">
-          <button class="toggle-btn" @click="toggleSidebar">
+          <button
+            class="toggle-btn"
+            @click="toggleSidebar"
+            role="button"
+            aria-label="切換側邊欄"
+          >
             <template v-if="!isSidebarOpen">
               <span class="burger-line"></span>
               <span class="burger-line"></span>
