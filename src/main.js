@@ -13,6 +13,22 @@ import VeeValidatePlugin from '@/plugins/VeeValidatePlugin'
 //引入 Web Component
 // import {} from './main.ce.js'
 
+
+// 引入 registerSW
+import { registerSW } from 'virtual:pwa-register'
+
+const updateSW = registerSW({
+  onNeedRefresh() {
+    // 這裡你可以改成彈窗或通知 UI
+    console.log('有新版本可用，請刷新頁面')
+    // 例如觸發彈窗顯示按鈕讓使用者手動更新
+  },
+  onOfflineReady() {
+    console.log('離線功能已就緒')
+  }
+})
+
+
 const app = createApp(App)
 const router = createMyRouter();
 // useRegisterSW();

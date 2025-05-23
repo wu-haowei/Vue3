@@ -31,6 +31,31 @@ export class LoginService {
                 return Promise.reject(err);
             });
     }
-
-
+    async GetPublicKey() {
+        return apiService.GET(`api/WeatherForecast/GetPublicKey`)
+            .then((result) => {
+                return result;
+            })
+            .catch((err) => {
+                return Promise.reject(err);
+            });
+    }
+    async Subscribe(data) {
+        return apiService.POST(`api/WeatherForecast/Subscribe`, data)
+            .then((result) => {
+                return result;
+            })
+            .catch((err) => {
+                return Promise.reject(err);
+            });
+    }
+        async SendAll() {
+        return apiService.GET(`api/WeatherForecast/SendAll`)
+            .then((result) => {
+                return result;
+            })
+            .catch((err) => {
+                return Promise.reject(err);
+            });
+    }
 }

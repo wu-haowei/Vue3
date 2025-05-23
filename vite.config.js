@@ -24,11 +24,18 @@ export default defineConfig(({ mode }) => {
         }
       }),
       VitePWA({
+        // manifestFilename:`manifest.[hash].webmanifest`,
+        injectRegister: 'auto', // 自動掛載 <link rel="manifest">
+        devOptions: {
+          // enabled: false // 開發階段不啟用 SW
+        },
         registerType: 'autoUpdate',  // 自動更新 service worker
         manifest: {
           name: 'My Vite PWA',
           short_name: 'VitePWA',
           description: 'A Vite project with PWA support',
+          version: Date.now().toString(), // 強迫 SW 不同
+          // id: `/manifest.webmanifest?v=[hash]`,
           theme_color: '#42b983',
           icons: [
             {
@@ -44,6 +51,7 @@ export default defineConfig(({ mode }) => {
           ]
         },
         workbox: {
+          cleanupOutdatedCaches: true, // 清理舊 cache
           // 推播與快取策略可調整
           // runtimeCaching: [
           //   {
@@ -52,8 +60,8 @@ export default defineConfig(({ mode }) => {
           //     options: {
           //       cacheName: 'offline-cache',
           //       expiration: {
-          //         maxEntries: 200,
-          //         maxAgeSeconds: 7 * 24 * 60 * 60 // 1 week
+          //         maxEntries: 100,
+          //         maxAgeSeconds: 60 * 10,
           //       }
           //     }
           //   }
@@ -154,5 +162,11 @@ export default defineConfig(({ mode }) => {
         // }
       },
     },
+    //使用PWA 要注意dist 內是否為最新檔案
+    preview: {
+      port: 4174,
+      open: true,         // 預覽時自動開啟瀏覽器（可選）
+      host: '0.0.0.0'     // 區網可訪問（可選）
+    }
   }
 })

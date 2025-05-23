@@ -67,6 +67,7 @@
           </KeepAlive>
         </Transition>
       </RouterView>
+      <button @click="clearPwaCache">清除 PWA 快取</button>
     </main>
   </div>
 </template>
@@ -165,6 +166,31 @@ const otherRoutes = [
   { to: "/IndexedDB", label: "IndexedDB" },
   { to: "/LookSVG", label: "SVG清單" },
 ];
+
+function clearPwaCache() {
+  navigator.serviceWorker.getRegistrations().then((regs) => {
+    regs.forEach((reg) => reg.unregister());
+  });
+  caches.keys().then((keys) => {
+    keys.forEach((key) => caches.delete(key));
+  });
+  alert("快取已清除，請重新整理頁面");
+}
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (const reg of registrations) {
+      reg.unregister();
+    }
+  });
+
+  // 清除所有 cache（如果你曾經使用 PWA）
+  if ("caches" in window) {
+    caches.keys().then((keys) => {
+      keys.forEach((key) => caches.delete(key));
+    });
+  }
+}
 </script>
 
 
