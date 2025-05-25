@@ -31,6 +31,13 @@
   --color-heading: #2c3e50;
   --color-text: #34495e;
 
+  /* 按鈕*/
+  --color-button: #28a745;
+  --color-button-hover: #23943e;
+  --color-button-border-hover: #007BFF;
+
+
+
   /* 主題色 */
   --color-primary: #42b983;
   --color-accent: #ff6b81;
@@ -59,6 +66,12 @@ body.dark {
   /*輸入框文字顏色*/
   /*錯誤提示文字*/
   --color-background-form-error: #ff5252;
+
+
+  /* 按鈕*/
+  --color-button: #28a745;
+  --color-button-hover: #23943e;
+  --color-button-border-hover: #007BFF;
 
   --color-background-mark: #FFD54F;
 
@@ -125,10 +138,11 @@ h5 {
 }
 
 button {
-  background-color: var(--color-primary);
+  background-color: var(--color-button);
   color: white;
   border: none;
   padding: 8px 16px;
+  margin: 5px;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -162,8 +176,10 @@ form {
 
 
 
-button:hover {
-  background-color: darken(var(--color-primary), 10%);
+button:hover:not(.toggle-btn) {
+  /* background-color: darken(var(--color-button-hover), 80%); */
+  background-color: var(--color-button-hover);
+  border: 1px solid var(--color-button-border-hover);
 }
 
 .border {

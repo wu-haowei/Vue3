@@ -20,7 +20,6 @@ const logIn = async (data) => {
     if (success) {
       router.push("/");
     } else {
-      // alert("登入失敗");
       errorMsg.msg = "登入失敗";
       errorMsg.isShow = true;
     }

@@ -67,13 +67,12 @@
           </KeepAlive>
         </Transition>
       </RouterView>
-      <button @click="clearPwaCache">清除 PWA 快取</button>
     </main>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, provide, onMounted } from "vue";
 import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
 /*
 RouterLink |  <router-link> 在 <template> 中建立可點擊切換頁面的連結（相當於 <a>）。可綁定 to 屬性跳轉。
@@ -167,30 +166,30 @@ const otherRoutes = [
   { to: "/LookSVG", label: "SVG清單" },
 ];
 
-function clearPwaCache() {
-  navigator.serviceWorker.getRegistrations().then((regs) => {
-    regs.forEach((reg) => reg.unregister());
-  });
-  caches.keys().then((keys) => {
-    keys.forEach((key) => caches.delete(key));
-  });
-  alert("快取已清除，請重新整理頁面");
-}
+// function clearPwaCache() {
+//   navigator.serviceWorker.getRegistrations().then((regs) => {
+//     regs.forEach((reg) => reg.unregister());
+//   });
+//   caches.keys().then((keys) => {
+//     keys.forEach((key) => caches.delete(key));
+//   });
+//   alert("快取已清除，請重新整理頁面");
+// }
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations().then((registrations) => {
-    for (const reg of registrations) {
-      reg.unregister();
-    }
-  });
+// if ("serviceWorker" in navigator) {
+//   navigator.serviceWorker.getRegistrations().then((registrations) => {
+//     for (const reg of registrations) {
+//       reg.unregister();
+//     }
+//   });
 
-  // 清除所有 cache（如果你曾經使用 PWA）
-  if ("caches" in window) {
-    caches.keys().then((keys) => {
-      keys.forEach((key) => caches.delete(key));
-    });
-  }
-}
+//   // 清除所有 cache（如果你曾經使用 PWA）
+//   if ("caches" in window) {
+//     caches.keys().then((keys) => {
+//       keys.forEach((key) => caches.delete(key));
+//     });
+//   }
+// }
 </script>
 
 
