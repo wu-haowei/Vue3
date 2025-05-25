@@ -32,9 +32,8 @@
   --color-text: #34495e;
 
   /* 按鈕*/
-  --color-button: #28a745;
-  --color-button-hover: #23943e;
-  --color-button-border-hover: #007BFF;
+  --color-button: #1e40af;
+  --color-button-hover: #3b82f6;
 
 
 
@@ -69,9 +68,8 @@ body.dark {
 
 
   /* 按鈕*/
-  --color-button: #28a745;
-  --color-button-hover: #23943e;
-  --color-button-border-hover: #007BFF;
+  --color-button: #60a5fa;
+  --color-button-hover: #3b82f6;
 
   --color-background-mark: #FFD54F;
 
@@ -145,7 +143,7 @@ button {
   margin: 5px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 form {
@@ -179,7 +177,16 @@ form {
 button:hover:not(.toggle-btn) {
   /* background-color: darken(var(--color-button-hover), 80%); */
   background-color: var(--color-button-hover);
-  border: 1px solid var(--color-button-border-hover);
+}
+
+
+button:hover:not(.toggle-btn):disabled {
+  background-color: #cbd5e1;
+  /* 淺灰 */
+  color: #94a3b8;
+  /* 灰藍字 */
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .border {
