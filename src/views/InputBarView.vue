@@ -15,7 +15,7 @@ const clickpicHandler = () => {
 const AllPushTest = async () => {
   try {
     const res = await loginService.SendAll();
-    console.log(res);
+    console.log(res.result.message);
   } catch (error) {
     console.error("全推播失敗:", error);
   }

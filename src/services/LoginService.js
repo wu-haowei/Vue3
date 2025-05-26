@@ -9,7 +9,7 @@ export class LoginService {
     * 
     */
     async login(userAccount, userPassword) {
-        return apiService.POST(`api/WeatherForecast/Login`, {
+        return apiService.POST(`api/Login/Login`, {
             "account": userAccount,
             "password": userPassword
         })
@@ -32,7 +32,7 @@ export class LoginService {
             });
     }
     async GetPublicKey() {
-        return apiService.GET(`api/WeatherForecast/GetPublicKey`)
+        return apiService.GET(`api/PWA/GetPublicKey`)
             .then((result) => {
                 return result;
             })
@@ -41,7 +41,7 @@ export class LoginService {
             });
     }
     async Subscribe(data) {
-        return apiService.POST(`api/WeatherForecast/Subscribe`, data)
+        return apiService.POST(`api/PWA/Subscribe`, data)
             .then((result) => {
                 return result;
             })
@@ -49,8 +49,11 @@ export class LoginService {
                 return Promise.reject(err);
             });
     }
-        async SendAll() {
-        return apiService.GET(`api/WeatherForecast/SendAll`)
+    async SendAll(data = {
+        "title": "有一則新訊息",
+        "body": "伺服器推播"
+    }) {
+        return apiService.POST(`api/PWA/SendAll`, data)
             .then((result) => {
                 return result;
             })

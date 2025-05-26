@@ -41,8 +41,11 @@ export default createStore({
       return new Promise((resolve, reject) => {
         loginService.login(options.account, options.password)
           .then(async (res) => {
-            context.commit('setLogIn', res);
-            resolve(res.result.success);
+            if (res.result.success) {
+              context.commit('setLogIn', res);
+              resolve(res.result.success);
+            } else
+              resolve(false);
           })
           .catch((error) => {
             if (error.code == 401) {

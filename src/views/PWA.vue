@@ -17,8 +17,6 @@ const reg = ref(null);
 const subscribing = ref(false);
 
 const subscribePush = async () => {
-  console.log("訂閱推播開始");
-
   try {
     const permission = await Notification.requestPermission();
     if (permission !== "granted") {
@@ -27,25 +25,26 @@ const subscribePush = async () => {
       return;
     }
     const publicKey = await loginService.GetPublicKey();
-    const basepublicKey = urlB64ToUint8Array(publicKey);
-    console.log("向後端請求公鑰:", publicKey);
 
-    const subscription = await reg.value.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: basepublicKey,
-    });
-
-    console.log("訂閱成功:", subscription);
-    await loginService.Subscribe(subscription);
-    subscribing.value = subscription !== null;
-    alert("訂閱成功！");
+    if (publicKey.result.success) {
+      const basepublicKey = urlB64ToUint8Array(publicKey.data);
+      // console.log("向後端請求公鑰:", publicKey);
+      const subscription = await reg.value.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: basepublicKey,
+      });
+      // console.log("訂閱成功:", subscription);
+      await loginService.Subscribe(subscription);
+      subscribing.value = subscription !== null;
+      alert("訂閱成功！");
+    } else {
+      throw new Error(publicKey.result.message);
+    }
   } catch (err) {
-    console.error("訂閱失敗2:", err);
     subscribing.value = false;
     alert("訂閱失敗");
   }
 };
-
 
 //https://gist.github.com/Klerith/80abd742d726dd587f4bd5d6a0ab26b6
 function urlB64ToUint8Array(base64String) {
@@ -57,16 +56,16 @@ function urlB64ToUint8Array(base64String) {
 onMounted(async () => {
   reg.value = await getServiceWorkerRegistration();
 
-  console.log("Service Worker 註冊狀態:", reg.value);
+  // console.log("Service Worker 註冊狀態:", reg.value);
   if ("serviceWorker" in navigator && "PushManager" in window) {
     try {
       reg.value.pushManager.getSubscription().then((subscription) => {
-        console.log("取得訂閱狀態", subscription);
+        // console.log("取得訂閱狀態", subscription);
         subscribing.value = subscription !== null;
         if (subscribing.value) {
-          console.log("✅ 已訂閱推播");
+          // console.log("✅ 已訂閱推播");
         } else {
-          console.log("🚫 尚未訂閱");
+          // console.log("🚫 尚未訂閱");
         }
       });
     } catch (err) {

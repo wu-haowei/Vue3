@@ -5,7 +5,7 @@ import store from "@/stores/stores";
 const instance = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
     // baseURL: 'http://192.168.0.167:8787/',
-    timeout: 3000,
+    timeout: 10000,
     // headers: {
     //     'Content-Type': 'application/json;charset=UTF-8'
     // }

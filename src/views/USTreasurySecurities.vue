@@ -285,46 +285,53 @@ const search = (data) => {
   loginService
     .getStlouisfed(data.type)
     .then(async (res) => {
-      let newData = [];
+      if (res.result.success) {
+        let newData = [];
+        res.data = JSON.parse(res.data);
+        if (data.type === "CPIAUCSL") {
+          newData = convertCPIToYoYPercent(res.data.observations);
+          // const data = chartOptions.series[0].data;
+          // const total = data.length;
+          // const visibleStartIndex = Math.max(0, total - 7);
+          // const min = data[visibleStartIndex][0];
+          // const max = data[total - 1][0];
 
-      if (data.type === "CPIAUCSL") {
-        newData = convertCPIToYoYPercent(res.observations);
-        // const data = chartOptions.series[0].data;
-        // const total = data.length;
-        // const visibleStartIndex = Math.max(0, total - 7);
-        // const min = data[visibleStartIndex][0];
-        // const max = data[total - 1][0];
+          // Object.assign(chartOptions.xAxis, {
+          //   ...chartOptions.xAxis,
+          //   min,
+          //   max,
+          // });
+        } else {
+          let _data = res.data.observations.map((item) => {
+            return [
+              new Date(item.date).getTime(),
+              /^[0-9]+.?[0-9]*$/.test(item.value) ? Number(item.value) : -1,
+            ];
+          });
+          newData = _data.filter((item) => item[0] > 0 && item[1] > 0);
+          // Object.assign(chartOptions.series[0].data, _data);
+        }
 
-        // Object.assign(chartOptions.xAxis, {
-        //   ...chartOptions.xAxis,
-        //   min,
-        //   max,
-        // });
-      } else {
-        let _data = res.observations.map((item) => {
-          return [
-            new Date(item.date).getTime(),
-            /^[0-9]+.?[0-9]*$/.test(item.value) ? Number(item.value) : -1,
-          ];
-        });
-        newData = _data.filter((item) => item[0] > 0 && item[1] > 0);
-        // Object.assign(chartOptions.series[0].data, _data);
+        // ✅ 更新 chart，如果已經初始化過
+        if (chart.value) {
+          // console.log('newData'.newData.length);
+
+          chart.value.setTitle({ text: titleText });
+          chart.value.series[0].setData([], true); // false 表示暫時不 redraw
+          chart.value.series[0].setData(newData, true); // true 表示立即 redraw
+        } else {
+          // 初始情況，還未建立圖表時
+          chartOptions.series[0].data = newData;
+          chartOptions.title.text = titleText;
+        }
       }
-
-      // ✅ 更新 chart，如果已經初始化過
-      if (chart.value) {
-        // console.log('newData'.newData.length);
-
-        chart.value.setTitle({ text: titleText });
-        chart.value.series[0].setData([], true); // false 表示暫時不 redraw
-        chart.value.series[0].setData(newData, true); // true 表示立即 redraw
-      } else {
-        // 初始情況，還未建立圖表時
-        chartOptions.series[0].data = newData;
-        chartOptions.title.text = titleText;
+      else {
+     throw new Error(res.result.message);
       }
     })
-    .catch((error) => {});
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
 };
 
 const convertCPIToYoYPercent = (data) => {
