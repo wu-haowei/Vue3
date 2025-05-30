@@ -1,30 +1,32 @@
 <template>
   <div class="scoreboard">
     <div v-if="!gameStarted">
+      <button @click="showAddModal = true">名單</button>
       <VForm
         id="badmintonForm"
         ref="formRef1"
         v-slot="{ errors, meta, resetForm }"
         @submit="startGame"
       >
-        v1.0.0
+        v1.0.1
         <AppFormFieId
           type="select"
           name="server"
-          lable="選擇發球場地"
-          rules="required"
+          errLabel="發球場地"
+          label="選擇發球場地"
           :options="[
             { label: '-- 請選擇 --', value: '', isDisabled: true },
-            { value: 'A', label: '場地 A', isDisabled: false },
-            { value: 'B', label: '場地 B', isDisabled: false },
+            { value: 'A', label: '場地 A(左)', isDisabled: false },
+            { value: 'B', label: '場地 B(右)', isDisabled: false },
           ]"
         >
+          <!-- rules="required" -->
         </AppFormFieId>
 
         <AppFormFieId
           :type="personnel.length > 0 ? 'select' : 'text'"
           name="A1"
-          lable="場地 A左"
+          label="場地 A左"
           placeholder="球員 1（左）"
           :options="personnel"
         >
@@ -33,7 +35,7 @@
         <AppFormFieId
           :type="personnel.length > 0 ? 'select' : 'text'"
           name="A2"
-          lable="場地 A右"
+          label="場地 A右"
           placeholder="球員 2（右）"
           :options="personnel"
         ></AppFormFieId>
@@ -41,7 +43,7 @@
         <AppFormFieId
           :type="personnel.length > 0 ? 'select' : 'text'"
           name="B1"
-          lable="場地 B左"
+          label="場地 B左"
           placeholder="球員 1（左）"
           :options="personnel"
         ></AppFormFieId>
@@ -49,7 +51,7 @@
         <AppFormFieId
           :type="personnel.length > 0 ? 'select' : 'text'"
           name="B2"
-          lable="場地 B右"
+          label="場地 B右"
           placeholder="球員 2（右）"
           :options="personnel"
         ></AppFormFieId>
@@ -67,6 +69,17 @@
             { 'left-last-point': leftLastPoint },
           ]"
         >
+          <input
+            type="radio"
+            name="swap"
+            v-model="server"
+            value="A"
+            @click.stop
+            style="height: 20px"
+            v-if="history.length === 0"
+          />
+          <span v-else></span>
+
           <div class="score-num">{{ leftScore }}</div>
           <div style="display: flex; justify-content: space-around">
             <div
@@ -87,7 +100,12 @@
           </div>
         </div>
         <div class="middle-control">
-          <button @click="swapSides" class="swap-btn no-select">🔁</button>
+          <button
+            @click="swapSides"
+            class="swap-btn no-select not-hover-style-btn"
+          >
+            🔁
+          </button>
           <div class="round-info">目前局數: 1</div>
           <button
             class="no-select"
@@ -112,6 +130,17 @@
             { 'left-last-point': rightLastPoint },
           ]"
         >
+          <input
+            type="radio"
+            name="swap"
+            v-model="server"
+            value="B"
+            @click.stop
+            style="height: 20px"
+            v-if="history.length === 0"
+          />
+          <span v-else></span>
+
           <div class="score-num">{{ rightScore }}</div>
           <div style="display: flex; justify-content: space-around">
             <div
@@ -143,11 +172,60 @@
       <template #header>
         <h3>是否確認重置比賽</h3>
       </template>
+      <template #body>
+        <span></span>
+      </template>
       <template #footer>
         <button @click="reset" style="background-color: red; color: white">
           確認
         </button>
         <button @click="showModal = false">取消</button>
+      </template>
+    </modal>
+
+    <modal :show="showAddModal" @close="showAddModal = false">
+      <template #header>
+        <h3>人員名單管理</h3>
+      </template>
+
+      <template #body>
+        <div class="p-4">
+          <div style="display: flex; gap: 8px; margin-bottom: 16px">
+            <input
+              v-model="nameInput"
+              type="text"
+              placeholder="輸入人名"
+              @keyup.enter="addName"
+              style="width: auto"
+            />
+            <button
+              @click="addName"
+              class="bg-blue-500 text-white px-3 py-1 rounded"
+            >
+              新增
+            </button>
+          </div>
+
+          <p class="font-semibold">目前名單：</p>
+          <ul class="list-disc list-inside mb-4">
+            <li v-for="(name, index) in getPersonnel" :key="index">
+              {{ name }}
+              <span
+                @click="delPersonnel(name)"
+                style="cursor: pointer; color: red; margin-left: 8px"
+                title="刪除"
+                >X</span
+              >
+            </li>
+          </ul>
+        </div>
+      </template>
+
+      <template #footer>
+        <button @click="addRouter" style="background-color: red; color: white">
+          確認
+        </button>
+        <button @click="showAddModal = false">取消</button>
       </template>
     </modal>
   </div>
@@ -157,13 +235,65 @@
 import { ref, computed, onMounted } from "vue";
 import AppFormFieId from "../components/AppFormFieId.vue";
 import Modal from "../components/Teleport.vue";
-
+import { useRouter } from "vue-router";
+const router = useRouter();
 // defineOptions({
 //   name: "Badminton",
 //   components: {},
 // });
 
+const nameInput = ref("");
+const nameList = ref([]);
+// 新增名稱
+function addName() {
+  const name = nameInput.value.trim();
+  if (name && !getPersonnel.value.includes(name)) {
+    nameList.value.push(name);
+    nameInput.value = "";
+  }
+}
+
+// 計算轉成逗號字串
+const addRouter = () => {
+  if (getPersonnel.value.length < 4) {
+    alert("人員名單至少需要 4 人，請新增人員後再進行比賽。");
+    return;
+  }
+
+  router
+    .push({
+      path: "/Badminton",
+      query: {
+        p: getPersonnel.value.join(","),
+      },
+    })
+    .then(() => {
+      // 等待路由跳轉完成再執行
+      nameList.value = []; // 清空名單
+      nameInput.value = ""; // 清空輸入框
+      showAddModal.value = false;
+      getHash();
+    });
+};
+
+const getPersonnel = computed(() => {
+  return [...personnel.value.map((p) => p.label), ...nameList.value];
+});
+
+const delPersonnel = (name) => {
+  const i = nameList.value.indexOf(name);
+  if (i !== -1) {
+    nameList.value.splice(i, 1);
+  }
+  // 從 personnel 中刪除 label === name 的項目
+  const j = personnel.value.findIndex((p) => p.label === name);
+  if (j !== -1) {
+    personnel.value.splice(j, 1);
+  }
+};
+
 const showModal = ref(false);
+const showAddModal = ref(false);
 const scoreA = ref(0);
 const scoreB = ref(0);
 const server = ref("");
@@ -356,7 +486,7 @@ const swapSides = () => {
   isSwapped.value = !isSwapped.value;
 };
 
-onMounted(() => {
+const getHash = () => {
   const hash = window.location.hash;
   const queryIndex = hash.indexOf("?");
   if (queryIndex === -1) return null;
@@ -364,11 +494,17 @@ onMounted(() => {
   const queryString = hash.slice(queryIndex + 1);
   const params = new URLSearchParams(queryString);
   const p = params.get("p");
+  personnel.value = []; // 清空人員列表
+
   if (p) {
     p.split(",").forEach((f, index) => {
       personnel.value.push({ value: index, label: f });
     });
   }
+};
+
+onMounted(() => {
+  getHash();
 });
 </script>
 

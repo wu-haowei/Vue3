@@ -21,8 +21,19 @@
             </template>
           </button>
         </div>
-        <button @click="toggleDarkMode" class="theme-toggle">
+        <button
+          @click="toggleDarkMode"
+          class="not-hover-style-btn"
+          style="width: 40%"
+        >
           切換主題（{{ isDark ? "深色" : "淺色" }}）
+        </button>
+        <button
+          @click="RequestWakeLock"
+          class="not-hover-style-btn"
+          style="width: 40%"
+        >
+          螢幕長亮（{{ isRequestWakeLock ? "關閉" : "啟用" }}）
         </button>
         <RouterLink to="/LogIn" class="link">{{
           store.getters["isLogin"] ? "🔐 登出" : "🔓 登入"
@@ -32,7 +43,7 @@
         <RouterLink to="/Badminton" class="link">🏸 羽球記分板</RouterLink>
 
         <div class="menu-group">
-          <button class="menu-toggle" @click="toggleMenu">
+          <button class="menu-toggle not-hover-style-btn" @click="toggleMenu">
             📂 功能列表
             <span>{{ isMenuOpen ? "▲" : "▼" }}</span>
           </button>
@@ -91,6 +102,38 @@ const isDark = ref(false);
 const toggleDarkMode = () => {
   isDark.value = !isDark.value;
   document.body.classList.toggle("dark", isDark.value);
+};
+
+const wakeLock = ref(null);
+const isRequestWakeLock = ref(false);
+const RequestWakeLock = async () => {
+  try {
+    isRequestWakeLock.value = !isRequestWakeLock.value;
+    if (isRequestWakeLock.value) {
+      wakeLock.value = await navigator.wakeLock.request("screen");
+      alert("🔒 螢幕喚醒鎖已啟用");
+
+      // 監聽可見性變化
+      document.addEventListener("visibilitychange", async () => {
+        if (wakeLock.value !== null && document.visibilityState === "visible") {
+          try {
+            wakeLock.value = await navigator.wakeLock.request("screen");
+            alert("🔄 可見時重新取得喚醒鎖");
+          } catch (err) {
+            alert("⚠️ 無法重新取得喚醒鎖：", err);
+          }
+        }
+      });
+    } else {
+      if (wakeLock.value !== null) {
+        await wakeLock.value.release();
+        wakeLock.value = null;
+        alert("🔓 螢幕喚醒鎖已釋放");
+      }
+    }
+  } catch (err) {
+    alert("❌ 喚醒鎖操作錯誤：", err);
+  }
 };
 
 const isSidebarOpen = ref(false);
@@ -283,10 +326,11 @@ const otherRoutes = [
 }
 
 .sidebar-header {
-  right: -56px;
+  right: -66px;
   top: 0;
   position: fixed;
-  padding: 10px;
+  /* padding: 10px; */
+  padding: 10px 10px 10px 25px; /* 避免 scrollbox */
   background-color: #2c3e50;
 }
 

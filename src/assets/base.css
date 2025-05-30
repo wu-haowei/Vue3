@@ -174,7 +174,7 @@ form {
 
 
 
-button:hover:not(.toggle-btn) {
+button:hover:not(.toggle-btn):not(.not-hover-style-btn) {
   /* background-color: darken(var(--color-button-hover), 80%); */
   background-color: var(--color-button-hover);
 }

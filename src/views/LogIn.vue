@@ -82,16 +82,18 @@ onMounted(async () => {
   >
     <AppFormFieId
       name="Account"
-      lable="帳號"
+      label="帳號"
       rules="required"
       placeholder="任意輸入"
+      :dynamicAttribute="{ autocomplete: 'current-account' }"
     ></AppFormFieId>
     <AppFormFieId
       name="password"
-      lable="密碼"
+      label="密碼"
       rules="required"
       type="password"
       placeholder="請輸入密碼"
+      :dynamicAttribute="{ autocomplete: 'current-password' }"
     ></AppFormFieId>
     <!-- <ErrorMessage name="password" /> -->
     <button type="submit">登入</button>

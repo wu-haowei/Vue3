@@ -23,7 +23,7 @@ export class LoginService {
     }
 
     async getStlouisfed(type = 'DGS10') {
-        return apiService.GET(`api/WeatherForecast/Stlouisfed/${type}`)
+        return apiService.GET(`api/ToolboxController/Stlouisfed/${type}`)
             .then((result) => {
                 return result;
             })

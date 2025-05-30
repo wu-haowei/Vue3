@@ -39,7 +39,15 @@ export default (app) => {
                 //自訂文字(不能用中文)
                 required: '{field} 沒填',
                 // email:'123'
-            }
+            },
+            // names: {
+            //     // 自訂欄位名稱
+            //     email: '電子郵件',
+            //     password: '密碼',
+            //     username: '使用者名稱',
+            //     server: '發球場地',
+
+            // },
         }),
     });
     // setLocale('zh_TW');

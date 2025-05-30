@@ -4,7 +4,7 @@
       <AppFormFieId
         type="select"
         name="type"
-        lable="系列"
+        label="系列"
         rules="required"
         :options="[
           { label: '-- 請選擇 --', value: '', isDisabled: true },

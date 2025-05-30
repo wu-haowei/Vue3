@@ -34,9 +34,13 @@ const subscribePush = async () => {
         applicationServerKey: basepublicKey,
       });
       // console.log("訂閱成功:", subscription);
-      await loginService.Subscribe(subscription);
-      subscribing.value = subscription !== null;
-      alert("訂閱成功！");
+      const isSubscribe = await loginService.Subscribe(subscription);
+      if (isSubscribe.result.success) {
+        subscribing.value = subscription !== null;
+        alert("訂閱成功！");
+      } else {
+        throw new Error(publicKey.result.message);
+      }
     } else {
       throw new Error(publicKey.result.message);
     }

@@ -4,7 +4,7 @@
     <VForm ref="formRef" v-slot="{ errors, meta, resetForm }" @submit="test">
       <!-- <VField name="email" type="email" rules="required|email" /> -->
       <!-- <ErrorMessage name="email" class="form-error"/> -->
-      <AppFormFieId name="email" lable="email" rules="required|email"></AppFormFieId>
+      <AppFormFieId name="email" label="email" rules="required|email"></AppFormFieId>
       <!-- <VField name="password" type="password" rules="required|min:6" as="textarea" /> -->
       <VField name="password" type="password" rules="required|min:6" />
 
