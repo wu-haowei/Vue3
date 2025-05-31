@@ -49,6 +49,15 @@ export class LoginService {
                 return Promise.reject(err);
             });
     }
+    async UnSubscribe(data) {
+        return apiService.POST(`api/PWA/UnSubscribe`, data)
+            .then((result) => {
+                return result;
+            })
+            .catch((err) => {
+                return Promise.reject(err);
+            });
+    }
     async SendAll(data = {
         "title": "有一則新訊息",
         "body": "伺服器推播"
