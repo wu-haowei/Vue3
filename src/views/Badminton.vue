@@ -13,7 +13,7 @@
           type="select"
           name="server"
           errLabel="發球場地"
-          label="選擇發球場地"
+          label="發球場地"
           :options="[
             { label: '-- 請選擇 --', value: '', isDisabled: true },
             { value: 'A', label: '場地 A(左)', isDisabled: false },
@@ -533,7 +533,7 @@ onMounted(() => {
 }
 
 .scoreboard .score-card {
-  color: #fff;
+  color: var(  --color-text);
 }
 
 .flip-board {
@@ -546,7 +546,7 @@ onMounted(() => {
 .score-card {
   flex: 1 1; /* 當空間不足就換行 */
   max-width: 45%;
-  background: #111;
+  background: var(--color-background);
   border: 3px solid var(--color-background-form-label);
   border-radius: 10px;
   width: 15rem;
@@ -636,7 +636,7 @@ button:disabled {
 </style>
 
 
-
+<!-- 表單樣式 -->
 <style>
 .main-content .scoreboard #badmintonForm {
   max-width: 400px;
@@ -695,7 +695,7 @@ input {
 }
 
 .score-card.is-server {
-  background: rgb(116 112 112);
+  background: var( --color-focus-background);
 }
 
 .score-card.left-last-point {

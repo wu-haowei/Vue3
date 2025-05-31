@@ -3,6 +3,7 @@
     <button @click="subscribePush" :disabled="subscribing">
       {{ subscribing ? "訂閱中..." : "啟用通知" }}
     </button>
+    <button @click="unsubscribeUser" v-if="subscribing">取消訂閱</button>
   </div>
 </template>
 
@@ -50,6 +51,37 @@ const subscribePush = async () => {
   }
 };
 
+const unsubscribeUser = async () => {
+  try {
+    if (!window.confirm("確定要取消訂閱?")) {
+      return;
+    }
+
+    const subscription = await reg.value.pushManager.getSubscription();
+
+    if (!subscription) {
+      alert("目前沒有訂閱可取消");
+      return;
+    }
+
+    const success = await subscription.unsubscribe();
+    if (success) {
+      // 通知後端取消訂閱
+      subscribing.value = false;
+      const result = await loginService.UnSubscribe(subscription);
+      if (!result.result.success) {
+        // throw new Error(result.result.message || "後端取消訂閱失敗");
+        console.log(result.result.message || "後端取消訂閱失敗");
+      }
+      alert("成功退訂");
+    } else {
+      throw new Error("取消訂閱失敗");
+    }
+  } catch (error) {
+    console.error("取消訂閱時發生錯誤：", error);
+    alert("取消訂閱失敗：" + error.message);
+  }
+};
 //https://gist.github.com/Klerith/80abd742d726dd587f4bd5d6a0ab26b6
 function urlB64ToUint8Array(base64String) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);

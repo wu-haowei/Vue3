@@ -1,6 +1,8 @@
 :root {
   /* 基本背景 */
   --color-background: #ffffff;
+  --color-focus-background: #fef3c7;
+  --color-text: #121212;
   /*背景*/
   --color-background-form: #f2f4f8;
   /*卡片背景*/
@@ -54,6 +56,9 @@
 body.dark {
   /* 深色主題 */
   --color-background: #121212;
+  --color-focus-background: #4b5563;
+  /* 深色主題 */
+  --color-text: #ffffff;
   /*背景*/
   --color-background-form: #1e1e1e;
   /*卡片背景*/
