@@ -83,6 +83,7 @@ onMounted(async () => {
     <AppFormFieId
       name="Account"
       label="帳號"
+      errLabel="帳號"
       rules="required"
       placeholder="任意輸入"
       :dynamicAttribute="{ autocomplete: 'current-account' }"
@@ -90,6 +91,7 @@ onMounted(async () => {
     <AppFormFieId
       name="password"
       label="密碼"
+      errLabel="密碼"
       rules="required"
       type="password"
       placeholder="請輸入密碼"

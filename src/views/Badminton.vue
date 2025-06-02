@@ -15,7 +15,7 @@
           errLabel="發球場地"
           label="發球場地"
           :options="[
-            { label: '-- 請選擇 --', value: '', isDisabled: true },
+            { label: '-- 請選擇 --', value: '', isDisabled: false },
             { value: 'A', label: '場地 A(左)', isDisabled: false },
             { value: 'B', label: '場地 B(右)', isDisabled: false },
           ]"
@@ -232,7 +232,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, getCurrentInstance } from "vue";
+const { proxy } = getCurrentInstance();
 import AppFormFieId from "../components/AppFormFieId.vue";
 import Modal from "../components/Teleport.vue";
 import { useRouter } from "vue-router";
@@ -250,13 +251,18 @@ function addName() {
   if (name && !getPersonnel.value.includes(name)) {
     nameList.value.push(name);
     nameInput.value = "";
+  } else {
+    proxy.$toast.warning("名稱重複", 3000);
   }
 }
 
 // 計算轉成逗號字串
 const addRouter = () => {
   if (getPersonnel.value.length < 4) {
-    alert("人員名單至少需要 4 人，請新增人員後再進行比賽。");
+    proxy.$toast.warning(
+      "人員名單至少需要 4 人，請新增人員後再進行比賽。",
+      3000
+    );
     return;
   }
 
@@ -289,6 +295,11 @@ const delPersonnel = (name) => {
   const j = personnel.value.findIndex((p) => p.label === name);
   if (j !== -1) {
     personnel.value.splice(j, 1);
+  }
+  if (i !== -1 || j !== -1) {
+    proxy.$toast.success("刪除成功", 1000);
+  } else {
+    proxy.$toast.warning("查無資料", 3000);
   }
 };
 
@@ -533,7 +544,7 @@ onMounted(() => {
 }
 
 .scoreboard .score-card {
-  color: var(  --color-text);
+  color: var(--color-text);
 }
 
 .flip-board {
@@ -695,7 +706,7 @@ input {
 }
 
 .score-card.is-server {
-  background: var( --color-focus-background);
+  background: var(--color-focus-background);
 }
 
 .score-card.left-last-point {

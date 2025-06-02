@@ -83,7 +83,8 @@
 </template>
 
 <script setup>
-import { ref, computed, provide, onMounted } from "vue";
+import { ref, computed, provide, onMounted, getCurrentInstance } from "vue";
+const { proxy } = getCurrentInstance();
 import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
 /*
 RouterLink |  <router-link> 在 <template> 中建立可點擊切換頁面的連結（相當於 <a>）。可綁定 to 屬性跳轉。
@@ -111,16 +112,14 @@ const RequestWakeLock = async () => {
     isRequestWakeLock.value = !isRequestWakeLock.value;
     if (isRequestWakeLock.value) {
       wakeLock.value = await navigator.wakeLock.request("screen");
-      alert("🔒 螢幕喚醒鎖已啟用");
+      proxy.$toast.success("已啟用", 1000);
 
-      // 監聽可見性變化
       document.addEventListener("visibilitychange", async () => {
         if (wakeLock.value !== null && document.visibilityState === "visible") {
           try {
             wakeLock.value = await navigator.wakeLock.request("screen");
-            alert("🔄 可見時重新取得喚醒鎖");
           } catch (err) {
-            alert("⚠️ 無法重新取得喚醒鎖：", err);
+            // alert("⚠️ 無法重新取得喚醒鎖：", err);
           }
         }
       });
@@ -128,11 +127,11 @@ const RequestWakeLock = async () => {
       if (wakeLock.value !== null) {
         await wakeLock.value.release();
         wakeLock.value = null;
-        alert("🔓 螢幕喚醒鎖已釋放");
+        proxy.$toast.success("已關閉", 1000);
       }
     }
   } catch (err) {
-    alert("❌ 喚醒鎖操作錯誤：", err);
+    proxy.$toast.error("發生錯誤", 1000);
   }
 };
 
@@ -207,6 +206,7 @@ const otherRoutes = [
   { to: "/AdvancedChatOpenAI", label: "即時通訊" },
   { to: "/IndexedDB", label: "IndexedDB" },
   { to: "/LookSVG", label: "SVG清單" },
+  // { to: "/IAsyncEnumerable", label: "非同步回應" },
 ];
 
 // function clearPwaCache() {

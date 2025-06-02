@@ -8,7 +8,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, getCurrentInstance } from "vue";
+const { proxy } = getCurrentInstance();
 import { LoginService } from "@/services/LoginService";
 
 const loginService = new LoginService();
@@ -21,7 +22,8 @@ const subscribePush = async () => {
   try {
     const permission = await Notification.requestPermission();
     if (permission !== "granted") {
-      alert("通知權限被拒絕");
+      proxy.$toast.warning("通知權限被拒絕", 3000);
+
       subscribing.value = false;
       return;
     }
@@ -38,7 +40,7 @@ const subscribePush = async () => {
       const isSubscribe = await loginService.Subscribe(subscription);
       if (isSubscribe.result.success) {
         subscribing.value = subscription !== null;
-        alert("訂閱成功！");
+        proxy.$toast.success("訂閱成功！", 1000);
       } else {
         throw new Error(publicKey.result.message);
       }
@@ -47,7 +49,7 @@ const subscribePush = async () => {
     }
   } catch (err) {
     subscribing.value = false;
-    alert("訂閱失敗");
+    proxy.$toast.error("訂閱失敗", 3000);
   }
 };
 
@@ -60,7 +62,7 @@ const unsubscribeUser = async () => {
     const subscription = await reg.value.pushManager.getSubscription();
 
     if (!subscription) {
-      alert("目前沒有訂閱可取消");
+      proxy.$toast.info("目前沒有訂閱可取消", 3000);
       return;
     }
 
@@ -73,13 +75,13 @@ const unsubscribeUser = async () => {
         // throw new Error(result.result.message || "後端取消訂閱失敗");
         console.log(result.result.message || "後端取消訂閱失敗");
       }
-      alert("成功退訂");
+      proxy.$toast.success("成功退訂", 1000);
     } else {
       throw new Error("取消訂閱失敗");
     }
   } catch (error) {
     console.error("取消訂閱時發生錯誤：", error);
-    alert("取消訂閱失敗：" + error.message);
+    proxy.$toast.error(`取消訂閱失敗：${error.message}`, 3000);
   }
 };
 //https://gist.github.com/Klerith/80abd742d726dd587f4bd5d6a0ab26b6

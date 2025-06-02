@@ -1,7 +1,7 @@
 <script setup>
 const props = defineProps({
-  show: Boolean
-})
+  show: Boolean,
+});
 </script>
 
 <template>
@@ -9,18 +9,16 @@ const props = defineProps({
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
         <div class="modal-header">
-          <slot name="header">default header</slot>
+          <slot name="header">沒有標題</slot>
         </div>
         <div class="modal-body">
-          <slot name="body">default body</slot>
+          <slot name="body"></slot>
         </div>
         <div class="modal-footer">
           <slot name="footer">
-            default footer
-            <button
-              class="modal-default-button"
-              @click="$emit('close')"
-            >OK</button>
+            <button class="modal-default-button" @click="$emit('close')">
+              OK
+            </button>
           </slot>
         </div>
       </div>
@@ -43,12 +41,15 @@ const props = defineProps({
 
 .modal-container {
   width: 300px;
+  max-height: 80vh; /* 限制高度不超過畫面高度的 80% */
   margin: auto;
   padding: 20px 30px;
   background-color: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column; /* 讓內部可以分區域調整 */
 }
 
 .modal-header h3 {
@@ -58,10 +59,13 @@ const props = defineProps({
 
 .modal-body {
   margin: 20px 0;
+      overflow-y: auto;
+  flex: 1; /* 讓 body 撐開剩下空間並可捲動 */
 }
 
 .modal-default-button {
   float: right;
+
 }
 
 /*

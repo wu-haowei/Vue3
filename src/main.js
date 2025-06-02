@@ -10,6 +10,7 @@ import { createMyRouter } from './router'
 
 import VeeValidatePlugin from '@/plugins/VeeValidatePlugin'
 import { registerServiceWorker } from './useServiceWorker'
+import ToastPlugin from '@/components/plugins/toast.js'
 // import { useRegisterSW } from 'virtual:pwa-register/vue';
 //引入 Web Component
 // import {} from './main.ce.js'
@@ -38,6 +39,7 @@ function initApp() {
     // useRegisterSW();
     // app.use(createPinia())
     app.use(VeeValidatePlugin)
+    app.use(ToastPlugin, { position: 'bottom-left' }) // 可自訂位置
     app.use(createPinia())
     app.use(router)
 
