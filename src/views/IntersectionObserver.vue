@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="IntersectionObserver">
     <div v-for="(image, index) in 5" :key="index">
       <img
         :key="index"
@@ -36,7 +36,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
 
-
 const imageRefs = ref([]);
 const setImageRef = (el) => {
   if (el) {
@@ -64,11 +63,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+.IntersectionObserver img {
+  width: 100%;
 }
 </style>

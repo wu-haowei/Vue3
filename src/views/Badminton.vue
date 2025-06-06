@@ -526,12 +526,12 @@ onMounted(() => {
   padding: 0.25em 0.5em;
   border-radius: 4px;
 }
-
+/* 
 :global(body, html) {
   margin: 0;
   padding: 0;
   height: 100%;
-}
+} */
 
 .scoreboard {
   display: flex;

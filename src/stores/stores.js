@@ -11,6 +11,9 @@ const getDefaultState = () => {
     account: "", //帳號
     userName: "", //姓名
     jwtToken: "",
+    socket: null,
+    connected: false,
+    messages: [],
   }
 }
 
@@ -29,7 +32,16 @@ export default createStore({
     },
     RESET_STATE(state) {
       Object.assign(state, getDefaultState()) // 將 state 重設為初始狀態
-    }
+    },
+    SET_SOCKET(state, socket) {
+      state.socket = socket;
+    },
+    SET_CONNECTED(state, connected) {
+      state.connected = connected;
+    },
+    ADD_MESSAGE(state, message) {
+      state.messages.push(message);
+    },
   },
   actions: {
     asyncIncrement({ commit }) {
@@ -59,6 +71,42 @@ export default createStore({
     async logOut(context) {
       context.commit('RESET_STATE');
     },
+    connect({ commit, dispatch }) {
+      if (this.state.socket) return; // 已有連線，避免重複
+
+      const socket = new WebSocket(`wss://localhost:7228/ws?userId=${'userId'}`);
+      commit("SET_SOCKET", socket);
+
+      socket.onopen = () => {
+        console.log("WebSocket connected");
+        commit("SET_CONNECTED", true);
+        // 連線後你可以 dispatch 其他 actions
+      };
+
+      socket.onmessage = (event) => {
+        console.log(event.data);
+        commit("ADD_MESSAGE", event.data);
+      };
+
+      socket.onclose = () => {
+        console.log("WebSocket closed");
+        commit("SET_CONNECTED", false);
+        commit("SET_SOCKET", null);
+        // 需要可在這重連
+      };
+
+      socket.onerror = (err) => {
+        console.error("WebSocket error:", err);
+      };
+    },
+
+    sendMessage({ state }, message) {
+      if (state.connected && state.socket) {
+        state.socket.send(message);
+      } else {
+        console.warn("WebSocket not connected.");
+      }
+    },
   },
   getters: {
     isLogin: (state) => {
@@ -72,6 +120,9 @@ export default createStore({
     },
     getToken: (state) => {
       return state.jwtToken;
+    },
+    getMessages: (state) => {
+      return state.messages;
     },
   },
   plugins: [

@@ -69,6 +69,7 @@ import { AIService } from "@/services/AIService";
 const aIService = new AIService();
 // import { useAuthStore } from "@/store/modules/useAuth";
 // const { semployeeNo, sUserName, sOnlineUser } = useAuthStore();
+import store from "@/stores/stores";
 register();
 defineOptions({
   name: "userIndex",
@@ -113,6 +114,40 @@ const aiModel = reactive([
 const isShowFiles = computed(() => {
   return false; // selectModel.value == "gemini-2.0-flash-exp-image-generation";
 });
+const socketMessages = computed(() => store.getters["getMessages"]);
+
+watch(
+  socketMessages,
+  (newVal, oldVal) => {
+    if (!newVal || !Array.isArray(newVal)) return;
+
+    const oldIds = new Set(messages.value.map((m) => m._id));
+
+    const newContexts = newVal
+      .map((raw) => {
+        try {
+          return JSON.parse(raw);
+        } catch (e) {
+          // console.warn("JSON parse 失敗：", raw, e);
+          return null;
+        }
+      })
+      .filter((f) => f && !oldIds.has(f.ID))
+      .map((f) => ({
+        _id: f.ID,
+        content: f.Text,
+        senderId: f.Person === "AI" ? "4321" : "1234",
+        username: f.Person,
+        date: new Date(f.Date).toDateString(),
+        timestamp: new Date(f.Date).toTimeString().substring(0, 5),
+        reactions: {},
+        files: [],
+      }));
+
+    messages.value = [...messages.value, ...newContexts];
+  },
+  { immediate: true, deep: true }
+);
 
 // 模擬獲取資訊
 const fetchMessages = (event) => {
@@ -217,15 +252,15 @@ const sendMessage = async (event) => {
       url: await UploadImage(f.localUrl),
     }))
   );
-  messages.value.push({
-    _id: messages.value.length + 1,
-    content: message.content,
-    senderId: currentUserId.value,
-    timestamp: new Date().toString().substring(16, 21),
-    date: new Date().toDateString(),
-    files: uploadedFiles,
-    reactions: {}, // 預設無表情符號
-  });
+  // messages.value.push({
+  //   _id: messages.value.length + 1,
+  //   content: message.content,
+  //   senderId: currentUserId.value,
+  //   timestamp: new Date().toString().substring(16, 21),
+  //   date: new Date().toDateString(),
+  //   files: uploadedFiles,
+  //   reactions: {}, // 預設無表情符號
+  // });
 
   aIService
     .MessageSave({
@@ -284,7 +319,8 @@ const OpenAIModel = async (message, uploadedFiles) => {
       }s】`}`,
       image: [],
     };
-    messages.value = [...messages.value, ...(await addMessages(context))];
+    // messages.value = [...messages.value, ...(await addMessages(context))];
+    await addMessages(context);
   } catch (error) {
     let errMsg = "";
     if (
@@ -303,15 +339,15 @@ const OpenAIModel = async (message, uploadedFiles) => {
     ) {
       errMsg = "伺服器忙碌，請稍後再試";
     }
-    messages.value = [
-      ...messages.value,
-      ...(await addMessages({
-        text: `${`${errMsg}，狀態碼:${error.status} \n\n【使用:${
-          (new Date().getTime() - useTime.value) / 1000
-        }s】`}`,
-        image: [],
-      })),
-    ];
+    // messages.value = [
+    //   ...messages.value,
+    //   ...(await addMessages({
+    //     text: `${`${errMsg}，狀態碼:${error.status} \n\n【使用:${
+    //       (new Date().getTime() - useTime.value) / 1000
+    //     }s】`}`,
+    //     image: [],
+    //   })),
+    // ];
   } finally {
     rooms.value[0].typingUsers = rooms.value[0].typingUsers.filter(
       (f) => f != "4321"
@@ -391,7 +427,9 @@ const GeminiAIModel = async (message, uploadedFiles = []) => {
         parts: [{ text: result.response.text() }],
       });
     }
-    messages.value = [...messages.value, ...(await addMessages(context))];
+    // messages.value = [...messages.value, ...(await addMessages(context))];
+    await addMessages(context);
+
     // rooms.value[0].typingUsers = rooms.value[0].typingUsers.filter(
     //   (f) => f != "4321"
     // );
@@ -417,15 +455,22 @@ const GeminiAIModel = async (message, uploadedFiles = []) => {
       errMsg = `其他問題，${error.message}`;
     }
 
-    messages.value = [
-      ...messages.value,
-      ...(await addMessages({
-        text: `${`${errMsg}，狀態碼:${error.status} \n\n【回應秒數:${
-          (new Date().getTime() - useTime.value) / 1000
-        }】`}`,
-        image: [],
-      })),
-    ];
+    // messages.value = [
+    //   ...messages.value,
+    //   ...(await addMessages({
+    //     text: `${`${errMsg}，狀態碼:${error.status} \n\n【回應秒數:${
+    //       (new Date().getTime() - useTime.value) / 1000
+    //     }】`}`,
+    //     image: [],
+    //   })),
+    // ];
+
+    await addMessages({
+      text: `${`${errMsg}，狀態碼:${error.status} \n\n【回應秒數:${
+        (new Date().getTime() - useTime.value) / 1000
+      }】`}`,
+      image: [],
+    });
   } finally {
     rooms.value[0].typingUsers = rooms.value[0].typingUsers.filter(
       (f) => f != "4321"
