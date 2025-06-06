@@ -40,6 +40,7 @@ jobs:
       - name: Create .env File
         run: |
           echo "VITE_GEMINI=${{ secrets.VITE_GEMINI }}" > .env
+          echo "VITE_OPENAI=${{ secrets.VITE_GEMINI }}" > .env
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
           echo "VITE_WEBSOCKET_URL=${{ secrets.VITE_WEBSOCKET_URL }}" >> .env
       - name: Build
