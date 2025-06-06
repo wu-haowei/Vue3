@@ -74,7 +74,7 @@ export default createStore({
     connect({ commit, dispatch }) {
       if (this.state.socket) return; // 已有連線，避免重複
 
-      const socket = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_URL}ws?userId=${'userId'}`);
+      const socket = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_URL}ws?userId=${crypto.randomUUID()}`);
       commit("SET_SOCKET", socket);
 
       socket.onopen = () => {
