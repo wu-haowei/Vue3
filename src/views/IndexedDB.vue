@@ -3,22 +3,44 @@
     <!-- <div class="slider-container">
       <div class="slider-text">
         <transition name="fade" mode="out-in">
-          <span :key="currentIndex">{{ slideshowItem[currentIndex] }}</span>
+          <span :key="currentIndex">{{ getNowSeq }}</span>
         </transition>
       </div>
     </div> -->
 
-    <button id="hiddenAudioButton" @click="enableAudio" v-show="!false">
+    <button
+      v-if="IsUserInteracted"
+      @click="init"
+      :style="{
+        padding: '12px',
+        color: 'white',
+      }"
+    >
+      點我開始播放與啟用音效
+    </button>
+
+    <button
+      id="hiddenAudioButton"
+      @click="enableAudio"
+      v-if="!IsUserInteracted"
+    >
       音效測試
     </button>
     <button
+      v-if="!IsUserInteracted"
       id="hiddenAudioButton"
       @click="cleanupOldData(true)"
-      v-show="!false"
     >
       清除資料
     </button>
-    <h2 style="background: yellow; color: red; text-align: center">
+    <h2
+      style="
+        background: yellow;
+        color: red;
+        text-align: center;
+        min-height: 36px;
+      "
+    >
       {{ errMsg }}
     </h2>
 
@@ -51,7 +73,7 @@
             :key="item.seq"
             :style="{
               backgroundColor:
-                getNowSeq == item.seq
+                getNowSeq.seq == item.seq
                   ? 'red'
                   : item.seq % 2 === 0
                   ? '#f9f9f9'
@@ -59,13 +81,19 @@
               textAlign: 'center',
             }"
           >
-            <td :style="{ color: getNowSeq == item.seq ? 'white' : 'black' }">
+            <td
+              :style="{ color: getNowSeq.seq == item.seq ? 'white' : 'black' }"
+            >
               {{ item.seq }}
             </td>
-            <td :style="{ color: getNowSeq == item.seq ? 'white' : 'black' }">
+            <td
+              :style="{ color: getNowSeq.seq == item.seq ? 'white' : 'black' }"
+            >
               {{ item.CaseNumber }}
             </td>
-            <td :style="{ color: getNowSeq == item.seq ? 'white' : 'black' }">
+            <td
+              :style="{ color: getNowSeq.seq == item.seq ? 'white' : 'black' }"
+            >
               <span v-for="(_item, _index) in errCode" :key="_index">
                 <input
                   type="checkbox"
@@ -80,9 +108,23 @@
         </tbody>
       </table>
       <ol>
-        <li>ERR01: 數量異常！<span @click="enableAudio(0)">🔊</span></li>
-        <li>ERR02: 效期異常！<span @click="enableAudio(1)">🔊</span></li>
-        <li>ERR03: 數量、 效期異常！<span @click="enableAudio(2)">🔊</span></li>
+        <li>
+          ERR01: 數量異常！<span @click="enableAudio(0)" style="cursor: pointer"
+            >🔊</span
+          >
+        </li>
+        <li>
+          ERR02: 效期異常！<span @click="enableAudio(1)" style="cursor: pointer"
+            >🔊</span
+          >
+        </li>
+        <li>
+          ERR03: 數量、 效期異常！<span
+            @click="enableAudio(2)"
+            style="cursor: pointer"
+            >🔊</span
+          >
+        </li>
       </ol>
     </div>
   </div>
@@ -107,8 +149,8 @@ defineOptions({
   name: "IndexedDB",
   components: {},
 });
-
-const errMsg = ref("");
+const IsUserInteracted = ref(false);
+const errMsg = ref("載入中...");
 
 const Interval = reactive({
   changeText: null,
@@ -159,20 +201,29 @@ const changeText = () => {
 };
 
 const getNowSeq = computed(() => {
-  return slideshowItem.value[currentIndex.value].seq;
+  return slideshowItem.value[currentIndex.value];
 });
 
-const playSound = (code = "ERR01") => {
+const playSound = async (code = "ERR01") => {
   const el = videos[code];
   if (!el) return;
-  el.currentTime = 0;
-  el.loop = true;
-  el.play();
-  setTimeout(() => {
-    el.pause();
-  }, 3000);
-};
 
+  try {
+    el.currentTime = 0;
+    el.loop = true;
+
+    await el.play(); // 等待播放開始
+
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        el.pause();
+        resolve();
+      }, 3000); // 播放 3 秒後暫停
+    });
+  } catch (error) {
+    console.error("播放音效失敗：", error);
+  }
+};
 const initDB = async (version = 0) => {
   // const request = indexedDB.open("ttl-grafanaDB");
   await new Promise((resolve, reject) => {
@@ -186,11 +237,11 @@ const initDB = async (version = 0) => {
     )
       .then((res) => {
         db.value = res;
-        console.log("資料庫已開啟：", db.value);
+        console.debug("資料庫已開啟：", db.value);
         resolve(true);
       })
       .catch((error) => {
-        console.error("資料庫開啟失敗：", error);
+        console.debug("資料庫開啟失敗：", error);
         reject(error);
       });
   });
@@ -220,19 +271,9 @@ const setIndexedDB = async (data) => {
     console.error("資料庫尚未初始化");
     return;
   }
-  // if (data.seq == 4) {
-  //   getToday.value = getTodayDateString(
-  //     new Date(new Date().setDate(new Date().getDate() - 1))
-  //   );
-  // }
-  // if (data.seq == 8) {
-  //   getToday.value = getTodayDateString();
-  // }
-
   if (!db.value.objectStoreNames.contains(getToday.value)) {
     await new Promise((resolve, reject) => {
       cleanupOldData().then(() => {
-        // 等待 onsuccess 被觸發後才 resolve
         const interval = setInterval(() => {
           if (db.value.objectStoreNames.contains(getToday.value)) {
             clearInterval(interval);
@@ -254,59 +295,60 @@ const setIndexedDB = async (data) => {
   const store = transaction.objectStore(getToday.value);
 
   const query = store.get(data.seq);
-  query.onsuccess = () => {
-    const existing = query.result;
-    if (existing) {
-      const updated = Array.from(
-        new Set([...existing.ExceptionCode, ...data.ExceptionCode])
-      );
-      const updateRequest = store.put({ ...existing, ExceptionCode: updated });
+  return new Promise((resolve) => {
+    query.onsuccess = async () => {
+      const existing = query.result;
+      if (existing) {
+        const updated = Array.from(
+          new Set([...existing.ExceptionCode, ...data.ExceptionCode])
+        );
+        const updateRequest = store.put({
+          ...existing,
+          ExceptionCode: updated,
+        });
 
-      updateRequest.onsuccess = () => {
-        if (
-          updated.length != existing.ExceptionCode.length &&
-          updated.length > 0
-        ) {
-          try {
+        updateRequest.onsuccess = async () => {
+          if (
+            updated.length !== existing.ExceptionCode.length &&
+            updated.length > 0
+          ) {
             errMsg.value = data.ExceptionCode.map((item) =>
               ExceptionMsgStr(item)
             ).join("/");
-            playSound(data.ExceptionCode[0]);
-          } catch (error) {
-            console.error("播放音效時發生錯誤:", error);
-          }
-        } else if (updated.length > 0) {
-          errMsg.value = data.ExceptionCode.map((item) =>
-            ExceptionMsgStr(item)
-          ).join("/");
-        } else {
-          errMsg.value = "";
-        }
-        console.log("✅ 資料已更新");
-      };
-    } else {
-      const addRequest = store.add(JSON.parse(JSON.stringify(data)));
-      addRequest.onsuccess = () => {
-        if (data.ExceptionCode.length > 0) {
-          try {
+            await playSound(data.ExceptionCode[0]);
+          } else if (updated.length > 0) {
             errMsg.value = data.ExceptionCode.map((item) =>
               ExceptionMsgStr(item)
             ).join("/");
-            playSound(data.ExceptionCode[0]);
-          } catch (error) {
-            console.error("播放音效時發生錯誤:", error);
+          } else {
+            errMsg.value = "";
           }
-        } else {
-          errMsg.value = "";
-        }
-        console.log("🆕 資料已新增");
-      };
-    }
-  };
+          console.debug("✅ 資料已更新");
+          resolve();
+        };
+      } else {
+        const addRequest = store.add(JSON.parse(JSON.stringify(data)));
+        addRequest.onsuccess = async () => {
+          if (data.ExceptionCode.length > 0) {
+            errMsg.value = data.ExceptionCode.map((item) =>
+              ExceptionMsgStr(item)
+            ).join("/");
+            await playSound(data.ExceptionCode[0]);
+          } else {
+            errMsg.value = "";
+          }
+          console.debug("🆕 資料已新增");
 
-  query.onerror = (event) => {
-    console.error("查詢資料失敗：", event.target.error);
-  };
+          resolve();
+        };
+      }
+    };
+
+    query.onerror = (event) => {
+      console.error("查詢資料失敗：", event.target.error);
+      resolve();
+    };
+  });
 };
 
 const getStoresToDelete = async (isAll) => {
@@ -325,7 +367,7 @@ const cleanupOldData = async (isAll = false) => {
 
   const storesToDelete = await getStoresToDelete(isAll);
   if (storesToDelete.length === 0) {
-    console.log("✅ 沒有過期資料需要清除");
+    console.debug("✅ 沒有過期資料需要清除");
     return;
   } else {
     storesToDelete.forEach(async (storeName) => {
@@ -334,7 +376,7 @@ const cleanupOldData = async (isAll = false) => {
 
     await initDB(db.value.version + 1)
       .then(() => {
-        console.log("資料庫升級成功，過期資料已清除");
+        console.debug("資料庫升級成功，過期資料已清除");
         if (isAll) {
           startSlideshow();
         }
@@ -349,18 +391,18 @@ const enableAudio = async (arrIndex = null) => {
   if (typeof arrIndex != "number") {
     arrIndex = Math.floor((Math.random() * 100) % errCode.value.length);
   }
-  console.log("音效測試", arrIndex);
   playSound(errCode.value[arrIndex]);
 };
 
 const getData = async () => {
-  new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const requestOptions = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     };
+
     fetch(`${base}/assets/doc.json`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
@@ -372,21 +414,22 @@ const getData = async () => {
               )
             : [],
         }));
-        resolve();
+        resolve(); // 確保可以 await getData()
       })
       .catch((error) => {
         slideshowItem.value = [];
-        reject(error);
+        reject(error); // 可以 try/catch 處理錯誤
       });
   });
 };
+
 // 啟動輪播
 const startSlideshow = () => {
   if (Interval.isRunning) return;
   Interval.changeText = setInterval(async () => {
     if (slideshowItem.value.length > 0) {
-      await setIndexedDB(slideshowItem.value[currentIndex.value]);
       changeText();
+      await setIndexedDB(getNowSeq.value);
     }
   }, 5000);
   Interval.isRunning = true;
@@ -398,15 +441,26 @@ const pauseSlideshow = () => {
   Interval.isRunning = false;
 };
 
+const init = () => {
+  setTimeout(async () => {
+    if (slideshowItem.value.length > 0) {
+      IsUserInteracted.value = false;
+      errMsg.value = "";
+      setTimeout(async () => {
+        await setIndexedDB(getNowSeq.value);
+        startSlideshow();
+      }, 2000);
+    }
+  }, 0);
+};
+
 onMounted(async () => {
   today.value = await getTodayDateString();
   await initDB(0)
     .then(async () => {
       await getData();
-      startSlideshow();
-      // Interval.getData = setInterval(async () => {
-      //   getData();
-      // }, 5000);
+      IsUserInteracted.value = true;
+      errMsg.value = "已載入資料...";
     })
     .catch((error) => {
       console.error("初始化資料庫失敗：", error);
