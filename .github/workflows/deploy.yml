@@ -1,57 +1,73 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+# 🚀 自動部署到 GitHub Pages 的工作流程
+name: 我的應用程式
 
 on:
-  # Runs on pushes targeting the default branch
+  # ✅ 當推送到 main 分支時執行
   push:
     branches: ['main']
 
-  # Allows you to run this workflow manually from the Actions tab
+  # ✅ 手動觸發部署（從 Actions 頁面）
   workflow_dispatch:
 
-# Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
+# ✅ 設定權限，允許寫入 Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow one concurrent deployment
+# ✅ 同時間只允許一個部署進行中
 concurrency:
   group: 'pages'
   cancel-in-progress: true
 
 jobs:
-  # Single deploy job since we're just deploying
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: 把 GitHub Repo 的程式碼抓下來
         uses: actions/checkout@v4
-      - name: Set up Node
+
+      - name: 安裝指定版本的 Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-      - name: Install dependencies
+
+      - name: 安裝相依套件
         run: npm ci
-      - name: Create .env File
+
+      - name: 建立 .env 檔案並寫入 Secrets（注意：追加用 >>）
         run: |
           echo "VITE_GEMINI=${{ secrets.VITE_GEMINI }}" > .env
-          echo "VITE_OPENAI=${{ secrets.VITE_OPENAI }}" > .env
+          echo "VITE_OPENAI=${{ secrets.VITE_OPENAI }}" >> .env
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
           echo "VITE_WEBSOCKET_URL=${{ secrets.VITE_WEBSOCKET_URL }}" >> .env
-      - name: Build
+
+      - name: 執行 Vite 的建置指令（編譯出 dist）
         run: npm run build
-      - name: Setup Pages
+
+      - name: 壓縮打包成 ZIP 檔案
+        run: |
+          zip -r dist.zip dist
+
+      - name: 上傳 ZIP 為 Artifact，可在 Actions 下載
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-package
+          path: dist.zip
+
+      - name: 設定 GitHub Pages 發佈環境
         uses: actions/configure-pages@v4
-      - name: Upload artifact
+
+      - name: 上傳編譯好的 dist 資料夾
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload dist folder
           path: './dist'
-      - name: Deploy to GitHub Pages
+
+      - name: 正式部署到 GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
