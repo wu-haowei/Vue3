@@ -1,3 +1,80 @@
+
+<template>
+  <button @click="isSignUp = !isSignUp">
+    {{ isSignUp ? "登入" : "註冊" }}
+  </button>
+  <VForm
+    id="loginInForm"
+    ref="formRef1"
+    v-slot="{ errors, meta, resetForm }"
+    @submit="test"
+  >
+    <AppFormFieId
+      name="Account"
+      label="帳號"
+      errLabel="帳號"
+      rules="required"
+      placeholder="任意輸入"
+      :dynamicAttribute="{ autocomplete: 'current-account' }"
+    ></AppFormFieId>
+    <AppFormFieId
+      v-if="!isSignUp"
+      name="password"
+      label="密碼"
+      errLabel="密碼"
+      rules="required"
+      type="password"
+      placeholder="請輸入密碼"
+      :dynamicAttribute="{ autocomplete: 'current-password' }"
+    ></AppFormFieId>
+
+    <AppFormFieId
+      v-if="isSignUp"
+      name="email"
+      label="Email"
+      errLabel="Email"
+      rules="required"
+      placeholder="請輸入Email"
+      :dynamicAttribute="{ autocomplete: 'current-email' }"
+    ></AppFormFieId>
+
+    <!-- <ErrorMessage name="password" /> -->
+    <button type="submit">登入</button>
+
+    <Loading v-show="isLoading" />
+    <modal :show="errorMsg.isShow" @close="errorMsgIsShowChenge(false)">
+      <template #header>
+        <h3>系統提示</h3>
+      </template>
+      <template #body>
+        <h3>{{ errorMsg.msg }}</h3>
+      </template>
+      <template #footer>
+        <button @click="errorMsgIsShowChenge(false)">確認</button>
+      </template>
+    </modal>
+
+    <modal :show="isValidEmail.isShow">
+      <template #header>
+        <h3>QRCode</h3>
+      </template>
+      <template #body>
+        <!-- <h3>{{ errorMsg.msg }}</h3> -->
+        <img
+          :src="isValidEmail.image"
+          v-if="isValidEmail.image"
+          width="100%"
+          alt="2FA image"
+        />
+        <h3 v-else>{{ isValidEmail.msg }}</h3>
+      </template>
+      <template #footer>
+        <button @click="isValidEmail.isShow = false">確認</button>
+      </template>
+    </modal>
+  </VForm>
+</template>
+
 <script setup>
 import { reactive, ref, onMounted } from "vue";
 import store from "@/stores/stores";
@@ -5,7 +82,12 @@ import AppFormFieId from "../components/AppFormFieId.vue";
 import Modal from "../components/Teleport.vue";
 import Loading from "../components/Loading.vue";
 
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
+
+import { LoginService } from "@/services/LoginService";
+
+const loginService = new LoginService();
+const route = useRoute();
 const router = useRouter();
 
 const logIn = async (data) => {
@@ -32,9 +114,47 @@ const logIn = async (data) => {
   }
 };
 
+const signUp = async (data) => {
+  try {
+    isLoading.value = true;
+
+    loginService
+      .SignUp({
+        token: getGUID(),
+        account: data["Account"],
+        password: getGUID(),
+        email: data["email"],
+      })
+      .then(async (res) => {
+        errorMsg.msg = res.result.message;
+        errorMsg.isShow = true;
+      })
+      .catch((error) => {
+        errorMsg.msg = "發生錯誤，請稍後再試！";
+        errorMsg.isShow = true;
+      })
+      .finally(() => {
+        isLoading.value = false;
+      });
+  } catch (error) {
+    // alert("發生錯誤，請稍後再試！");
+    errorMsg.msg = "發生錯誤，請稍後再試！";
+    errorMsg.isShow = true;
+  } finally {
+    isLoading.value = false;
+  }
+};
+
 const errorMsg = reactive({
   isShow: false,
   msg: "發生錯誤",
+});
+const isSignUp = ref(false);
+
+const isValidEmail = reactive({
+  isShow: false,
+  image: "",
+  msg: "錯誤",
 });
 
 const errorMsgIsShowChenge = (isShow) => {
@@ -42,7 +162,11 @@ const errorMsgIsShowChenge = (isShow) => {
 };
 
 const test = (value) => {
-  logIn(value);
+  if (!isSignUp.value) {
+    logIn(value);
+  } else {
+    signUp(value);
+  }
   formRef1.value.resetForm();
 };
 
@@ -70,49 +194,26 @@ onMounted(async () => {
       router.push("/");
     }
   }
+  if (route.query.user && route.query.passcode) {
+    loginService
+      .ValidEmail({ user: route.query.user, passcode: route.query.passcode })
+      .then(async (res) => {
+        isValidEmail.isShow = true;
+        if (res.result.success) {
+          isValidEmail.image = res.data.isTwoFactorImg;
+        } else {
+          isValidEmail.msg = res.result.message;
+        }
+      })
+      .catch((error) => {});
+  } else {
+    isValidEmail.isShow = false;
+    isValidEmail.image = "";
+    isValidEmail.msg = "";
+  }
 });
 </script>
 
-<template>
-  <VForm
-    id="loginInForm"
-    ref="formRef1"
-    v-slot="{ errors, meta, resetForm }"
-    @submit="test"
-  >
-    <AppFormFieId
-      name="Account"
-      label="帳號"
-      errLabel="帳號"
-      rules="required"
-      placeholder="任意輸入"
-      :dynamicAttribute="{ autocomplete: 'current-account' }"
-    ></AppFormFieId>
-    <AppFormFieId
-      name="password"
-      label="密碼"
-      errLabel="密碼"
-      rules="required"
-      type="password"
-      placeholder="請輸入密碼"
-      :dynamicAttribute="{ autocomplete: 'current-password' }"
-    ></AppFormFieId>
-    <!-- <ErrorMessage name="password" /> -->
-    <button type="submit">登入</button>
-    <Loading v-show="isLoading" />
-    <modal :show="errorMsg.isShow" @close="errorMsgIsShowChenge(false)">
-      <template #header>
-        <h3>系統提示</h3>
-      </template>
-      <template #body>
-        <h3>{{ errorMsg.msg }}</h3>
-      </template>
-      <template #footer>
-        <button @click="errorMsgIsShowChenge(false)">確認</button>
-      </template>
-    </modal>
-  </VForm>
-</template>
 
 <style>
 .main-content #loginInForm {

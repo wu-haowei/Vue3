@@ -22,6 +22,16 @@ export class LoginService {
 
     }
 
+    async SignUp(data) {
+        return apiService.POST(`api/Login/SignUp`, data)
+            .then((result) => {
+                return result;
+            })
+            .catch((err) => {
+                return Promise.reject(err);
+            });
+    }
+
     async getStlouisfed(type = 'DGS10') {
         return apiService.GET(`api/Toolbox/Stlouisfed/${type}`)
             .then((result) => {
@@ -59,10 +69,19 @@ export class LoginService {
             });
     }
     async SendAll(data = {
-        "title": "有一則新訊息",
+        "Subject": "有一則新訊息",
         "body": "伺服器推播"
     }) {
         return apiService.POST(`api/PWA/SendAll`, data)
+            .then((result) => {
+                return result;
+            })
+            .catch((err) => {
+                return Promise.reject(err);
+            });
+    }
+    async ValidEmail(data) {
+        return apiService.POST(`api/Login/ValidEmail`, data)
             .then((result) => {
                 return result;
             })
