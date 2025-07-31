@@ -1,13 +1,22 @@
 <script setup>
 const props = defineProps({
   show: Boolean,
+  width: {
+    type: [String, Number],
+    default: '300px',
+  },
+  height:  {
+    type: [String, Number],
+    default: '80vh',
+  },
+
 });
 </script>
 
 <template>
   <Transition name="modal">
-    <div v-if="show" class="modal-mask">
-      <div class="modal-container">
+    <div v-show="show" class="modal-mask">
+      <div class="modal-container" :style="{ width: props.width, height: props.height }">
         <div class="modal-header">
           <slot name="header">沒有標題</slot>
         </div>
@@ -59,13 +68,12 @@ const props = defineProps({
 
 .modal-body {
   margin: 20px 0;
-      overflow-y: auto;
+  overflow-y: auto;
   flex: 1; /* 讓 body 撐開剩下空間並可捲動 */
 }
 
 .modal-default-button {
   float: right;
-
 }
 
 /*

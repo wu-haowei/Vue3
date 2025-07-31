@@ -31,6 +31,15 @@ export class LoginService {
                 return Promise.reject(err);
             });
     }
+    async ForgetPassword(account) {
+        return apiService.GET(`api/Login/ForgetPassword/${account}`)
+            .then((result) => {
+                return result;
+            })
+            .catch((err) => {
+                return Promise.reject(err);
+            });
+    }
 
     async getStlouisfed(type = 'DGS10') {
         return apiService.GET(`api/Toolbox/Stlouisfed/${type}`)

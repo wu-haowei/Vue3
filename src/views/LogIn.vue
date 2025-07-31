@@ -1,46 +1,57 @@
 
 <template>
-  <button @click="isSignUp = !isSignUp">
-    {{ isSignUp ? "登入" : "註冊" }}
-  </button>
-  <VForm
-    id="loginInForm"
-    ref="formRef1"
-    v-slot="{ errors, meta, resetForm }"
-    @submit="test"
-  >
-    <AppFormFieId
-      name="Account"
-      label="帳號"
-      errLabel="帳號"
-      rules="required"
-      placeholder="任意輸入"
-      :dynamicAttribute="{ autocomplete: 'current-account' }"
-    ></AppFormFieId>
-    <AppFormFieId
-      v-if="!isSignUp"
-      name="password"
-      label="密碼"
-      errLabel="密碼"
-      rules="required"
-      type="password"
-      placeholder="請輸入密碼"
-      :dynamicAttribute="{ autocomplete: 'current-password' }"
-    ></AppFormFieId>
+  <div>
+    <button @click="isSignUp = !isSignUp">
+      {{ getIsSignUpText }}
+    </button>
+    <VForm
+      id="loginInForm"
+      ref="loginInRef"
+      v-slot="{ errors, meta, resetForm }"
+      @submit="test"
+    >
+      <AppFormFieId
+        name="Account"
+        label="帳號"
+        errLabel="帳號"
+        rules="required"
+        placeholder="請輸入 帳號"
+        :dynamicAttribute="{ autocomplete: 'current-account' }"
+      ></AppFormFieId>
+      <AppFormFieId
+        v-if="!isSignUp"
+        name="password"
+        label="密碼"
+        errLabel="密碼"
+        rules="required"
+        type="password"
+        placeholder="請輸入 密碼"
+        :dynamicAttribute="{ autocomplete: 'current-password' }"
+      >
+      </AppFormFieId>
 
-    <AppFormFieId
-      v-if="isSignUp"
-      name="email"
-      label="Email"
-      errLabel="Email"
-      rules="required"
-      placeholder="請輸入Email"
-      :dynamicAttribute="{ autocomplete: 'current-email' }"
-    ></AppFormFieId>
 
-    <!-- <ErrorMessage name="password" /> -->
-    <button type="submit">登入</button>
+      <div style="text-align: right;">
+     <a 
+        v-show="!isSignUp"
+        href="javascript:void(0);"
+        @click.prevent="forgetPassword.isShow = true"
+        >忘記密碼</a
+      >
+</div>
 
+      <AppFormFieId
+        v-if="isSignUp"
+        name="email"
+        label="Email"
+        errLabel="Email"
+        rules="required"
+        placeholder="請輸入 Email"
+        :dynamicAttribute="{ autocomplete: 'current-email' }"
+      ></AppFormFieId>
+
+      <button type="submit">{{ getIsSignUpText }}</button>
+    </VForm>
     <Loading v-show="isLoading" />
     <modal :show="errorMsg.isShow" @close="errorMsgIsShowChenge(false)">
       <template #header>
@@ -72,23 +83,81 @@
         <button @click="isValidEmail.isShow = false">確認</button>
       </template>
     </modal>
-  </VForm>
+
+    <modal :show="forgetPassword.isShow" :width="'200px'" :height="'20vh'">
+      <template #header>
+        <h3>忘記密碼</h3>
+      </template>
+      <template #body>
+        <VForm
+          id="forgetPassworForm"
+          ref="forgetPasswordRef"
+          v-slot="{ errors, meta, resetForm }"
+          @submit="forgetPasswordTest"
+        >
+          <AppFormFieId
+            name="ForgetAccount"
+            label="帳號"
+            errLabel="帳號"
+            rules="required"
+            placeholder="請輸入 帳號"
+            :dynamicAttribute="{ autocomplete: 'current-forgetaccount' }"
+          ></AppFormFieId>
+
+          <button type="submit" v-show="false" ref="forgetPasswordSubmitRef">
+            確認
+          </button>
+        </VForm>
+      </template>
+      <template #footer>
+        <div style="display: flex; justify-content: flex-end; flex-wrap: wrap">
+          <button @click="forgetPasswordSubmitRefClick">確認</button>
+          <button @click="forgetPassword.isShow = false">關閉</button>
+        </div>
+      </template>
+    </modal>
+  </div>
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from "vue";
+import { reactive, ref, onMounted, computed, getCurrentInstance } from "vue";
+const { proxy } = getCurrentInstance();
+
 import store from "@/stores/stores";
 import AppFormFieId from "../components/AppFormFieId.vue";
 import Modal from "../components/Teleport.vue";
 import Loading from "../components/Loading.vue";
-
 import { useRouter, useRoute } from "vue-router";
-
 import { LoginService } from "@/services/LoginService";
 
 const loginService = new LoginService();
 const route = useRoute();
 const router = useRouter();
+
+const errorMsg = reactive({
+  isShow: false,
+  msg: "發生錯誤",
+});
+const isSignUp = ref(false);
+const isValidEmail = reactive({
+  isShow: false,
+  image: "",
+  msg: "錯誤",
+});
+
+const forgetPassword = reactive({
+  isShow: false,
+  msg: "錯誤",
+});
+const loginInRef = ref(null);
+const forgetPasswordRef = ref(null);
+const forgetPasswordSubmitRef = ref(null);
+
+const isLoading = ref(false);
+
+const getIsSignUpText = computed(() => {
+  return isSignUp.value ? "註冊" : "登入";
+});
 
 const logIn = async (data) => {
   try {
@@ -113,7 +182,6 @@ const logIn = async (data) => {
     isLoading.value = false;
   }
 };
-
 const signUp = async (data) => {
   try {
     isLoading.value = true;
@@ -145,31 +213,41 @@ const signUp = async (data) => {
   }
 };
 
-const errorMsg = reactive({
-  isShow: false,
-  msg: "發生錯誤",
-});
-const isSignUp = ref(false);
+const forgetPasswordSubmitRefClick = async () => {
+  forgetPasswordSubmitRef.value.click();
+};
 
-const isValidEmail = reactive({
-  isShow: false,
-  image: "",
-  msg: "錯誤",
-});
-
+const forgetPasswordTest = async (value) => {
+  isLoading.value = true;
+  loginService
+    .ForgetPassword(value["ForgetAccount"])
+    .then(async (res) => {
+      if (res.result.success) {
+        forgetPassword.isShow = false;
+        proxy.$toast.success(`${res.result.message}`, 1500);
+      } else {
+        proxy.$toast.warning(`${res.result.message}`, 3000);
+      }
+    })
+    .catch((error) => {
+      proxy.$toast.error(`${error.response.data.message}`, 4500);
+    })
+    .finally(() => {
+      forgetPasswordRef.value.resetForm();
+      isLoading.value = false;
+    });
+};
 const errorMsgIsShowChenge = (isShow) => {
   errorMsg.isShow = isShow;
 };
-
 const test = (value) => {
   if (!isSignUp.value) {
     logIn(value);
   } else {
     signUp(value);
   }
-  formRef1.value.resetForm();
+  loginInRef.value.resetForm();
 };
-
 const getGUID = () => {
   var s = [];
   var hexDigits = "0123456789abcdef";
@@ -183,9 +261,6 @@ const getGUID = () => {
   var uuid = s.join("");
   return uuid;
 };
-
-const formRef1 = ref(null);
-const isLoading = ref(false);
 
 onMounted(async () => {
   if (store.getters["isLogin"]) {
