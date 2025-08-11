@@ -1,8 +1,9 @@
 import { fileURLToPath, URL } from 'node:url'
-
+import fs from 'fs';
+import path from 'path';
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { VitePWA } from 'vite-plugin-pwa'
+// import { VitePWA } from 'vite-plugin-pwa'
 //import VueDevTools from 'vite-plugin-vue-devtools'
 
 // import { VitePWA } from 'vite-plugin-pwa'
@@ -144,10 +145,12 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0',
       // https: false,
       https: {
-        key: './localhost-key.pem',
-        cert: './localhost.pem'
+        // key: './localhost-key.pem',
+        // cert: './localhost.pem'
+      key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
+      cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem')),
       },
-      port: 3000,
+      port: 3100,
       proxy: {
         '/api': {
           // target: 'https://openapi.twse.com.tw/',
