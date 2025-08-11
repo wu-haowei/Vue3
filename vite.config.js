@@ -10,6 +10,7 @@ import vue from '@vitejs/plugin-vue'
 // https://vitejs.dev/config/
 
 // const isLib = process.env.BUILD_LIB === 'true';
+const isCI = process.env.CI === 'true'; // 或用其他環境變數判斷
 
 export default defineConfig(({ mode }) => {
   // const env = loadEnv(mode, process.cwd())
@@ -147,8 +148,12 @@ export default defineConfig(({ mode }) => {
       https: {
         // key: './localhost-key.pem',
         // cert: './localhost.pem'
-      key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
-      cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem')),
+        https: isCI
+          ? false
+          : {
+            key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
+            cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem')),
+          },
       },
       port: 3100,
       proxy: {
