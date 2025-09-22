@@ -199,6 +199,7 @@ const loginWithFaceID = async (data) => {
     const challengeData = resp.data;
 
     // 2️⃣ 呼叫 WebAuthn API
+    alert(`456`);
     const credential = await navigator.credentials.get({
       publicKey: {
         challenge: Uint8Array.from(atob(challengeData.challenge), (c) =>
@@ -211,7 +212,7 @@ const loginWithFaceID = async (data) => {
         userVerification: "required",
       },
     });
-
+    alert(`789`);
     // 3️⃣ 把驗證結果送回後端
     const verificationResp = await axios.post(
       "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://92358217aef3.ngrok-free.app/api/Login/verify",
