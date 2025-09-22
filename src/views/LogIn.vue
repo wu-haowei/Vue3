@@ -189,7 +189,7 @@ const loginWithFaceID = async (data) => {
   try {
     // 1️⃣ 從後端取得挑戰（challenge）
     const resp = await axios.get(
-      "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://f1470f379796.ngrok-free.app/api/Login/challenge",
+      "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://92358217aef3.ngrok-free.app/api/Login/challenge",
       {
         headers: {
           "ngrok-skip-browser-warning": "1231",
@@ -214,7 +214,7 @@ const loginWithFaceID = async (data) => {
 
     // 3️⃣ 把驗證結果送回後端
     const verificationResp = await axios.post(
-      "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://f1470f379796.ngrok-free.app/api/Login/verify",
+      "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://92358217aef3.ngrok-free.app/api/Login/verify",
       {
         id: credential.id,
         rawId: Array.from(new Uint8Array(credential.rawId)),
