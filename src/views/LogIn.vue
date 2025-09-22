@@ -196,7 +196,7 @@ const loginWithFaceID = async (data) => {
       }
     );
     console.log("挑戰資料:");
-    const challengeData = resp.data;
+    const challengeData = JSON.parse(resp.data);
     // 2️⃣ 呼叫 WebAuthn API
     const credential = await navigator.credentials.get({
       publicKey: {
