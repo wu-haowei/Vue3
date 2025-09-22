@@ -30,15 +30,14 @@
       >
       </AppFormFieId>
 
-
-      <div style="text-align: right;">
-     <a 
-        v-show="!isSignUp"
-        href="javascript:void(0);"
-        @click.prevent="forgetPassword.isShow = true"
-        >忘記密碼</a
-      >
-</div>
+      <div style="text-align: right">
+        <a
+          v-show="!isSignUp"
+          href="javascript:void(0);"
+          @click.prevent="forgetPassword.isShow = true"
+          >忘記密碼</a
+        >
+      </div>
 
       <AppFormFieId
         v-if="isSignUp"
@@ -52,6 +51,7 @@
 
       <button type="submit">{{ getIsSignUpText }}</button>
     </VForm>
+    <button @click="loginWithFaceID">Face ID</button>
     <Loading v-show="isLoading" />
     <modal :show="errorMsg.isShow" @close="errorMsgIsShowChenge(false)">
       <template #header>
@@ -122,7 +122,7 @@
 <script setup>
 import { reactive, ref, onMounted, computed, getCurrentInstance } from "vue";
 const { proxy } = getCurrentInstance();
-
+import axios from "axios";
 import store from "@/stores/stores";
 import AppFormFieId from "../components/AppFormFieId.vue";
 import Modal from "../components/Teleport.vue";
@@ -182,6 +182,61 @@ const logIn = async (data) => {
     isLoading.value = false;
   }
 };
+
+const loginWithFaceID = async (data) => {
+  alert(`123`);
+
+  try {
+    // 1️⃣ 從後端取得挑戰（challenge）
+    const resp = await axios.get("https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://localhost:44326/api/Login/challenge");
+    const challengeData = resp.data;
+
+    // 2️⃣ 呼叫 WebAuthn API
+    const credential = await navigator.credentials.get({
+      publicKey: {
+        challenge: Uint8Array.from(atob(challengeData.challenge), (c) =>
+          c.charCodeAt(0)
+        ),
+        allowCredentials: challengeData.allowCredentials.map((cred) => ({
+          id: Uint8Array.from(atob(cred.id), (c) => c.charCodeAt(0)),
+          type: "public-key",
+        })),
+        userVerification: "required",
+      },
+    });
+
+    // 3️⃣ 把驗證結果送回後端
+    const verificationResp = await axios.post(
+      "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://localhost:44326/webauthn/login/verify",
+      {
+        id: credential.id,
+        rawId: Array.from(new Uint8Array(credential.rawId)),
+        type: credential.type,
+        response: {
+          authenticatorData: Array.from(
+            new Uint8Array(credential.response.authenticatorData)
+          ),
+          clientDataJSON: Array.from(
+            new Uint8Array(credential.response.clientDataJSON)
+          ),
+          signature: Array.from(new Uint8Array(credential.response.signature)),
+          userHandle: credential.response.userHandle
+            ? Array.from(new Uint8Array(credential.response.userHandle))
+            : null,
+        },
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    const result = verificationResp.data;
+    console.log("驗證結果:", result);
+  } catch (err) {
+    alert(`WebAuthn 登入錯誤:${JSON.stringify(err)}`);
+  }
+};
+
 const signUp = async (data) => {
   try {
     isLoading.value = true;
