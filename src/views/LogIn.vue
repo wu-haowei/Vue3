@@ -188,7 +188,14 @@ const loginWithFaceID = async (data) => {
 
   try {
     // 1️⃣ 從後端取得挑戰（challenge）
-    const resp = await axios.get("https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://f1470f379796.ngrok-free.app/api/Login/challenge");
+    const resp = await axios.get(
+      "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://f1470f379796.ngrok-free.app/api/Login/challenge",
+      {
+        headers: {
+          "ngrok-skip-browser-warning": "1231",
+        },
+      }
+    );
     const challengeData = resp.data;
 
     // 2️⃣ 呼叫 WebAuthn API
@@ -227,6 +234,7 @@ const loginWithFaceID = async (data) => {
       },
       {
         headers: { "Content-Type": "application/json" },
+        "ngrok-skip-browser-warning": "1231",
       }
     );
 
