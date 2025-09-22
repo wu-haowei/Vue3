@@ -188,16 +188,15 @@ const loginWithFaceID = async (data) => {
   try {
     // 1️⃣ 從後端取得挑戰（challenge）
     const resp = await axios.get(
-      "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://92358217aef3.ngrok-free.app/api/Login/challenge",
+      "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://03b0efab6c03.ngrok-free.app/api/Login/challenge",
       {
         headers: {
           "ngrok-skip-browser-warning": "1231",
         },
       }
     );
+    console.log("挑戰資料:");
     const challengeData = resp.data;
-    await common.delay(1000);
-
     // 2️⃣ 呼叫 WebAuthn API
     const credential = await navigator.credentials.get({
       publicKey: {
@@ -209,10 +208,9 @@ const loginWithFaceID = async (data) => {
         userVerification: "required",
       },
     });
-    await common.delay(1000);
     // 3️⃣ 把驗證結果送回後端
     const verificationResp = await axios.post(
-      "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://92358217aef3.ngrok-free.app/api/Login/verify",
+      "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://03b0efab6c03.ngrok-free.app/api/Login/verify",
       {
         id: credential.id,
         rawId: Array.from(new Uint8Array(credential.rawId)),
@@ -235,11 +233,16 @@ const loginWithFaceID = async (data) => {
         "ngrok-skip-browser-warning": "1231",
       }
     );
-
     const result = verificationResp.data;
     console.log("驗證結果:", result);
   } catch (err) {
-    alert(`WebAuthn 登入錯誤:${JSON.stringify(err)}`);
+    if (err instanceof DOMException) {
+      console.error("WebAuthn 失敗:", err.message, err.name);
+    } else if (err.response) {
+      console.error("Axios 失敗:", err.response.data);
+    } else {
+      console.error("未知錯誤:", err);
+    }
   }
 };
 
