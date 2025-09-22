@@ -129,6 +129,7 @@ import Modal from "../components/Teleport.vue";
 import Loading from "../components/Loading.vue";
 import { useRouter, useRoute } from "vue-router";
 import { LoginService } from "@/services/LoginService";
+import common from "@/components/common";
 
 const loginService = new LoginService();
 const route = useRoute();
@@ -184,8 +185,6 @@ const logIn = async (data) => {
 };
 
 const loginWithFaceID = async (data) => {
-  alert(`123`);
-
   try {
     // 1️⃣ 從後端取得挑戰（challenge）
     const resp = await axios.get(
@@ -197,9 +196,9 @@ const loginWithFaceID = async (data) => {
       }
     );
     const challengeData = resp.data;
+    await common.delay(1000);
 
     // 2️⃣ 呼叫 WebAuthn API
-    alert(`456`);
     const credential = await navigator.credentials.get({
       publicKey: {
         challenge: base64UrlToBytes(challengeData.challenge),
@@ -210,7 +209,7 @@ const loginWithFaceID = async (data) => {
         userVerification: "required",
       },
     });
-    alert(`789`);
+    await common.delay(1000);
     // 3️⃣ 把驗證結果送回後端
     const verificationResp = await axios.post(
       "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://92358217aef3.ngrok-free.app/api/Login/verify",
