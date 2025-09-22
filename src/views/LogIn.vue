@@ -202,11 +202,9 @@ const loginWithFaceID = async (data) => {
     alert(`456`);
     const credential = await navigator.credentials.get({
       publicKey: {
-        challenge: Uint8Array.from(atob(challengeData.challenge), (c) =>
-          c.charCodeAt(0)
-        ),
+        challenge: base64UrlToBytes(challengeData.challenge),
         allowCredentials: challengeData.allowCredentials.map((cred) => ({
-          id: Uint8Array.from(atob(cred.id), (c) => c.charCodeAt(0)),
+          id: base64UrlToBytes(cred.id),
           type: "public-key",
         })),
         userVerification: "required",
@@ -244,6 +242,12 @@ const loginWithFaceID = async (data) => {
   } catch (err) {
     alert(`WebAuthn 登入錯誤:${JSON.stringify(err)}`);
   }
+};
+
+const base64UrlToBytes = (base64url) => {
+  base64url = base64url.replace(/-/g, "+").replace(/_/g, "/");
+  while (base64url.length % 4) base64url += "=";
+  return Uint8Array.from(atob(base64url), (c) => c.charCodeAt(0));
 };
 
 const signUp = async (data) => {
