@@ -101,7 +101,7 @@ export class LoginService {
 
 
     async GetRegisterChallenge() {
-        return apiService.GET(`https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://03b0efab6c03.ngrok-free.app/api/Login/Register/GetRegisterChallenge`)
+        return apiService.GET(`api/Toolbox/ProxyAPI?Url=https://03b0efab6c03.ngrok-free.app/api/Login/Register/GetRegisterChallenge`)
             .then((result) => {
                 return result;
             })
@@ -111,7 +111,7 @@ export class LoginService {
     }
 
     async VerifyRegister(data) {
-        return apiService.POST(`https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://03b0efab6c03.ngrok-free.app/api/Login/Register/VerifyRegister`, data)
+        return apiService.POST(`api/Toolbox/ProxyAPI?Url=https://03b0efab6c03.ngrok-free.app/api/Login/Register/VerifyRegister`, data)
             .then((result) => {
                 return result;
             })
