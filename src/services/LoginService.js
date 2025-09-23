@@ -157,3 +157,4 @@ export class LoginService {
             .then((result) => result.data)
             .catch((err) => Promise.reject(err));
     }
+}
