@@ -18,11 +18,11 @@ const GetRegisterChallenge = async () => {
     console.log("開始註冊無密碼登入");
 
     // 1. 向後端要註冊挑戰 (options)
-    const options = await loginService.GetRegisterChallenge();
+    const res1 = await loginService.GetRegisterChallenge();
 
     // 2. 將 Base64Url 轉換成 ArrayBuffer (因為 navigator.credentials 需要)
 
-    options = JSON.parse(options.data);
+    const options = JSON.parse(res1.data);
 
     options.challenge = base64urlToArrayBuffer(options.challenge);
     options.user.id = new TextEncoder().encode(options.user.id);
