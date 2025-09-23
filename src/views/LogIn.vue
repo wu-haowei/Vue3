@@ -129,9 +129,9 @@ import Modal from "../components/Teleport.vue";
 import Loading from "../components/Loading.vue";
 import { useRouter, useRoute } from "vue-router";
 import { LoginService } from "@/services/LoginService";
+const loginService = new LoginService();
 import common from "@/components/common";
 
-const loginService = new LoginService();
 const route = useRoute();
 const router = useRouter();
 
@@ -188,7 +188,7 @@ const loginWithFaceID = async (data) => {
   try {
     // 1️⃣ 從後端取得挑戰（challenge）
     const resp = await axios.get(
-      "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://03b0efab6c03.ngrok-free.app/api/Login/challenge",
+      "https://50be6ddb5c00.ngrok-free.app/api/Login/challenge",
       {
         headers: {
           "ngrok-skip-browser-warning": "1231",
@@ -210,7 +210,7 @@ const loginWithFaceID = async (data) => {
     });
     // 3️⃣ 把驗證結果送回後端
     const verificationResp = await axios.post(
-      "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://03b0efab6c03.ngrok-free.app/api/Login/verify",
+      "https://50be6ddb5c00.ngrok-free.app/api/Login/verify",
       {
         id: credential.id,
         rawId: Array.from(new Uint8Array(credential.rawId)),
