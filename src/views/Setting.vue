@@ -22,7 +22,8 @@ const GetRegisterChallenge = async () => {
 
     // 2. 將 Base64Url 轉換成 ArrayBuffer (因為 navigator.credentials 需要)
 
-    const options = JSON.parse(res1.data);
+    const options =
+      typeof res1.data === "object" ? res1.data : JSON.parse(res1.data);
 
     options.challenge = base64urlToArrayBuffer(options.challenge);
     options.user.id = new TextEncoder().encode(options.user.id);
@@ -51,9 +52,9 @@ const GetRegisterChallenge = async () => {
         ),
       },
     };
-    alert("憑證已建立",JSON.stringify(attestationResponse));
+    alert("憑證已建立", JSON.stringify(attestationResponse));
     const res = await loginService.VerifyRegister(attestationResponse);
-     alert("註冊結果:", res);
+    alert("註冊結果:", res);
   } catch (err) {
     alert("註冊失敗:", err);
   }
