@@ -50,6 +50,12 @@ const GetRegisterChallenge = async () => {
         attestationObject: arrayBufferToBase64Url(
           credential.response.attestationObject
         ),
+        transports: ["usb"],
+      },
+      clientExtensionResults: {
+        "example.extension.bool": true,
+        appid: true,
+        exts: ["string"],
       },
     };
     alert("憑證已建立", JSON.stringify(attestationResponse));
