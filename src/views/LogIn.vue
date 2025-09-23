@@ -188,7 +188,7 @@ const loginWithFaceID = async (data) => {
   try {
     // 1️⃣ 從後端取得挑戰（challenge）
     const resp = await axios.get(
-      "https://50be6ddb5c00.ngrok-free.app/api/Login/challenge",
+      "https://50be6ddb5c00.ngrok-free.app/api/Login/challenge?userId=Henry",
       {
         headers: {
           "ngrok-skip-browser-warning": "1231",
