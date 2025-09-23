@@ -159,4 +159,38 @@ export class LoginService {
             .then((result) => result.data)
             .catch((err) => Promise.reject(err));
     }
+    async GetLoginChallenge() {
+        return axios.get(
+            `https://3b50752a45e8.ngrok-free.app/api/Login/GetLoginChallenge`,
+            // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/GetRegisterChallenge`,
+            {
+                headers: {
+                    Authorization: `Bearer ${store.getters["getToken"]}`,
+                    "ngrok-skip-browser-warning": "1231"    // ngrok header
+                }
+            }
+        )
+            .then((result) => {
+                return result;
+            })
+            .catch((err) => {
+                return Promise.reject(err);
+            });
+    }
+
+    async VerifyLogin(data = {}) {
+        return axios.post(
+            `https://3b50752a45e8.ngrok-free.app/api/Login/VerifyLogin`,
+            // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/VerifyLogin`,
+            data, // 放在 body
+            {
+                headers: {
+                    Authorization: `Bearer ${store.getters["getToken"]}`,
+                    "ngrok-skip-browser-warning": "1231"    // ngrok header
+                }
+            }
+        )
+            .then((result) => result.data)
+            .catch((err) => Promise.reject(err));
+    }
 }

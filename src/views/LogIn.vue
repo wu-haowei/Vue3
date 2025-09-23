@@ -188,14 +188,17 @@ const loginWithFaceID = async (data) => {
   try {
     console.log("開始使用 Face ID 登入");
     // 1️⃣ 從後端取得挑戰（challenge）
-    const res = await axios.get(
-      "https://3b50752a45e8.ngrok-free.app/api/Login/challenge?userId=Henry",
-      {
-        headers: {
-          "ngrok-skip-browser-warning": "1231",
-        },
-      }
-    );
+    // const res = await axios.get(
+    //   "https://3b50752a45e8.ngrok-free.app/api/Login/challenge?userId=Henry",
+    //   {
+    //     headers: {
+    //       "ngrok-skip-browser-warning": "1231",
+    //     },
+    //   }
+    // );
+
+    const res = await loginService.GetLoginChallenge();
+
     const challengeData =
       typeof res.data === "object" ? res.data : JSON.parse(res.data);
     // 2️⃣ 呼叫 WebAuthn API
@@ -210,52 +213,39 @@ const loginWithFaceID = async (data) => {
       },
     });
 
-    // const attestationResponse = {
-    //   id: credential.id,
-    //   rawId: arrayBufferToBase64Url(credential.rawId),
-    //   type: credential.type,
-    //   response: {
-    //     clientDataJSON: arrayBufferToBase64Url(
-    //       credential.response.clientDataJSON
-    //     ),
-    //     attestationObject: arrayBufferToBase64Url(
-    //       credential.response.attestationObject
-    //     ),
-    //     transports: ["usb"],
-    //   },
-    //   clientExtensionResults: {
-    //     "example.extension.bool": true,
-    //     appid: true,
-    //     exts: ["string"],
-    //   },
-    // };
+    const attestationResponse = {
+      id: credential.id,
+      rawId: Array.from(new Uint8Array(credential.rawId)),
+      type: credential.type,
+      response: {
+        authenticatorData: Array.from(
+          new Uint8Array(credential.response.authenticatorData)
+        ),
+        clientDataJSON: Array.from(
+          new Uint8Array(credential.response.clientDataJSON)
+        ),
+        signature: Array.from(new Uint8Array(credential.response.signature)),
+        userHandle: credential.response.userHandle
+          ? Array.from(new Uint8Array(credential.response.userHandle))
+          : null,
+      },
+      extensions: {},
+    };
 
     // 3️⃣ 把驗證結果送回後端
-    const verificationResp = await axios.post(
-      "https://3b50752a45e8.ngrok-free.app/api/Login/verify",
-      {
-        id: credential.id,
-        rawId: Array.from(new Uint8Array(credential.rawId)),
-        type: credential.type,
-        response: {
-          authenticatorData: Array.from(
-            new Uint8Array(credential.response.authenticatorData)
-          ),
-          clientDataJSON: Array.from(
-            new Uint8Array(credential.response.clientDataJSON)
-          ),
-          signature: Array.from(new Uint8Array(credential.response.signature)),
-          userHandle: credential.response.userHandle
-            ? Array.from(new Uint8Array(credential.response.userHandle))
-            : null,
-        },
-        extensions: {},
-      },
-      {
-        headers: { "Content-Type": "application/json" },
-        "ngrok-skip-browser-warning": "1231",
-      }
+    // const verificationResp = await axios.post(
+    //   "https://3b50752a45e8.ngrok-free.app/api/Login/verify",
+    //   attestationResponse,
+    //   {
+    //     headers: { "Content-Type": "application/json" },
+    //     "ngrok-skip-browser-warning": "1231",
+    //   }
+    // );
+
+    const verificationResp = await loginService.VerifyLogin(
+      attestationResponse
     );
+
     const result =
       typeof verificationResp.data === "object"
         ? verificationResp.data
