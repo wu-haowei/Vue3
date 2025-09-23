@@ -21,6 +21,9 @@ const GetRegisterChallenge = async () => {
     const options = await loginService.GetRegisterChallenge();
 
     // 2. 將 Base64Url 轉換成 ArrayBuffer (因為 navigator.credentials 需要)
+
+    options = JSON.parse(options.data);
+
     options.challenge = base64urlToArrayBuffer(options.challenge);
     options.user.id = new TextEncoder().encode(options.user.id);
 
