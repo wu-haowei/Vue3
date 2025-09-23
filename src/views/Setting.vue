@@ -53,9 +53,9 @@ const GetRegisterChallenge = async () => {
     };
     alert("憑證已建立",JSON.stringify(attestationResponse));
     const res = await loginService.VerifyRegister(attestationResponse);
-    console.alert("註冊結果:", res);
+     alert("註冊結果:", res);
   } catch (err) {
-    console.alert("註冊失敗:", err);
+    alert("註冊失敗:", err);
   }
 };
 
