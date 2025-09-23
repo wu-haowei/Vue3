@@ -24,6 +24,8 @@
           </RouterLink>
           <RouterLink to="/" class="link">🏠 Home</RouterLink>
           <RouterLink to="/Badminton" class="link">🏸 羽球記分板</RouterLink>
+          <!-- <RouterLink to="/Store" class="link">商城</RouterLink> -->
+
           <button class="menu-toggle not-hover-style-btn" @click="toggleMenu">
             📂 功能列表 <span>{{ isMenuOpen ? "▲" : "▼" }}</span>
           </button>
@@ -150,6 +152,7 @@ onMounted(() => {
 });
 
 const otherRoutes = [
+  { to: "/Setting", label: "設定" },
   { to: "/Hash#start", label: "定位 Id" },
   { to: "/inputbar", label: "驗證碼" },
   { to: "/validate", label: "表單驗證" },

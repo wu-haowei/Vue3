@@ -329,6 +329,16 @@ export const createMyRouter = function () {
           mode: 'out-in'
         }
       },
+            {
+        path: '/Setting',
+        name: 'Setting',
+        component: () => import('../views/Setting.vue'),
+        meta: {
+          requiresAuth: true,
+          keepAlive: false,
+          mode: 'out-in'
+        }
+      },
     ]
   })
 
