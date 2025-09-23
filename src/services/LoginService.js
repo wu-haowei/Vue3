@@ -127,7 +127,7 @@ export class LoginService {
 
     async GetRegisterChallenge() {
         return axios.get(
-            `https://50be6ddb5c00.ngrok-free.app/api/Login/Register/GetRegisterChallenge`,
+            `https://3b50752a45e8.ngrok-free.app/api/Login/Register/GetRegisterChallenge`,
             // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/GetRegisterChallenge`,
             {
                 headers: {
@@ -146,7 +146,7 @@ export class LoginService {
 
     async VerifyRegister(data = {}) {
         return axios.post(
-            `https://50be6ddb5c00.ngrok-free.app/api/Login/Register/VerifyRegister`,
+            `https://3b50752a45e8.ngrok-free.app/api/Login/Register/VerifyRegister`,
             // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/VerifyRegister`,
             data, // 放在 body
             {
