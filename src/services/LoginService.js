@@ -103,32 +103,10 @@ export class LoginService {
             });
     }
 
-
-    // async GetRegisterChallenge() {
-    //     return apiService.GET(`api/Toolbox/ProxyAPI?Url=https://03b0efab6c03.ngrok-free.app/api/Login/Register/GetRegisterChallenge`)
-    //         .then((result) => {
-    //             return result;
-    //         })
-    //         .catch((err) => {
-    //             return Promise.reject(err);
-    //         });
-    // }
-
-    // async VerifyRegister(data) {
-    //     return apiService.POST(`api/Toolbox/ProxyAPI?Url=https://03b0efab6c03.ngrok-free.app/api/Login/Register/VerifyRegister`, data)
-    //         .then((result) => {
-    //             return result;
-    //         })
-    //         .catch((err) => {
-    //             return Promise.reject(err);
-    //         });
-    // }
-
-
     async GetRegisterChallenge() {
         return axios.get(
-            `https://3b50752a45e8.ngrok-free.app/api/Login/Register/GetRegisterChallenge`,
-            // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/GetRegisterChallenge`,
+            // `https://3b50752a45e8.ngrok-free.app/api/Login/Register/GetRegisterChallenge`,
+            `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/GetRegisterChallenge`,
             {
                 headers: {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
@@ -146,8 +124,8 @@ export class LoginService {
 
     async VerifyRegister(data = {}) {
         return axios.post(
-            `https://3b50752a45e8.ngrok-free.app/api/Login/Register/VerifyRegister`,
-            // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/VerifyRegister`,
+            // `https://3b50752a45e8.ngrok-free.app/api/Login/Register/VerifyRegister`,
+            `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/VerifyRegister`,
             data, // 放在 body
             {
                 headers: {
@@ -161,8 +139,8 @@ export class LoginService {
     }
     async GetLoginChallenge() {
         return axios.get(
-            `https://3b50752a45e8.ngrok-free.app/api/Login/GetLoginChallenge`,
-            // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/GetRegisterChallenge`,
+            // `https://3b50752a45e8.ngrok-free.app/api/Login/GetLoginChallenge`,
+            `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/GetLoginChallenge`,
             {
                 headers: {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
@@ -180,8 +158,8 @@ export class LoginService {
 
     async VerifyLogin(data = {}) {
         return axios.post(
-            `https://3b50752a45e8.ngrok-free.app/api/Login/VerifyLogin`,
-            // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/VerifyLogin`,
+            // `https://3b50752a45e8.ngrok-free.app/api/Login/VerifyLogin`,
+            `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/VerifyLogin`,
             data, // 放在 body
             {
                 headers: {
