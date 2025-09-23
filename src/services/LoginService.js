@@ -98,4 +98,25 @@ export class LoginService {
                 return Promise.reject(err);
             });
     }
+
+
+    async GetRegisterChallenge() {
+        return apiService.GET(`https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://03b0efab6c03.ngrok-free.app/api/Login/Register/GetRegisterChallenge`)
+            .then((result) => {
+                return result;
+            })
+            .catch((err) => {
+                return Promise.reject(err);
+            });
+    }
+
+    async VerifyRegister(data) {
+        return apiService.POST(`https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://03b0efab6c03.ngrok-free.app/api/Login/Register/VerifyRegister`, data)
+            .then((result) => {
+                return result;
+            })
+            .catch((err) => {
+                return Promise.reject(err);
+            });
+    }
 }
