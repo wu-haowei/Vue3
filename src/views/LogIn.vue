@@ -209,6 +209,27 @@ const loginWithFaceID = async (data) => {
         userVerification: "required",
       },
     });
+
+    // const attestationResponse = {
+    //   id: credential.id,
+    //   rawId: arrayBufferToBase64Url(credential.rawId),
+    //   type: credential.type,
+    //   response: {
+    //     clientDataJSON: arrayBufferToBase64Url(
+    //       credential.response.clientDataJSON
+    //     ),
+    //     attestationObject: arrayBufferToBase64Url(
+    //       credential.response.attestationObject
+    //     ),
+    //     transports: ["usb"],
+    //   },
+    //   clientExtensionResults: {
+    //     "example.extension.bool": true,
+    //     appid: true,
+    //     exts: ["string"],
+    //   },
+    // };
+
     // 3️⃣ 把驗證結果送回後端
     const verificationResp = await axios.post(
       "https://3b50752a45e8.ngrok-free.app/api/Login/verify",
@@ -228,6 +249,7 @@ const loginWithFaceID = async (data) => {
             ? Array.from(new Uint8Array(credential.response.userHandle))
             : null,
         },
+        extensions: {},
       },
       {
         headers: { "Content-Type": "application/json" },
