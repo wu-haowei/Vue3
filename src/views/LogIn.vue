@@ -186,17 +186,18 @@ const logIn = async (data) => {
 
 const loginWithFaceID = async (data) => {
   try {
+    console.log("開始使用 Face ID 登入");
     // 1️⃣ 從後端取得挑戰（challenge）
-    const resp = await axios.get(
-      "https://50be6ddb5c00.ngrok-free.app/api/Login/challenge?userId=Henry",
+    const res = await axios.get(
+      "https://3b50752a45e8.ngrok-free.app/api/Login/challenge?userId=Henry",
       {
         headers: {
           "ngrok-skip-browser-warning": "1231",
         },
       }
     );
-    console.log("挑戰資料:");
-    const challengeData = JSON.parse(resp.data.data);
+    const challengeData =
+      typeof res.data === "object" ? res.data : JSON.parse(res.data);
     // 2️⃣ 呼叫 WebAuthn API
     const credential = await navigator.credentials.get({
       publicKey: {
@@ -210,7 +211,7 @@ const loginWithFaceID = async (data) => {
     });
     // 3️⃣ 把驗證結果送回後端
     const verificationResp = await axios.post(
-      "https://50be6ddb5c00.ngrok-free.app/api/Login/verify",
+      "https://3b50752a45e8.ngrok-free.app/api/Login/verify",
       {
         id: credential.id,
         rawId: Array.from(new Uint8Array(credential.rawId)),
@@ -233,7 +234,10 @@ const loginWithFaceID = async (data) => {
         "ngrok-skip-browser-warning": "1231",
       }
     );
-    const result = verificationResp.data;
+    const result =
+      typeof verificationResp.data === "object"
+        ? verificationResp.data
+        : JSON.parse(verificationResp.data);
     console.log("驗證結果:", result);
   } catch (err) {
     if (err instanceof DOMException) {
