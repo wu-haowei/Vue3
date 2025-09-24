@@ -140,7 +140,7 @@ export class LoginService {
     async GetLoginChallenge() {
         return axios.get(
             // `https://3b50752a45e8.ngrok-free.app/api/Login/GetLoginChallenge`,
-            `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/GetLoginChallenge`,
+            `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/GetLoginChallenge?userId=Henry`,
             {
                 headers: {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
