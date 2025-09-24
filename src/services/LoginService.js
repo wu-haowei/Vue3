@@ -105,7 +105,7 @@ export class LoginService {
 
     async GetRegisterChallenge() {
         return axios.get(
-            `https://1b3011008e1f.ngrok-free.app/api/Login/Register/GetRegisterChallenge`,
+            `https://unsceptred-exultingly-jeramy.ngrok-free.app/api/Login/Register/GetRegisterChallenge`,
             // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/GetRegisterChallenge`,
             {
                 headers: {
@@ -124,7 +124,7 @@ export class LoginService {
 
     async VerifyRegister(data = {}) {
         return axios.post(
-            `https://1b3011008e1f.ngrok-free.app/api/Login/Register/VerifyRegister`,
+            `https://unsceptred-exultingly-jeramy.ngrok-free.app/api/Login/Register/VerifyRegister`,
             // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/VerifyRegister`,
             data, // 放在 body
             {
@@ -139,7 +139,7 @@ export class LoginService {
     }
     async GetLoginChallenge() {
         return axios.get(
-            `https://1b3011008e1f.ngrok-free.app/api/Login/GetLoginChallenge?userId=Henry`,
+            `https://unsceptred-exultingly-jeramy.ngrok-free.app/api/Login/GetLoginChallenge?userId=Henry`,
             // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/GetLoginChallenge?userId=Henry`,
             {
                 headers: {
@@ -158,7 +158,7 @@ export class LoginService {
 
     async VerifyLogin(data = {}) {
         return axios.post(
-            `https://1b3011008e1f.ngrok-free.app/api/Login/VerifyLogin`,
+            `https://unsceptred-exultingly-jeramy.ngrok-free.app/api/Login/VerifyLogin`,
             // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/VerifyLogin`,
             data, // 放在 body
             {
