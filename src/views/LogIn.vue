@@ -246,7 +246,7 @@ const loginWithFaceID = async (data) => {
     if (err instanceof DOMException) {
       alert("WebAuthn 失敗:", err.message, err.name);
     } else if (err.response) {
-      alert("Axios 失敗:", err.response.data);
+      alert("Axios 失敗:", JSON.stringify(attestationResponse));
     } else {
       alert("未知錯誤:", err);
     }
