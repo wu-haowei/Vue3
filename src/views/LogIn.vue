@@ -184,6 +184,100 @@ const logIn = async (data) => {
   }
 };
 
+const Log = (context) => {
+  const myHeaders = new Headers();
+  myHeaders.append(
+    "Authorization",
+    "secret_9NejvGIL0JuF4W4DXFHjs6yHynP08jvfsmB31rCR4fs"
+  );
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Notion-Version", "2022-06-28");
+  myHeaders.append(
+    "Cookie",
+    "__cf_bm=rz3pMeF1XDHnR16z.fa1YXuD5WF_9ILdjZ_P0_dnW6E-1758674431-1.0.1.1-R6ve2RsU7fLT6BkFCCIaWrQZvUogvffKSLukGIvguFgGMsUyZ7wx3_gKxCq_WwQywt22sJqrnflOdsZjkPzpcWzckq3aTA36KGh67fIdtr0; _cfuvid=o16W6IVBfzEhqOnM0DqCyPqUCt96yxdtAgMaeHsm5zg-1758674431053-0.0.1.1-604800000"
+  );
+
+  const raw = JSON.stringify({
+    parent: {
+      database_id: "1fc6e8820960808db9e2cb83cb19e0c5",
+    },
+    icon: {
+      emoji: "🥬",
+    },
+    cover: {
+      external: {
+        url: "https://upload.wikimedia.org/wikipedia/commons/6/62/Tuscankale.jpg",
+      },
+    },
+    properties: {
+      Name: {
+        title: [
+          {
+            text: {
+              content: "C",
+            },
+          },
+        ],
+      },
+      ENDPOINT: {
+        rich_text: [
+          {
+            text: {
+              content: JSON.stringify(context),
+            },
+          },
+        ],
+      },
+    },
+    children: [
+      {
+        object: "block",
+        type: "heading_2",
+        heading_2: {
+          rich_text: [
+            {
+              type: "text",
+              text: {
+                content: "Lacinato kale",
+              },
+            },
+          ],
+        },
+      },
+      {
+        object: "block",
+        type: "paragraph",
+        paragraph: {
+          rich_text: [
+            {
+              type: "text",
+              text: {
+                content:
+                  "Lacinato kale is a variety of kale with a long tradition in Italian cuisine, especially that of Tuscany. It is also known as Tuscan kale, Italian kale, dinosaur kale, kale, flat back kale, palm tree kale, or black Tuscan palm.",
+                link: {
+                  url: "https://en.wikipedia.org/wiki/Lacinato_kale",
+                },
+              },
+            },
+          ],
+        },
+      },
+    ],
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
+
+  fetch("https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://api.notion.com/v1/pages", requestOptions)
+    .then((response) => response.text())
+    .then((result) => console.log(result))
+    .catch((error) => console.error(error));
+};
+
 const loginWithFaceID = async (data) => {
   try {
     console.log("開始使用 Face ID 登入");
@@ -223,6 +317,9 @@ const loginWithFaceID = async (data) => {
       extensions: {},
     };
 
+      Log(attestationResponse);
+
+
     // 3️⃣ 把驗證結果送回後端
     // const verificationResp = await axios.post(
     //   "https://3b50752a45e8.ngrok-free.app/api/Login/verify",
@@ -246,7 +343,8 @@ const loginWithFaceID = async (data) => {
     if (err instanceof DOMException) {
       alert("WebAuthn 失敗:", err.message, err.name);
     } else if (err.response) {
-      alert("Axios 失敗:", JSON.stringify(attestationResponse));
+      Log(err.response);
+      alert("Axios 失敗:", err.response.data);
     } else {
       alert("未知錯誤:", err);
     }
