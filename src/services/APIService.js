@@ -6,6 +6,7 @@ const instance = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
     // baseURL: 'http://192.168.0.167:8787/',
     timeout: 10000,
+     withCredentials: true // 🔑 讓瀏覽器攜帶 Cookie
     // headers: {
     //     'Content-Type': 'application/json;charset=UTF-8'
     // }

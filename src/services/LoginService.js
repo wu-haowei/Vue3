@@ -111,7 +111,8 @@ export class LoginService {
                 headers: {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
                     "ngrok-skip-browser-warning": "1231"    // ngrok header
-                }
+                },
+                withCredentials: true
             }
         )
             .then((result) => {
@@ -131,7 +132,8 @@ export class LoginService {
                 headers: {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
                     "ngrok-skip-browser-warning": "1231"    // ngrok header
-                }
+                },
+                withCredentials: true 
             }
         )
             .then((result) => result.data)
@@ -145,7 +147,8 @@ export class LoginService {
                 headers: {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
                     "ngrok-skip-browser-warning": "1231"    // ngrok header
-                }
+                },
+                withCredentials: true
             }
         )
             .then((result) => {
@@ -165,7 +168,8 @@ export class LoginService {
                 headers: {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
                     "ngrok-skip-browser-warning": "1231"    // ngrok header
-                }
+                },
+                withCredentials: true 
             }
         )
             .then((result) => result.data)
