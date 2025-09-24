@@ -300,8 +300,8 @@ const loginWithFaceID = async (data) => {
   try {
     const resLogin = await loginService.GetLoginChallenge();
 
-    if (!resLogin.data.success) {
-      throw new Error(resLogin.data.message);
+    if (!resLogin.data.result.success) {
+      throw new Error(resLogin.data.result.message);
     }
 
     const challengeData =
@@ -356,8 +356,8 @@ const loginWithFaceID = async (data) => {
 
     const resVerify = await loginService.VerifyLogin(attestationResponse);
 
-    if (!resVerify.data.success) {
-      throw new Error(resVerify.data.message);
+    if (!resVerify.data.result.success) {
+      throw new Error(resVerify.data.result.message);
     } else {
       alert("驗證結果:", resVerify.data.data);
     }
