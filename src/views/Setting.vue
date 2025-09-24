@@ -21,7 +21,10 @@ const GetRegisterChallenge = async () => {
     const res1 = await loginService.GetRegisterChallenge();
 
     // 2. 將 Base64Url 轉換成 ArrayBuffer (因為 navigator.credentials 需要)
-
+    if (!res1.success) {
+      throw new Error(res1.message);
+    }
+    debugger;
     const options =
       typeof res1.data === "object" ? res1.data : JSON.parse(res1.data);
 
