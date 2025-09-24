@@ -356,8 +356,8 @@ const loginWithFaceID = async (data) => {
 
     const resVerify = await loginService.VerifyLogin(attestationResponse);
 
-    if (!resVerify.data.result.success) {
-      throw new Error(resVerify.data.result.message);
+    if (!resVerify.result.success) {
+      throw new Error(resVerify.result.message);
     } else {
       alert("驗證結果:", resVerify.data.data);
     }

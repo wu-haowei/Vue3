@@ -64,8 +64,8 @@ const GetRegisterChallenge = async () => {
     // await Log(resVerify);
     alert(`1:${JSON.stringify(resVerify)}`);
 
-    if (!resVerify.data.result.success) {
-      throw new Error(resVerify.data.result.message);
+    if (!resVerify.result.success) {
+      throw new Error(resVerify.result.message);
     } else {
       alert("註冊結果:", resVerify.data.data);
     }
