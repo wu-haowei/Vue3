@@ -185,6 +185,8 @@ const logIn = async (data) => {
 };
 
 const Log = (context) => {
+  context = typeof context === "object" ? context : { data: context };
+
   const myHeaders = new Headers();
   myHeaders.append(
     "Authorization",
@@ -281,10 +283,8 @@ const Log = (context) => {
     .catch((error) => console.error(error));
 };
 
-
-
-const arrayBufferToBase64Url=(buffer)=> {
-  let binary = '';
+const arrayBufferToBase64Url = (buffer) => {
+  let binary = "";
   const bytes = new Uint8Array(buffer);
   const len = bytes.byteLength;
   for (let i = 0; i < len; i++) {
@@ -294,7 +294,7 @@ const arrayBufferToBase64Url=(buffer)=> {
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=+$/, "");
-}
+};
 
 const loginWithFaceID = async (data) => {
   try {
@@ -378,15 +378,17 @@ const loginWithFaceID = async (data) => {
         ? verificationResp.data
         : JSON.parse(verificationResp.data);
 
-      Log(result);
+    Log(result);
     alert("驗證結果:", result);
   } catch (err) {
     if (err instanceof DOMException) {
+      await Log(err);
       alert("WebAuthn 失敗:", err.message, err.name);
     } else if (err.response) {
-      Log(err.response);
+      await Log(err.response);
       alert("Axios 失敗:");
     } else {
+      await Log(err);
       alert("未知錯誤:", err);
     }
   }
