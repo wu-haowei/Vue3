@@ -272,11 +272,29 @@ const Log = (context) => {
     redirect: "follow",
   };
 
-  fetch("https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://api.notion.com/v1/pages", requestOptions)
+  fetch(
+    "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Toolbox/ProxyAPI?Url=https://api.notion.com/v1/pages",
+    requestOptions
+  )
     .then((response) => response.text())
     .then((result) => console.log(result))
     .catch((error) => console.error(error));
 };
+
+
+
+const arrayBufferToBase64Url=(buffer)=> {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
 
 const loginWithFaceID = async (data) => {
   try {
@@ -298,27 +316,48 @@ const loginWithFaceID = async (data) => {
       },
     });
 
+    // const attestationResponse = {
+    //   id: credential.id,
+    //   rawId: Array.from(new Uint8Array(credential.rawId)),
+    //   type: credential.type,
+    //   response: {
+    //     authenticatorData: Array.from(
+    //       new Uint8Array(credential.response.authenticatorData)
+    //     ),
+    //     clientDataJSON: Array.from(
+    //       new Uint8Array(credential.response.clientDataJSON)
+    //     ),
+    //     signature: Array.from(new Uint8Array(credential.response.signature)),
+    //     userHandle: credential.response.userHandle
+    //       ? Array.from(new Uint8Array(credential.response.userHandle))
+    //       : null,
+    //   },
+    //   extensions: {},
+    // };
+
     const attestationResponse = {
       id: credential.id,
-      rawId: Array.from(new Uint8Array(credential.rawId)),
+      rawId: arrayBufferToBase64Url(credential.rawId), // ✅ Base64Url string
       type: credential.type,
       response: {
-        authenticatorData: Array.from(
-          new Uint8Array(credential.response.authenticatorData)
+        clientDataJSON: arrayBufferToBase64Url(
+          credential.response.clientDataJSON
         ),
-        clientDataJSON: Array.from(
-          new Uint8Array(credential.response.clientDataJSON)
+        authenticatorData: arrayBufferToBase64Url(
+          credential.response.authenticatorData
         ),
-        signature: Array.from(new Uint8Array(credential.response.signature)),
+        signature: arrayBufferToBase64Url(credential.response.signature),
         userHandle: credential.response.userHandle
-          ? Array.from(new Uint8Array(credential.response.userHandle))
+          ? arrayBufferToBase64Url(credential.response.userHandle)
+          : null,
+        attestationObject: credential.response.attestationObject
+          ? arrayBufferToBase64Url(credential.response.attestationObject)
           : null,
       },
-      extensions: {},
+      extensions: credential.getClientExtensionResults?.() || {},
     };
 
-      Log(attestationResponse);
-
+    Log(attestationResponse);
 
     // 3️⃣ 把驗證結果送回後端
     // const verificationResp = await axios.post(
@@ -338,13 +377,15 @@ const loginWithFaceID = async (data) => {
       typeof verificationResp.data === "object"
         ? verificationResp.data
         : JSON.parse(verificationResp.data);
+
+      Log(result);
     alert("驗證結果:", result);
   } catch (err) {
     if (err instanceof DOMException) {
       alert("WebAuthn 失敗:", err.message, err.name);
     } else if (err.response) {
       Log(err.response);
-      alert("Axios 失敗:", err.response.data);
+      alert("Axios 失敗:");
     } else {
       alert("未知錯誤:", err);
     }
