@@ -26,7 +26,7 @@ const GetRegisterChallenge = async () => {
     }
     const options =
       typeof resRegister.data.data === "object"
-        ? res1.data.data
+        ? resRegister.data.data
         : JSON.parse(resRegister.data.data);
 
     options.challenge = base64urlToArrayBuffer(options.challenge);
@@ -71,7 +71,7 @@ const GetRegisterChallenge = async () => {
     }
   } catch (err) {
     console.log("註冊失敗:", err);
-    alert("註冊失敗:", err);
+    alert("註冊失敗:", err.message);
   }
 };
 

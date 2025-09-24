@@ -363,13 +363,13 @@ const loginWithFaceID = async (data) => {
     }
   } catch (err) {
     if (err instanceof DOMException) {
-      console.log("WebAuthn 失敗:", err);
+      console.log("WebAuthn 失敗:", err.message);
       alert("WebAuthn 失敗");
     } else if (err.response) {
-      console.log("Axios 失敗:", err);
+      console.log("Axios 失敗:", err.message);
       alert("Axios 失敗");
     } else {
-      console.log("未知錯誤:", err);
+      console.log("未知錯誤:", err.message);
       alert("未知錯誤");
     }
   }
