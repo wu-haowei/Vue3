@@ -377,19 +377,15 @@ const loginWithFaceID = async (data) => {
     //   typeof verificationResp.data === "object"
     //     ? verificationResp.data
     //     : JSON.parse(verificationResp.data);
-    Log("驗證結果");
-    Log(verificationResp);
+    alert(`驗證結果:${verificationResp.success}`);
     // alert("驗證結果:", result);
   } catch (err) {
     if (err instanceof DOMException) {
-      await Log(err);
-      alert("WebAuthn 失敗:", err.message, err.name);
+      alert("WebAuthn 失敗:");
     } else if (err.response) {
-      await Log(err.response);
-      alert("Axios 失敗:");
+      alert("Axios 失敗");
     } else {
-      await Log(err);
-      alert("未知錯誤:", err);
+      alert("未知錯誤:");
     }
   }
 };

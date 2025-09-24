@@ -105,8 +105,8 @@ export class LoginService {
 
     async GetRegisterChallenge() {
         return axios.get(
-            // `https://3b50752a45e8.ngrok-free.app/api/Login/Register/GetRegisterChallenge`,
-            `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/GetRegisterChallenge`,
+            `https://1b3011008e1f.ngrok-free.app/api/Login/Register/GetRegisterChallenge`,
+            // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/GetRegisterChallenge`,
             {
                 headers: {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
@@ -124,8 +124,8 @@ export class LoginService {
 
     async VerifyRegister(data = {}) {
         return axios.post(
-            // `https://3b50752a45e8.ngrok-free.app/api/Login/Register/VerifyRegister`,
-            `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/VerifyRegister`,
+            `https://1b3011008e1f.ngrok-free.app/api/Login/Register/VerifyRegister`,
+            // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/VerifyRegister`,
             data, // 放在 body
             {
                 headers: {
@@ -139,8 +139,8 @@ export class LoginService {
     }
     async GetLoginChallenge() {
         return axios.get(
-            // `https://3b50752a45e8.ngrok-free.app/api/Login/GetLoginChallenge`,
-            `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/GetLoginChallenge?userId=Henry`,
+            `https://1b3011008e1f.ngrok-free.app/api/Login/GetLoginChallenge?userId=Henry`,
+            // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/GetLoginChallenge?userId=Henry`,
             {
                 headers: {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
@@ -158,8 +158,8 @@ export class LoginService {
 
     async VerifyLogin(data = {}) {
         return axios.post(
-            // `https://3b50752a45e8.ngrok-free.app/api/Login/VerifyLogin`,
-            `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/VerifyLogin`,
+            // `https://1b3011008e1f.ngrok-free.app /api/Login/VerifyLogin`,
+            // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/VerifyLogin`,
             data, // 放在 body
             {
                 headers: {
