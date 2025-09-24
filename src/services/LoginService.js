@@ -110,7 +110,9 @@ export class LoginService {
             {
                 headers: {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
-                    "ngrok-skip-browser-warning": "1231"    // ngrok header
+                    "ngrok-skip-browser-warning": "1231",
+                    "Access-Control-Allow-Credentials": "true",
+                    "Access-Control-Allow-Origin": "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net"
                 },
                 withCredentials: true
             }
@@ -131,7 +133,9 @@ export class LoginService {
             {
                 headers: {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
-                    "ngrok-skip-browser-warning": "1231"    // ngrok header
+                    "ngrok-skip-browser-warning": "1231",
+                    "Access-Control-Allow-Credentials": "true",
+                    "Access-Control-Allow-Origin": "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net"
                 },
                 withCredentials: true
             }
@@ -146,7 +150,9 @@ export class LoginService {
             {
                 headers: {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
-                    "ngrok-skip-browser-warning": "1231"    // ngrok header
+                    "ngrok-skip-browser-warning": "1231",
+                    "Access-Control-Allow-Credentials": "true",
+                    "Access-Control-Allow-Origin": "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net"
                 },
                 withCredentials: true
             }
@@ -167,7 +173,9 @@ export class LoginService {
             {
                 headers: {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
-                    "ngrok-skip-browser-warning": "1231"    // ngrok header
+                    "ngrok-skip-browser-warning": "1231",
+                    "Access-Control-Allow-Credentials": "true",
+                    "Access-Control-Allow-Origin": "https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net"
                 },
                 withCredentials: true
             }

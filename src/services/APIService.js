@@ -6,7 +6,7 @@ const instance = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
     // baseURL: 'http://192.168.0.167:8787/',
     timeout: 10000,
-     withCredentials: true // 🔑 讓瀏覽器攜帶 Cookie
+    withCredentials: true
     // headers: {
     //     'Content-Type': 'application/json;charset=UTF-8'
     // }
@@ -15,6 +15,8 @@ const instance = axios.create({
 //request 新增請求攔截器
 instance.interceptors.request.use(function (config) {
     config.headers['ngrok-skip-browser-warning'] = '1231';
+    config.headers['Access-Control-Allow-Credentials'] = 'true';
+    config.headers['Access-Control-Allow-Origin'] = 'https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net';
     config.headers.Authorization = `Bearer ${store.getters["getToken"]}`;
     return config;
 }, function (error) {
