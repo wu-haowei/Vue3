@@ -187,15 +187,6 @@ const logIn = async (data) => {
 const loginWithFaceID = async (data) => {
   try {
     console.log("開始使用 Face ID 登入");
-    // 1️⃣ 從後端取得挑戰（challenge）
-    // const res = await axios.get(
-    //   "https://3b50752a45e8.ngrok-free.app/api/Login/challenge?userId=Henry",
-    //   {
-    //     headers: {
-    //       "ngrok-skip-browser-warning": "1231",
-    //     },
-    //   }
-    // );
 
     const res = await loginService.GetLoginChallenge();
 
@@ -250,14 +241,14 @@ const loginWithFaceID = async (data) => {
       typeof verificationResp.data === "object"
         ? verificationResp.data
         : JSON.parse(verificationResp.data);
-    console.log("驗證結果:", result);
+    alert("驗證結果:", result);
   } catch (err) {
     if (err instanceof DOMException) {
-      console.error("WebAuthn 失敗:", err.message, err.name);
+      alert("WebAuthn 失敗:", err.message, err.name);
     } else if (err.response) {
-      console.error("Axios 失敗:", err.response.data);
+      alert("Axios 失敗:", err.response.data);
     } else {
-      console.error("未知錯誤:", err);
+      alert("未知錯誤:", err);
     }
   }
 };
