@@ -61,7 +61,9 @@ const GetRegisterChallenge = async () => {
     };
     alert("憑證已建立", JSON.stringify(attestationResponse));
     const resVerify = await loginService.VerifyRegister(attestationResponse);
-    await Log(resVerify);
+    // await Log(resVerify);
+    alert(`1:${JSON.stringify(resVerify)}`);
+
     if (!resVerify.data.result.success) {
       throw new Error(resVerify.data.result.message);
     } else {
