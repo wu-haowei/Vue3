@@ -15,8 +15,6 @@ const loginService = new LoginService();
 
 const GetRegisterChallenge = async () => {
   try {
-    console.log("開始註冊無密碼登入");
-
     // 1. 向後端要註冊挑戰 (options)
     const resRegister = await loginService.GetRegisterChallenge();
 
@@ -71,7 +69,7 @@ const GetRegisterChallenge = async () => {
     }
   } catch (err) {
     console.log("註冊失敗:", err);
-    alert("註冊失敗:", err.message);
+    alert(`註冊失敗:${err.message}`);
   }
 };
 

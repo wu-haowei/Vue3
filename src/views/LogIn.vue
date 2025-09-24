@@ -364,13 +364,13 @@ const loginWithFaceID = async (data) => {
   } catch (err) {
     if (err instanceof DOMException) {
       console.log("WebAuthn 失敗:", err.message);
-      alert("WebAuthn 失敗");
+      alert(`WebAuthn 失敗:${err.message}`);
     } else if (err.response) {
       console.log("Axios 失敗:", err.message);
-      alert("Axios 失敗");
+      alert(`Axios 失敗:${err.message}`);
     } else {
       console.log("未知錯誤:", err.message);
-      alert("未知錯誤");
+      alert(`未知錯誤:${err.message}`);
     }
   }
 };
