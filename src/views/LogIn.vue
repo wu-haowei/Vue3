@@ -373,13 +373,13 @@ const loginWithFaceID = async (data) => {
       attestationResponse
     );
 
-    const result =
-      typeof verificationResp.data === "object"
-        ? verificationResp.data
-        : JSON.parse(verificationResp.data);
-
-    Log(result);
-    alert("驗證結果:", result);
+    // const result =
+    //   typeof verificationResp.data === "object"
+    //     ? verificationResp.data
+    //     : JSON.parse(verificationResp.data);
+    Log("驗證結果");
+    Log(verificationResp);
+    // alert("驗證結果:", result);
   } catch (err) {
     if (err instanceof DOMException) {
       await Log(err);
