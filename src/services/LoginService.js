@@ -105,7 +105,7 @@ export class LoginService {
 
     async GetRegisterChallenge() {
         return axios.get(
-            `https://unsceptred-exultingly-jeramy.ngrok-free.app/api/Login/Register/GetRegisterChallenge`,
+            `${import.meta.env.VITE_API_URL}api/Login/Register/GetRegisterChallenge`,
             // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/GetRegisterChallenge`,
             {
                 headers: {
@@ -125,7 +125,7 @@ export class LoginService {
 
     async VerifyRegister(data = {}) {
         return axios.post(
-            `https://unsceptred-exultingly-jeramy.ngrok-free.app/api/Login/Register/VerifyRegister`,
+            `${import.meta.env.VITE_API_URL}api/Login/Register/VerifyRegister`,
             // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/Register/VerifyRegister`,
             data, // 放在 body
             {
@@ -133,7 +133,7 @@ export class LoginService {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
                     "ngrok-skip-browser-warning": "1231"    // ngrok header
                 },
-                withCredentials: true 
+                withCredentials: true
             }
         )
             .then((result) => result.data)
@@ -141,7 +141,7 @@ export class LoginService {
     }
     async GetLoginChallenge() {
         return axios.get(
-            `https://unsceptred-exultingly-jeramy.ngrok-free.app/api/Login/GetLoginChallenge?userId=Henry`,
+            `${import.meta.env.VITE_API_URL}api/Login/GetLoginChallenge?userId=Henry`,
             // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/GetLoginChallenge?userId=Henry`,
             {
                 headers: {
@@ -161,7 +161,7 @@ export class LoginService {
 
     async VerifyLogin(data = {}) {
         return axios.post(
-            `https://unsceptred-exultingly-jeramy.ngrok-free.app/api/Login/VerifyLogin`,
+            `${import.meta.env.VITE_API_URL}api/Login/VerifyLogin`,
             // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/VerifyLogin`,
             data, // 放在 body
             {
@@ -169,7 +169,7 @@ export class LoginService {
                     Authorization: `Bearer ${store.getters["getToken"]}`,
                     "ngrok-skip-browser-warning": "1231"    // ngrok header
                 },
-                withCredentials: true 
+                withCredentials: true
             }
         )
             .then((result) => result.data)
