@@ -183,4 +183,24 @@ export class LoginService {
             .then((result) => result.data)
             .catch((err) => Promise.reject(err));
     }
+
+
+    async getSession() {
+        return apiService.GET(`api/Login/A`)
+            .then((result) => {
+                return result;
+            })
+            .catch((err) => {
+                return Promise.reject(err);
+            });
+    }
+    async setSession() {
+        return apiService.GET(`api/Login/B`)
+            .then((result) => {
+                return result;
+            })
+            .catch((err) => {
+                return Promise.reject(err);
+            });
+    }
 }

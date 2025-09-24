@@ -52,6 +52,10 @@
       <button type="submit">{{ getIsSignUpText }}</button>
     </VForm>
     <button @click="loginWithFaceID">Face ID</button>
+
+    <button @click="getSession">GET Session</button>
+    <button @click="setSession">SET Session</button>
+
     <Loading v-show="isLoading" />
     <modal :show="errorMsg.isShow" @close="errorMsgIsShowChenge(false)">
       <template #header>
@@ -159,6 +163,16 @@ const isLoading = ref(false);
 const getIsSignUpText = computed(() => {
   return isSignUp.value ? "註冊" : "登入";
 });
+
+const getSession = async (data) => {
+  const A = await loginService.getSession();
+  console.log(A);
+};
+
+const setSession = async (data) => {
+  const B = await loginService.setSession();
+  console.log(B);
+};
 
 const logIn = async (data) => {
   try {
@@ -342,24 +356,13 @@ const loginWithFaceID = async (data) => {
       extensions: credential.getClientExtensionResults?.() || {},
     };
 
-    await Log(attestationResponse);
-
-    // 3️⃣ 把驗證結果送回後端
-    // const verificationResp = await axios.post(
-    //   "https://3b50752a45e8.ngrok-free.app/api/Login/verify",
-    //   attestationResponse,
-    //   {
-    //     headers: { "Content-Type": "application/json" },
-    //     "ngrok-skip-browser-warning": "1231",
-    //   }
-    // );
-
+    // await Log(attestationResponse);
     const resVerify = await loginService.VerifyLogin(attestationResponse);
 
     if (!resVerify.result.success) {
       throw new Error(resVerify.result.message);
     } else {
-      alert("驗證結果:", resVerify.data.data);
+      alert("驗證結果:", resVerify.data);
     }
   } catch (err) {
     if (err instanceof DOMException) {
