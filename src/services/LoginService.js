@@ -158,7 +158,7 @@ export class LoginService {
 
     async VerifyLogin(data = {}) {
         return axios.post(
-            // `https://1b3011008e1f.ngrok-free.app /api/Login/VerifyLogin`,
+            `https://1b3011008e1f.ngrok-free.app /api/Login/VerifyLogin`,
             // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/VerifyLogin`,
             data, // 放在 body
             {
