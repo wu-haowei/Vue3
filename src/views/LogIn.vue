@@ -298,12 +298,16 @@ const arrayBufferToBase64Url = (buffer) => {
 
 const loginWithFaceID = async (data) => {
   try {
-    console.log("開始使用 Face ID 登入");
+    const resLogin = await loginService.GetLoginChallenge();
 
-    const res = await loginService.GetLoginChallenge();
+    if (!resLogin.data.success) {
+      throw new Error(resLogin.data.message);
+    }
 
     const challengeData =
-      typeof res.data === "object" ? res.data : JSON.parse(res.data);
+      typeof resLogin.data.data === "object"
+        ? resLogin.data.data
+        : JSON.parse(resLogin.data.data);
     // 2️⃣ 呼叫 WebAuthn API
     const credential = await navigator.credentials.get({
       publicKey: {
@@ -315,25 +319,6 @@ const loginWithFaceID = async (data) => {
         userVerification: "required",
       },
     });
-
-    // const attestationResponse = {
-    //   id: credential.id,
-    //   rawId: Array.from(new Uint8Array(credential.rawId)),
-    //   type: credential.type,
-    //   response: {
-    //     authenticatorData: Array.from(
-    //       new Uint8Array(credential.response.authenticatorData)
-    //     ),
-    //     clientDataJSON: Array.from(
-    //       new Uint8Array(credential.response.clientDataJSON)
-    //     ),
-    //     signature: Array.from(new Uint8Array(credential.response.signature)),
-    //     userHandle: credential.response.userHandle
-    //       ? Array.from(new Uint8Array(credential.response.userHandle))
-    //       : null,
-    //   },
-    //   extensions: {},
-    // };
 
     const attestationResponse = {
       id: credential.id,
@@ -357,7 +342,7 @@ const loginWithFaceID = async (data) => {
       extensions: credential.getClientExtensionResults?.() || {},
     };
 
-    Log(attestationResponse);
+    await Log(attestationResponse);
 
     // 3️⃣ 把驗證結果送回後端
     // const verificationResp = await axios.post(
@@ -369,23 +354,23 @@ const loginWithFaceID = async (data) => {
     //   }
     // );
 
-    const verificationResp = await loginService.VerifyLogin(
-      attestationResponse
-    );
+    const resVerify = await loginService.VerifyLogin(attestationResponse);
 
-    // const result =
-    //   typeof verificationResp.data === "object"
-    //     ? verificationResp.data
-    //     : JSON.parse(verificationResp.data);
-    alert(`驗證結果:${verificationResp.success}`);
-    // alert("驗證結果:", result);
+    if (!resVerify.data.success) {
+      throw new Error(resVerify.data.message);
+    } else {
+      alert("驗證結果:", resVerify.data.data);
+    }
   } catch (err) {
     if (err instanceof DOMException) {
-      alert("WebAuthn 失敗:");
+      console.log("WebAuthn 失敗:", err);
+      alert("WebAuthn 失敗");
     } else if (err.response) {
+      console.log("Axios 失敗:", err);
       alert("Axios 失敗");
     } else {
-      alert("未知錯誤:");
+      console.log("未知錯誤:", err);
+      alert("未知錯誤");
     }
   }
 };

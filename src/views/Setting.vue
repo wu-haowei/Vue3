@@ -18,15 +18,16 @@ const GetRegisterChallenge = async () => {
     console.log("開始註冊無密碼登入");
 
     // 1. 向後端要註冊挑戰 (options)
-    const res1 = await loginService.GetRegisterChallenge();
+    const resRegister = await loginService.GetRegisterChallenge();
 
     // 2. 將 Base64Url 轉換成 ArrayBuffer (因為 navigator.credentials 需要)
-    if (!res1.success) {
-      throw new Error(res1.message);
+    if (!resRegister.data.success) {
+      throw new Error(resRegister.data.message);
     }
-    debugger;
     const options =
-      typeof res1.data === "object" ? res1.data : JSON.parse(res1.data);
+      typeof resRegister.data.data === "object"
+        ? res1.data.data
+        : JSON.parse(resRegister.data.data);
 
     options.challenge = base64urlToArrayBuffer(options.challenge);
     options.user.id = new TextEncoder().encode(options.user.id);
@@ -37,8 +38,7 @@ const GetRegisterChallenge = async () => {
     });
 
     if (!credential) {
-      alert("憑證建立失敗");
-      return;
+      throw new Error("憑證建立失敗");
     }
 
     // 4. 打包 credential 傳回後端
@@ -62,9 +62,15 @@ const GetRegisterChallenge = async () => {
       },
     };
     alert("憑證已建立", JSON.stringify(attestationResponse));
-    const res = await loginService.VerifyRegister(attestationResponse);
-    alert("註冊結果:", res);
+    const resVerify = await loginService.VerifyRegister(attestationResponse);
+
+    if (!resVerify.data.success) {
+      throw new Error(resVerify.data.message);
+    } else {
+      alert("註冊結果:", resVerify.data.data);
+    }
   } catch (err) {
+    console.log("註冊失敗:", err);
     alert("註冊失敗:", err);
   }
 };
