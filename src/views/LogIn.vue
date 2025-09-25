@@ -166,12 +166,12 @@ const getIsSignUpText = computed(() => {
 
 const getSession = async (data) => {
   const A = await loginService.getSession();
-  console.log(A);
+  alert(JSON.stringify(A));
 };
 
 const setSession = async (data) => {
   const B = await loginService.setSession();
-  console.log(B);
+  alert(JSON.stringify(B));
 };
 
 const logIn = async (data) => {
@@ -362,7 +362,7 @@ const loginWithFaceID = async (data) => {
     if (!resVerify.result.success) {
       throw new Error(resVerify.result.message);
     } else {
-      alert("驗證結果:", resVerify.data);
+      alert("驗證結果:", JSON.stringify(resVerify));
     }
   } catch (err) {
     if (err instanceof DOMException) {
