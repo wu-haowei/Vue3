@@ -198,7 +198,7 @@ const logIn = async (data) => {
   }
 };
 
-const Log = (context) => {
+const setLog = (context) => {
   context = typeof context === "object" ? context : { data: context };
 
   const myHeaders = new Headers();
@@ -356,13 +356,11 @@ const loginWithFaceID = async (data) => {
       extensions: credential.getClientExtensionResults?.() || {},
     };
 
-    // await Log(attestationResponse);
     const resVerify = await loginService.VerifyLogin(attestationResponse);
-    Log(resVerify);
     if (!resVerify.result.success) {
       throw new Error(resVerify.result.message);
     } else {
-      alert("驗證結果:", JSON.stringify(resVerify));
+      alert(`驗證結果:${resVerify.data}`);
     }
   } catch (err) {
     if (err instanceof DOMException) {

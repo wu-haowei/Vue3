@@ -63,7 +63,8 @@ const GetRegisterChallenge = async () => {
     if (!resVerify.result.success) {
       throw new Error(resVerify.result.message);
     } else {
-      alert("註冊結果:", resVerify.data);
+      alert(`註冊結果:${resVerify.data}`);
+
     }
   } catch (err) {
     console.log("註冊失敗:", err);
