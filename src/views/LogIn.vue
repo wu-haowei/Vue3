@@ -2,7 +2,7 @@
 <template>
   <div>
     <button @click="isSignUp = !isSignUp">
-      {{ getIsSignUpText }}
+      <span v-text="getIsSignUpText"></span>
     </button>
     <VForm
       id="loginInForm"
@@ -49,12 +49,12 @@
         :dynamicAttribute="{ autocomplete: 'current-email' }"
       ></AppFormFieId>
 
-      <button type="submit">{{ getIsSignUpText }}</button>
+      <button type="submit" v-text="getIsSignUpText"></button>
+      <button @click.stop.prevent="loginWithFido">Fido登入</button>
     </VForm>
-    <button @click="loginWithFaceID">Face ID</button>
 
-    <button @click="getSession">GET Session</button>
-    <button @click="setSession">SET Session</button>
+    <!-- <button @click="getSession">GET Session</button> -->
+    <!-- <button @click="setSession">SET Session</button> -->
 
     <Loading v-show="isLoading" />
     <modal :show="errorMsg.isShow" @close="errorMsgIsShowChenge(false)">
@@ -310,9 +310,17 @@ const arrayBufferToBase64Url = (buffer) => {
     .replace(/=+$/, "");
 };
 
-const loginWithFaceID = async (data) => {
+const loginWithFido = async (data) => {
   try {
-    const resLogin = await loginService.GetLoginChallenge();
+    isLoading.value = true;
+
+    if (store.getters["getFido2User"]) {
+      throw new Error("尚未設定Fido2使用者");
+    }
+
+    const resLogin = await loginService.GetLoginChallenge(
+      store.getters["getFido2User"]
+    );
 
     if (!resLogin.data.result.success) {
       throw new Error(resLogin.data.result.message);
@@ -360,19 +368,30 @@ const loginWithFaceID = async (data) => {
     if (!resVerify.result.success) {
       throw new Error(resVerify.result.message);
     } else {
-      alert(`驗證結果:${resVerify.data}`);
+      const success = await store.dispatch("logInToFido", {
+        ...resVerify,
+        account: store.getters["getFido2User"],
+      });
+      if (success) {
+        router.push("/");
+      } else {
+        errorMsg.msg = "Fido 登入失敗";
+        errorMsg.isShow = true;
+      }
     }
   } catch (err) {
     if (err instanceof DOMException) {
-      console.log("WebAuthn 失敗:", err.message);
-      alert(`WebAuthn 失敗:${err.message}`);
+      console.log("WebAuthn 錯誤:", err.message);
+      alert(`WebAuthn 錯誤:${err.message}`);
     } else if (err.response) {
-      console.log("Axios 失敗:", err.message);
-      alert(`Axios 失敗:${err.message}`);
+      console.log("API 錯誤:", err.message);
+      alert(`API 錯誤:${err.message}`);
     } else {
-      console.log("未知錯誤:", err.message);
-      alert(`未知錯誤:${err.message}`);
+      console.log("錯誤:", err.message);
+      alert(`錯誤:${err.message}`);
     }
+  } finally {
+    isLoading.value = false;
   }
 };
 

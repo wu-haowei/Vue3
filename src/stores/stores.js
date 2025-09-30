@@ -14,6 +14,7 @@ const getDefaultState = () => {
     socket: null,
     connected: false,
     messages: [],
+    fido2User: null, // FIDO2 使用者資料
   }
 }
 
@@ -24,14 +25,14 @@ export default createStore({
       state.count++;
     },
     setLogIn(state, options) {
-      state.isLogin = options.result.success;
-      state.jwtToken = options.data || '';
-      // state.token = options.token;
-      // state.account = options.account;
-      // state.userName = options.userName;
+      state.isLogin = options.isLogin || false;
+      state.jwtToken = options.jwtToken || '';
+      state.account = options.account || null;
     },
     RESET_STATE(state) {
-      Object.assign(state, getDefaultState()) // 將 state 重設為初始狀態
+      const fido2User = state.fido2User
+      Object.assign(state, getDefaultState())
+      state.fido2User = fido2User;
     },
     SET_SOCKET(state, socket) {
       state.socket = socket;
@@ -41,6 +42,9 @@ export default createStore({
     },
     ADD_MESSAGE(state, message) {
       state.messages.push(message);
+    },
+    SET_FIDOUSER(state, user) {
+      state.fido2User = user;
     },
   },
   actions: {
@@ -54,7 +58,7 @@ export default createStore({
         loginService.login(options.account, options.password)
           .then(async (res) => {
             if (res.result.success) {
-              context.commit('setLogIn', res);
+              context.commit('setLogIn', { isLogin: res.result.success, jwtToken: res.data, account: options.account });
               resolve(res.result.success);
             } else
               resolve(false);
@@ -67,6 +71,17 @@ export default createStore({
             }
           });
       });
+    },
+    async logInToFido(context, options) {
+      return new Promise((resolve, reject) => {
+        try {
+          context.commit('setLogIn', { isLogin: options.result.success, jwtToken: options.data, account: options.account });
+          resolve(options.result.success);
+        } catch (error) {
+          reject(false);
+        }
+      });
+
     },
     async logOut(context) {
       context.commit('RESET_STATE');
@@ -107,6 +122,13 @@ export default createStore({
         console.warn("WebSocket not connected.");
       }
     },
+    fidoUser({ commit }, user) {
+      if (user && user != '') {
+        commit("SET_FIDOUSER", user);
+      } else {
+        console.warn("user not found.");
+      }
+    },
   },
   getters: {
     isLogin: (state) => {
@@ -123,6 +145,9 @@ export default createStore({
     },
     getMessages: (state) => {
       return state.messages;
+    },
+    getFido2User: (state) => {
+      return state.fido2User;
     },
   },
   plugins: [

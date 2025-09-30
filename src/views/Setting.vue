@@ -12,6 +12,7 @@
 import { reactive, ref, onMounted, computed } from "vue";
 import { LoginService } from "@/services/LoginService";
 const loginService = new LoginService();
+import store from "@/stores/stores";
 
 const GetRegisterChallenge = async () => {
   try {
@@ -41,21 +42,29 @@ const GetRegisterChallenge = async () => {
 
     // 4. 打包 credential 傳回後端
     const attestationResponse = {
+      // string  credential 的唯一標識符，通常由 authenticator（安全金鑰或裝置）生成，用於後端辨識這個憑證。
       id: credential.id,
+      // Base64Url 編碼的 ArrayBuffer  credential 的原始二進位資料，與 id 對應。前端需要轉成 Base64Url 才能傳到後端。
       rawId: arrayBufferToBase64Url(credential.rawId),
+      //credential 類型，通常是 "public-key"，表示這是一個公鑰憑證。
       type: credential.type,
       response: {
+        //rrayBuffer → Base64Url 包含前端產生的 challenge、origin 等資料，用來防止重放攻擊。
         clientDataJSON: arrayBufferToBase64Url(
           credential.response.clientDataJSON
         ),
+        //公鑰資訊 & 憑證資料（attestation）& 生成時間
         attestationObject: arrayBufferToBase64Url(
           credential.response.attestationObject
         ),
-        transports: ["usb"],
+        //告訴後端此 credential 支援的傳輸方式
+        transports: credential.response.getTransports?.() || [],
       },
       clientExtensionResults: {
         "example.extension.bool": true,
+        //如果有使用 FIDO AppID extension，回傳結果
         appid: true,
+        //其他自訂 extension 的回傳資料
         exts: ["string"],
       },
     };
@@ -64,7 +73,7 @@ const GetRegisterChallenge = async () => {
       throw new Error(resVerify.result.message);
     } else {
       alert(`註冊結果:${resVerify.data}`);
-
+      await store.dispatch("fidoUser", store.getters["account"]);
     }
   } catch (err) {
     console.log("註冊失敗:", err);

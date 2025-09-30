@@ -143,9 +143,9 @@ export class LoginService {
             .then((result) => result.data)
             .catch((err) => Promise.reject(err));
     }
-    async GetLoginChallenge() {
+    async GetLoginChallenge(userId) {
         return axios.get(
-            `${import.meta.env.VITE_API_URL}api/Login/GetLoginChallenge?userId=Henry`,
+            `${import.meta.env.VITE_API_URL}api/Login/GetLoginChallenge?userId=${userId}`,
             // `https://h-web-api-a2gvavdbg9dggxa3.canadacentral-01.azurewebsites.net/api/Login/GetLoginChallenge?userId=Henry`,
             {
                 headers: {
