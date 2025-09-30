@@ -1,7 +1,12 @@
 
 <template>
   <div>
-    設定 <button @click="GetRegisterChallenge">開啟無密碼登入功能</button>
+    設定
+    <button
+      @click="GetRegisterChallenge"
+      v-text="isOpenFidoText"
+      :style="{ backgroundColor: isOpenFido ? 'red' : '' }"
+    ></button>
   </div>
 </template>
 
@@ -14,8 +19,22 @@ import { LoginService } from "@/services/LoginService";
 const loginService = new LoginService();
 import store from "@/stores/stores";
 
+const isOpenFido = computed(() => {
+  return store.getters["getFido2User"] || false;
+});
+
+const isOpenFidoText = computed(() => {
+  return isOpenFido.value ? "關閉無密碼登入功能" : "開啟無密碼登入功能";
+});
+
 const GetRegisterChallenge = async () => {
   try {
+    if (isOpenFido.value) {
+      const result = await store.dispatch("fidoUser", false);
+      alert(`${result.message}`);
+      return;
+    }
+
     // 1. 向後端要註冊挑戰 (options)
     const resRegister = await loginService.GetRegisterChallenge();
 
@@ -72,8 +91,12 @@ const GetRegisterChallenge = async () => {
     if (!resVerify.result.success) {
       throw new Error(resVerify.result.message);
     } else {
-      await store.dispatch("fidoUser");
-      alert(`註冊結果:${resVerify.data}`);
+      const result = await store.dispatch("fidoUser", true);
+      if (result.success) {
+        alert(`${result.message}`);
+      } else {
+        throw new Error(result.message);
+      }
     }
   } catch (err) {
     console.log("註冊失敗:", err);

@@ -122,12 +122,20 @@ export default createStore({
         console.warn("WebSocket not connected.");
       }
     },
-    fidoUser({ commit, getters }) {
-      if (getters.getAccount && getters.getAccount != '') {
-        commit("SET_FIDOUSER", getters.getAccount);
-      } else {
-        console.warn("user not found.");
-      }
+    fidoUser({ commit, getters }, isOpen) {
+      return new Promise((resolve, reject) => {
+        if (isOpen) {
+          if (getters.getAccount && getters.getAccount != '') {
+            commit("SET_FIDOUSER", getters.getAccount);
+            resolve({ success: true, message: "已開啟無密碼登入功能" });
+          } else {
+            reject({ success: false, message: "user not found." });
+          }
+        } else {
+          commit("SET_FIDOUSER", null);
+          resolve({ success: true, message: "已關閉無密碼登入功能" });
+        }
+      });
     },
   },
   getters: {
