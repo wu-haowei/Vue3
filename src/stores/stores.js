@@ -124,7 +124,7 @@ export default createStore({
     },
     fidoUser({ commit, getters }) {
       if (getters.getAccount && getters.getAccount != '') {
-        commit("SET_FIDOUSER", getters.getToken);
+        commit("SET_FIDOUSER", getters.getAccount);
       } else {
         console.warn("user not found.");
       }
