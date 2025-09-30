@@ -314,7 +314,7 @@ const loginWithFido = async (data) => {
   try {
     isLoading.value = true;
 
-    if (store.getters["getFido2User"]) {
+    if (!store.getters["getFido2User"]) {
       throw new Error("尚未設定Fido2使用者");
     }
 

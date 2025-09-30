@@ -122,9 +122,9 @@ export default createStore({
         console.warn("WebSocket not connected.");
       }
     },
-    fidoUser({ commit }, user) {
-      if (user && user != '') {
-        commit("SET_FIDOUSER", user);
+    fidoUser({ commit, getters }) {
+      if (getters.getAccount && getters.getAccount != '') {
+        commit("SET_FIDOUSER", getters.getToken);
       } else {
         console.warn("user not found.");
       }
@@ -137,7 +137,7 @@ export default createStore({
     token: (state) => {
       return state.token;
     },
-    account: (state) => {
+    getAccount: (state) => {
       return state.account;
     },
     getToken: (state) => {
@@ -158,6 +158,7 @@ export default createStore({
           //只儲存需要的資料
           token: val.token,
           isLogin: val.isLogin,
+          fido2User: val.fido2User,
         };
       },
     }),

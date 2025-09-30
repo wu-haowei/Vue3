@@ -72,8 +72,10 @@ const GetRegisterChallenge = async () => {
     if (!resVerify.result.success) {
       throw new Error(resVerify.result.message);
     } else {
-      alert(`註冊結果:${resVerify.data}`);
-      await store.dispatch("fidoUser", store.getters["account"]);
+      await store.dispatch("fidoUser");
+      alert(
+        `註冊結果:${resVerify.data?.toLowerCase == true ? "成功" : "失敗"}`
+      );
     }
   } catch (err) {
     console.log("註冊失敗:", err);
