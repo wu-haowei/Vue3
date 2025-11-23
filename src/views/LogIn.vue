@@ -322,13 +322,11 @@ const loginWithFido = async (data) => {
     if (userObj.fido2User == null || userObj.fido2User === "")
       throw new Error("找不到Fido使用者");
 
-    alert(userObj.fido2User);
     const resLogin = await loginService.GetLoginChallenge(userObj.fido2User);
 
     if (!resLogin.data.result.success) {
       throw new Error(resLogin.data.result.message);
     }
-    alert(1);
 
     const challengeData =
       typeof resLogin.data.data === "object"
@@ -345,11 +343,10 @@ const loginWithFido = async (data) => {
         userVerification: "required",
       },
     });
-    alert(2);
 
     const attestationResponse = {
       id: credential.id,
-      rawId: arrayBufferToBase64Url(credential.rawId), // ✅ Base64Url string
+      rawId: arrayBufferToBase64Url(credential.rawId),
       type: credential.type,
       response: {
         clientDataJSON: arrayBufferToBase64Url(
@@ -369,19 +366,16 @@ const loginWithFido = async (data) => {
       extensions: credential.getClientExtensionResults?.() || {},
     };
 
-    alert(3);
-
     const resVerify = await loginService.VerifyLogin(attestationResponse);
     if (!resVerify.result.success) {
       throw new Error(resVerify.result.message);
     } else {
       const success = await store.dispatch("logInToFido", {
         ...resVerify,
-        account: store.getters["getFido2User"],
+        account: userObj.fido2User,
         fido2User: userObj.fido2User,
       });
       if (success) {
-        await store.dispatch("fidoUser", true);
         router.push("/");
       } else {
         errorMsg.msg = "Fido 登入失敗";
