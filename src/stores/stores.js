@@ -141,7 +141,7 @@ export default createStore({
   },
   getters: {
     isLogin: (state) => {
-      return !state.isLogin;
+      return state.isLogin;
     },
     token: (state) => {
       return state.token;
