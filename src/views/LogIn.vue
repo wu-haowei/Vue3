@@ -369,8 +369,10 @@ const loginWithFido = async (data) => {
       const success = await store.dispatch("logInToFido", {
         ...resVerify,
         account: store.getters["getFido2User"],
+        fido2User: userObj.fido2User,
       });
       if (success) {
+        await store.dispatch("fidoUser", true);
         router.push("/");
       } else {
         errorMsg.msg = "Fido 登入失敗";

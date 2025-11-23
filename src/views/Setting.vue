@@ -228,10 +228,10 @@ const arrayBufferToBase64Url = (buffer) => {
 };
 
 onMounted(async () => {
-  const storedUser = localStorage.getItem("FidoUser");
-  const userObj = JSON.parse(storedUser);
-  if (!userObj && !userObj.fido2User) {
-    await store.dispatch("fidoUser", true);
-  }
+  // const storedUser = localStorage.getItem("FidoUser");
+  // const userObj = JSON.parse(storedUser);
+  // if (userObj && userObj.fido2User) {
+  //   await store.dispatch("fidoUser", true);
+  // }
 });
 </script>
