@@ -35,6 +35,7 @@ const GetRegisterChallenge = async () => {
   try {
     if (isOpenFido.value) {
       const result = await store.dispatch("fidoUser", false);
+      localStorage.removeItem("FidoUser");
       alert(`${result.message}`);
       return;
     }
@@ -233,4 +234,12 @@ const arrayBufferToBase64Url = (buffer) => {
   const base64 = window.btoa(binary);
   return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 };
+
+onMounted(async () => {
+  const storedUser = localStorage.getItem("FidoUser");
+  const userObj = JSON.parse(storedUser);
+  if (!userObj && !userObj.fido2User) {
+    await store.dispatch("fidoUser", true);
+  }
+});
 </script>
