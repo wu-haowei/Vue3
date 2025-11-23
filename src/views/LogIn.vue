@@ -314,10 +314,14 @@ const loginWithFido = async (data) => {
   try {
     isLoading.value = true;
     const storedUser = localStorage.getItem("FidoUser");
+
+    if (!storedUser) throw new Error("未設定Fido");
+
     const userObj = JSON.parse(storedUser);
-    if (!userObj && !userObj.fido2User) {
-      throw new Error("尚未設定Fido2使用者");
-    }
+
+    if (userObj.fido2User == null || userObj.fido2User === "")
+      throw new Error("找不到Fido使用者");
+
     const resLogin = await loginService.GetLoginChallenge(userObj.fido2User);
 
     if (!resLogin.data.result.success) {
