@@ -322,11 +322,13 @@ const loginWithFido = async (data) => {
     if (userObj.fido2User == null || userObj.fido2User === "")
       throw new Error("找不到Fido使用者");
 
+    alert(userObj.fido2User);
     const resLogin = await loginService.GetLoginChallenge(userObj.fido2User);
 
     if (!resLogin.data.result.success) {
       throw new Error(resLogin.data.result.message);
     }
+    alert(1);
 
     const challengeData =
       typeof resLogin.data.data === "object"
@@ -343,6 +345,7 @@ const loginWithFido = async (data) => {
         userVerification: "required",
       },
     });
+    alert(2);
 
     const attestationResponse = {
       id: credential.id,
@@ -365,6 +368,8 @@ const loginWithFido = async (data) => {
       },
       extensions: credential.getClientExtensionResults?.() || {},
     };
+
+    alert(3);
 
     const resVerify = await loginService.VerifyLogin(attestationResponse);
     if (!resVerify.result.success) {
