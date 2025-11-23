@@ -23,6 +23,10 @@ const isOpenFido = computed(() => {
   return store.getters["getFido2User"] || false;
 });
 
+const getAccount = computed(() => {
+  return store.getters["getAccount"];
+});
+
 const isOpenFidoText = computed(() => {
   return isOpenFido.value ? "關閉無密碼登入功能" : "開啟無密碼登入功能";
 });
@@ -93,6 +97,11 @@ const GetRegisterChallenge = async () => {
     } else {
       const result = await store.dispatch("fidoUser", true);
       if (result.success) {
+        const userData = {
+          name: getAccount.value,
+          fido2User: isOpenFido.value ?? null,
+        };
+        localStorage.setItem("FidoUser", JSON.stringify(userData));
         alert(`${result.message}`);
       } else {
         throw new Error(result.message);

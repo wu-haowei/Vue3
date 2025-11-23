@@ -132,12 +132,12 @@ import AppFormFieId from "../components/AppFormFieId.vue";
 import Modal from "../components/Teleport.vue";
 import Loading from "../components/Loading.vue";
 import { useRouter, useRoute } from "vue-router";
+const router = useRouter();
 import { LoginService } from "@/services/LoginService";
 const loginService = new LoginService();
 import common from "@/components/common";
 
 const route = useRoute();
-const router = useRouter();
 
 const errorMsg = reactive({
   isShow: false,
@@ -313,14 +313,12 @@ const arrayBufferToBase64Url = (buffer) => {
 const loginWithFido = async (data) => {
   try {
     isLoading.value = true;
-
-    if (!store.getters["getFido2User"]) {
+    const storedUser = localStorage.getItem("FidoUser");
+    const userObj = JSON.parse(storedUser);
+    if (!userObj && !userObj.fido2User) {
       throw new Error("尚未設定Fido2使用者");
     }
-
-    const resLogin = await loginService.GetLoginChallenge(
-      store.getters["getFido2User"]
-    );
+    const resLogin = await loginService.GetLoginChallenge(userObj.fido2User);
 
     if (!resLogin.data.result.success) {
       throw new Error(resLogin.data.result.message);
