@@ -28,6 +28,7 @@ export default createStore({
       state.isLogin = options.isLogin || false;
       state.jwtToken = options.jwtToken || '';
       state.account = options.account || null;
+      state.fido2User = options.fido2User || null;
     },
     RESET_STATE(state) {
       const fido2User = state.fido2User
@@ -58,7 +59,7 @@ export default createStore({
         loginService.login(options.account, options.password)
           .then(async (res) => {
             if (res.result.success) {
-              context.commit('setLogIn', { isLogin: res.result.success, jwtToken: res.data, account: options.account });
+              context.commit('setLogIn', { isLogin: res.result.success, jwtToken: res.data, account: options.account, fido2User: null });
               resolve(res.result.success);
             } else
               resolve(false);
@@ -75,7 +76,7 @@ export default createStore({
     async logInToFido(context, options) {
       return new Promise((resolve, reject) => {
         try {
-          context.commit('setLogIn', { isLogin: options.result.success, jwtToken: options.data, account: options.account });
+          context.commit('setLogIn', { isLogin: options.result.success, jwtToken: options.data, account: options.account, fido2User: options.fido2User });
           resolve(options.result.success);
         } catch (error) {
           reject(false);
@@ -140,7 +141,7 @@ export default createStore({
   },
   getters: {
     isLogin: (state) => {
-      return state.isLogin;
+      return !state.isLogin;
     },
     token: (state) => {
       return state.token;

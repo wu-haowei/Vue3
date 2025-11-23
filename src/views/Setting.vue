@@ -10,9 +10,6 @@
   </div>
 </template>
 
-
-
-
 <script setup>
 import { reactive, ref, onMounted, computed } from "vue";
 import { LoginService } from "@/services/LoginService";
@@ -21,10 +18,6 @@ import store from "@/stores/stores";
 
 const isOpenFido = computed(() => {
   return store.getters["getFido2User"] || false;
-});
-
-const getAccount = computed(() => {
-  return store.getters["getAccount"];
 });
 
 const isOpenFidoText = computed(() => {
@@ -99,7 +92,6 @@ const GetRegisterChallenge = async () => {
       const result = await store.dispatch("fidoUser", true);
       if (result.success) {
         const userData = {
-          name: getAccount.value,
           fido2User: isOpenFido.value ?? null,
         };
         localStorage.setItem("FidoUser", JSON.stringify(userData));
